@@ -12,20 +12,22 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import java.io.*;
+import java.util.Scanner;
 
 public class BreakOut extends Application {
 
     private static final int width = 1024;
-	private static final int height = 768;
+    private static final int height = 768;
     private int racketWidth = 50;
     private int racketHeight = 10;
     private double racketXPos = width / 2.;
-	private double racketYPos = height - 40;
+    private double racketYPos = height - 40;
     private double ballXPos = width / 2; // ball at the center at game start
     private double ballYPos = height / 2;
     private int ballYSpeed = 1;
-	private int ballXSpeed = 1;
-    private int ballSize = 10;    
+    private int ballXSpeed = 1;
+    private int ballSize = 10;
     private boolean gameStarted = false;
     private final int brickRows = 5;
     private final int brickCols = 12;
@@ -33,9 +35,7 @@ public class BreakOut extends Application {
     private final double brickHeight = 20;
     private boolean[][] bricks = new boolean[brickRows][brickCols];
     private int score = 0;
-
-
-
+    private int bestScore = 0; // Meilleur score
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -43,38 +43,43 @@ public class BreakOut extends Application {
         Canvas canvas = new Canvas(width, height);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run(gc)));
-		tl.setCycleCount(Timeline.INDEFINITE);
-		canvas.setOnMouseMoved(e ->  racketXPos  = e.getX());
-		canvas.setOnMouseClicked(e ->  gameStarted = true);
+        tl.setCycleCount(Timeline.INDEFINITE);
+        canvas.setOnMouseMoved(e -> racketXPos = e.getX());
+        canvas.setOnMouseClicked(e -> gameStarted = true);
         stage.setWidth(width);
         stage.setHeight(height);
         stage.setTitle("Breakout");
         stage.setScene(new Scene(new StackPane(canvas)));
+
+        // Initialise les briques
         for (int i = 0; i < brickRows; i++) {
             for (int j = 0; j < brickCols; j++) {
                 bricks[i][j] = true; // Toutes les briques sont présentes au début
             }
         }
-        
+
+        // Charger le meilleur score au début
+        bestScore = getBestScore();
+
         stage.show();
         tl.play();
     }
 
     private void run(GraphicsContext gc) {
-        // black background: TODO add better graphics using layers.
-		gc.setFill(Color.BLACK); 
-		gc.fillRect(0, 0, width, height);
-		gc.setFill(Color.WHITE);
-		gc.setFont(Font.font(25));
+        // Fond noir
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, width, height);
         gc.setFill(Color.WHITE);
-        
+        gc.setFont(Font.font(25));
+        gc.setFill(Color.WHITE);
 
-		if(gameStarted) {
-            gc.fillText("Score: " + score, width/2, height/2);
-			ballXPos+=ballXSpeed;
-			ballYPos+=ballYSpeed;
-			gc.fillOval(ballXPos, ballYPos, ballSize, ballSize);
-            // collision mur
+        if (gameStarted) {
+            gc.fillText("Score: " + score, width / 2, height / 2);
+            ballXPos += ballXSpeed;
+            ballYPos += ballYSpeed;
+            gc.fillOval(ballXPos, ballYPos, ballSize, ballSize);
+
+            // Dessiner les briques
             for (int i = 0; i < brickRows; i++) {
                 for (int j = 0; j < brickCols; j++) {
                     if (bricks[i][j]) {
@@ -85,67 +90,95 @@ public class BreakOut extends Application {
                     }
                 }
             }
+
+            // Détection de collision avec les briques
             for (int i = 0; i < brickRows; i++) {
                 for (int j = 0; j < brickCols; j++) {
                     if (bricks[i][j]) {
                         double brickX = j * (brickWidth + 5);
                         double brickY = i * (brickHeight + 5);
-            
+
                         if (ballXPos + ballSize >= brickX &&
-                            ballXPos <= brickX + brickWidth &&
-                            ballYPos + ballSize >= brickY &&
-                            ballYPos <= brickY + brickHeight) {
-            
-                            ballYSpeed = -ballYSpeed; 
-                            bricks[i][j] = false; 
-                            score += 10; 
+                                ballXPos <= brickX + brickWidth &&
+                                ballYPos + ballSize >= brickY &&
+                                ballYPos <= brickY + brickHeight) {
+
+                            ballYSpeed = -ballYSpeed;
+                            bricks[i][j] = false;
+                            score += 10;
                         }
                     }
                 }
             }
-            
+
+            // Collision avec les murs
             if (ballXPos <= 0 || ballXPos >= width - ballSize) {
                 ballXSpeed = -ballXSpeed; // Rebond horizontal
             }
-            
+
             if (ballYPos <= 0) {
-                ballYSpeed = -ballYSpeed; // Rebond vertical en haut de l'écran
+                ballYSpeed = -ballYSpeed; // Rebond vertical
             }
-            
+
+            // Fin de la partie si la balle tombe
             if (ballYPos > height) {
-                gameStarted = false; // Fin de partie si la balle dépasse l'écran en bas
+                saveScoreToFile(score); // Enregistrer le score dans un fichier
+                bestScore = getBestScore(); // Mettre à jour le meilleur score
+                gameStarted = false; // Fin de la partie
             }
-            // collision raquette
+
+            // Collision avec la raquette
             if (ballYPos + ballSize >= racketYPos - racketHeight / 2 &&
-                ballXPos + ballSize >= racketXPos - racketWidth / 2 &&
-                ballXPos <= racketXPos + racketWidth / 2) {
-    
+                    ballXPos + ballSize >= racketXPos - racketWidth / 2 &&
+                    ballXPos <= racketXPos + racketWidth / 2) {
+
                 ballYSpeed = -ballYSpeed; // Rebond de la balle
             }
-            if (ballYPos > racketYPos)
-                {
-                    gameStarted=false;
-                    for (int i = 0; i < brickRows; i++) {
-                        for (int j = 0; j < brickCols; j++) {
-                            bricks[i][j] = true; // Toutes les briques sont présentes au début
-                        }
-                    }
-                    score = 0;
-                }
 
-		} else {
-			gc.setStroke(Color.YELLOW);
-			gc.setTextAlign(TextAlignment.CENTER);
-			gc.strokeText("Click to Start", width / 2, height / 2);
-			ballXPos = width / 2;
-			ballYPos = height / 2;
-		}
-		
-		gc.fillRect(racketXPos - racketWidth/2, racketYPos - racketHeight/2, racketWidth, racketHeight);
-	}
+        } else {
+            gc.setStroke(Color.YELLOW);
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.strokeText("Click to Start", width / 2, height / 2);
+
+            // Afficher le meilleur score
+            gc.strokeText("Best Score: " + bestScore, width / 2, height / 2 + 30);
+
+            ballXPos = width / 2;
+            ballYPos = height / 2;
+        }
+
+        gc.fillRect(racketXPos - racketWidth / 2, racketYPos - racketHeight / 2, racketWidth, racketHeight);
+    }
+
+    // Méthode pour sauvegarder le score dans un fichier local
+    private void saveScoreToFile(int score) {
+        String fileName = "scores.txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            writer.write(String.valueOf(score));
+            writer.newLine();
+        } catch (IOException e) {
+            System.out.println("Erreur lors de la sauvegarde du score : " + e.getMessage());
+        }
+    }
+
+    // Méthode pour obtenir le meilleur score à partir du fichier local
+    private int getBestScore() {
+        String fileName = "scores.txt";
+        int bestScore = 0;
+        try (Scanner scanner = new Scanner(new File(fileName))) {
+            while (scanner.hasNextInt()) {
+                int score = scanner.nextInt();
+                if (score > bestScore) {
+                    bestScore = score;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Aucun fichier de scores trouvé.");
+        }
+        return bestScore;
+    }
 
     public static void main(String[] args) {
         launch(args);
     }
-
 }
