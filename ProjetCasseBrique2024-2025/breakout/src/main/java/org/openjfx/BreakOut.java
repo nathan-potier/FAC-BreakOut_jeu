@@ -12,8 +12,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import java.io.*;
-import java.util.Scanner;
+
 
 public class BreakOut extends Application {
 
@@ -59,7 +58,7 @@ public class BreakOut extends Application {
         }
 
         // Charger le meilleur score au début
-        bestScore = getBestScore();
+        bestScore = Score.getBestScore();
 
         stage.show();
         tl.play();
@@ -122,8 +121,8 @@ public class BreakOut extends Application {
 
             // Fin de la partie si la balle tombe
             if (ballYPos > height) {
-                saveScoreToFile(score); // Enregistrer le score dans un fichier
-                bestScore = getBestScore(); // Mettre à jour le meilleur score
+                Score.saveScoreToFile(score); // Enregistrer le score dans un fichier
+                bestScore = Score.getBestScore(); // Mettre à jour le meilleur score
                 gameStarted = false; // Fin de la partie
             }
 
@@ -150,34 +149,10 @@ public class BreakOut extends Application {
         gc.fillRect(racketXPos - racketWidth / 2, racketYPos - racketHeight / 2, racketWidth, racketHeight);
     }
 
-    // Méthode pour sauvegarder le score dans un fichier local
-    private void saveScoreToFile(int score) {
-        String fileName = "scores.txt";
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
-            writer.write(String.valueOf(score));
-            writer.newLine();
-        } catch (IOException e) {
-            System.out.println("Erreur lors de la sauvegarde du score : " + e.getMessage());
-        }
-    }
 
-    // Méthode pour obtenir le meilleur score à partir du fichier local
-    private int getBestScore() {
-        String fileName = "scores.txt";
-        int bestScore = 0;
-        try (Scanner scanner = new Scanner(new File(fileName))) {
-            while (scanner.hasNextInt()) {
-                int score = scanner.nextInt();
-                if (score > bestScore) {
-                    bestScore = score;
-                }
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Aucun fichier de scores trouvé.");
-        }
-        return bestScore;
-    }
 
+
+    
     public static void main(String[] args) {
         launch(args);
     }
