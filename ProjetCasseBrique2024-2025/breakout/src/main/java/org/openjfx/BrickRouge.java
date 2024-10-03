@@ -6,8 +6,9 @@ public class BrickRouge extends Brick{
 
 
 
-    public BrickRouge(boolean isNotBreak){
-        super(isNotBreak);
+    public BrickRouge(boolean isNotBreak, double brickWidth, double brickHeight){
+        super(isNotBreak, brickWidth, brickHeight);
+        
 
     }
     
@@ -15,6 +16,8 @@ public class BrickRouge extends Brick{
     public Color couleur(){
         return Color.RED;
     }
+
+    
 
 
     

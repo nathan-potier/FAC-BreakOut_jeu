@@ -29,8 +29,6 @@ public class BreakOut extends Application {
     private boolean gameStarted = false;
     private final int brickRows = 5;
     private final int brickCols = 12;
-    private final double brickWidth = 80;
-    private final double brickHeight = 20;
     private Brick[][] bricks = new Brick[brickRows][brickCols];
     private int score = 0;
 
@@ -53,10 +51,10 @@ public class BreakOut extends Application {
         for (int i = 0; i < brickRows; i++) {
             for (int j = 0; j < brickCols; j++) {
                 if(i%2 != 0){
-                    bricks[i][j] = new BrickBleue(true);
+                    bricks[i][j] = new BrickBleue(true, 80, 20);
                 }
                 else{
-                    bricks[i][j] = new BrickRouge(true);
+                    bricks[i][j] = new BrickRouge(true, 80, 20);
                 }
 
         
@@ -85,23 +83,23 @@ public class BreakOut extends Application {
             for (int i = 0; i < brickRows; i++) {
                 for (int j = 0; j < brickCols; j++) {
                     if (bricks[i][j].isNotBreak) {
-                        double brickX = j * (brickWidth + 5);
-                        double brickY = i * (brickHeight + 5);
+                        double brickX = j * (bricks[i][j].getWidth() + 5);
+                        double brickY = i * (bricks[i][j].getHeight() + 5);
                         gc.setFill(bricks[i][j].couleur());
-                        gc.fillRect(brickX, brickY, brickWidth, brickHeight);
+                        gc.fillRect(brickX, brickY, bricks[i][j].getWidth(), bricks[i][j].getHeight());
                     }
                 }
             }
             for (int i = 0; i < brickRows; i++) {
                 for (int j = 0; j < brickCols; j++) {
                     if (bricks[i][j].isNotBreak) {
-                        double brickX = j * (brickWidth + 5);
-                        double brickY = i * (brickHeight + 5);
+                        double brickX = j * (bricks[i][j].getWidth() + 5);
+                        double brickY = i * (bricks[i][j].getHeight() + 5);
             
                         if (ballXPos + ballSize >= brickX &&
-                            ballXPos <= brickX + brickWidth &&
+                            ballXPos <= brickX + bricks[i][j].getWidth() &&
                             ballYPos + ballSize >= brickY &&
-                            ballYPos <= brickY + brickHeight) {
+                            ballYPos <= brickY + bricks[i][j].getHeight()) {
             
                             ballYSpeed = -ballYSpeed; 
                             if(bricks[i][j].couleur() != Color.GRAY){
