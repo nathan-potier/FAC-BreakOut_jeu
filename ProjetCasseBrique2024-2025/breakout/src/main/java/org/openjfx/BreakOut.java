@@ -130,12 +130,6 @@ public class BreakOut extends Application {
                 ballYSpeed = -ballYSpeed; // Rebond vertical
             }
 
-            // Fin de la partie si la balle tombe
-            if (ballYPos > height) {
-                Score.saveScoreToFile(score); // Enregistrer le score dans un fichier
-                bestScore = Score.getBestScore(); // Mettre à jour le meilleur score
-                gameStarted = false; // Fin de la partie
-            }
 
             // Collision avec la raquette
             if (ballYPos + ballSize >= racketYPos - racketHeight / 2 &&
@@ -145,13 +139,16 @@ public class BreakOut extends Application {
                 ballYSpeed = -ballYSpeed; // Rebond de la balle
             }
             if (ballYPos > racketYPos){
-                gameStarted=false;
+                Score.saveScoreToFile(score); // Enregistrer le score dans un fichier
+                bestScore = Score.getBestScore(); // Mettre à jour le meilleur score
+                gameStarted = false; // Fin de la partie
                 for (int i = 0; i < brickRows; i++) {
                     for (int j = 0; j < brickCols; j++) {
                         bricks[i][j].isNotBreak = true; // Toutes les briques sont présentes au début
                     }
                 }
                 score = 0;
+                
             }
 
 
