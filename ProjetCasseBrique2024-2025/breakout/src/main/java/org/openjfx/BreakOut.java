@@ -14,32 +14,32 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+
 public class BreakOut extends Application {
 
     private static final int width = 1024;
-	private static final int height = 768;
+    private static final int height = 768;
     private int racketWidth = 50;
     private int racketHeight = 10;
     private double racketXPos = width / 2.;
-	private double racketYPos = height - 40;
+    private double racketYPos = height - 40;
     private double ballXPos = width / 2; // ball at the center at game start
     private double ballYPos = height / 2;
+
     private int ballYSpeed = 4;
 	private int ballXSpeed = 4;
     private int ballSize = 10;    
+
     private boolean gameStarted = false;
     private final int brickRows = 5;
     private final int brickCols = 12;
-    private final double brickWidth = 80;
-    private final double brickHeight = 20;
     private Brick[][] bricks = new Brick[brickRows][brickCols];
     private int score = 0;
     private double rectWidth = 100;
     private double rectHeight = 50;
     private double rectX = (width - rectWidth) / 2;
     private double rectY = (height - rectHeight) / 2;
-
-
+    private int bestScore = 0; // Meilleur score
 
 
     @Override
@@ -58,62 +58,71 @@ public class BreakOut extends Application {
                 gameStarted = true;
             }
         });
+
         stage.setWidth(width);
         stage.setHeight(height);
         stage.setTitle("Breakout");
         stage.setScene(new Scene(new StackPane(canvas)));
+
+        // Initialise les briques
         for (int i = 0; i < brickRows; i++) {
             for (int j = 0; j < brickCols; j++) {
                 if(i%2 != 0){
-                    bricks[i][j] = new BrickBleue(true);
+                    bricks[i][j] = new BrickBleue(true, 80, 20);
                 }
                 else{
-                    bricks[i][j] = new BrickRouge(true);
+                    bricks[i][j] = new BrickRouge(true, 80, 20);
                 }
 
         
             }
         }
-        
+
+        // Charger le meilleur score au début
+        bestScore = Score.getBestScore();
+
         stage.show();
         tl.play();
     }
 
     private void run(GraphicsContext gc) {
-        // black background: TODO add better graphics using layers.
-		gc.setFill(Color.BLACK); 
-		gc.fillRect(0, 0, width, height);
-		gc.setFill(Color.WHITE);
-		gc.setFont(Font.font(25));
+        // Fond noir
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, width, height);
         gc.setFill(Color.WHITE);
-        
+        gc.setFont(Font.font(25));
+        gc.setFill(Color.WHITE);
 
-		if(gameStarted) {
-            gc.fillText("Score: " + score, width/2, height/2);
-			ballXPos+=ballXSpeed;
-			ballYPos+=ballYSpeed;
-			gc.fillOval(ballXPos, ballYPos, ballSize, ballSize);
-            // collision mur
+        if (gameStarted) {
+            gc.fillText("Score: " + score, width / 2, height / 2);
+            ballXPos += ballXSpeed;
+            ballYPos += ballYSpeed;
+            gc.fillOval(ballXPos, ballYPos, ballSize, ballSize);
+
+            // Dessiner les briques
             for (int i = 0; i < brickRows; i++) {
                 for (int j = 0; j < brickCols; j++) {
                     if (bricks[i][j].isNotBreak) {
-                        double brickX = j * (brickWidth + 5);
-                        double brickY = i * (brickHeight + 5);
+                        double brickX = j * (bricks[i][j].getWidth() + 5);
+                        double brickY = i * (bricks[i][j].getHeight() + 5);
                         gc.setFill(bricks[i][j].couleur());
-                        gc.fillRect(brickX, brickY, brickWidth, brickHeight);
+                        gc.fillRect(brickX, brickY, bricks[i][j].getWidth(), bricks[i][j].getHeight());
                     }
                 }
             }
+
+            // Détection de collision avec les briques
             for (int i = 0; i < brickRows; i++) {
                 for (int j = 0; j < brickCols; j++) {
+
                     if (bricks[i][j].isNotBreak) {
-                        double brickX = j * (brickWidth + 5);
-                        double brickY = i * (brickHeight + 5);
+                        double brickX = j * (bricks[i][j].getWidth() + 5);
+                        double brickY = i * (bricks[i][j].getHeight() + 5);
             
                         if (ballXPos + ballSize >= brickX &&
-                            ballXPos <= brickX + brickWidth &&
+                            ballXPos <= brickX + bricks[i][j].getWidth() &&
                             ballYPos + ballSize >= brickY &&
-                            ballYPos <= brickY + brickHeight) {
+                            ballYPos <= brickY + bricks[i][j].getHeight()) {
             
                             ballYSpeed = -ballYSpeed; 
                             if(bricks[i][j].couleur() != Color.GRAY){
@@ -125,51 +134,60 @@ public class BreakOut extends Application {
                     }
                 }
             }
-            
+
+            // Collision avec les murs
             if (ballXPos <= 0 || ballXPos >= width - ballSize) {
                 ballXSpeed = -ballXSpeed; // Rebond horizontal
             }
-            
+
             if (ballYPos <= 0) {
-                ballYSpeed = -ballYSpeed; // Rebond vertical en haut de l'écran
+                ballYSpeed = -ballYSpeed; // Rebond vertical
             }
-            
-            if (ballYPos > height) {
-                gameStarted = false; // Fin de partie si la balle dépasse l'écran en bas
-            }
-            // collision raquette
+
+
+            // Collision avec la raquette
             if (ballYPos + ballSize >= racketYPos - racketHeight / 2 &&
-                ballXPos + ballSize >= racketXPos - racketWidth / 2 &&
-                ballXPos <= racketXPos + racketWidth / 2) {
-    
+                    ballXPos + ballSize >= racketXPos - racketWidth / 2 &&
+                    ballXPos <= racketXPos + racketWidth / 2) {
+
                 ballYSpeed = -ballYSpeed; // Rebond de la balle
             }
-            if (ballYPos > racketYPos)
-                {
-                    gameStarted=false;
-                    for (int i = 0; i < brickRows; i++) {
-                        for (int j = 0; j < brickCols; j++) {
-                            bricks[i][j].isNotBreak = true; // Toutes les briques sont présentes au début
-                        }
+            if (ballYPos > racketYPos){
+                Score.saveScoreToFile(score); // Enregistrer le score dans un fichier
+                bestScore = Score.getBestScore(); // Mettre à jour le meilleur score
+                gameStarted = false; // Fin de la partie
+                for (int i = 0; i < brickRows; i++) {
+                    for (int j = 0; j < brickCols; j++) {
+                        bricks[i][j].isNotBreak = true; // Toutes les briques sont présentes au début
                     }
-                    score = 0;
                 }
-                gc.fillRect(racketXPos - racketWidth/2, racketYPos - racketHeight/2, racketWidth, racketHeight);
 
-		} else {
-			gc.setFont(Font.font("Courier New",  FontWeight.LIGHT, 25));
-			gc.setStroke(Color.YELLOW);
-			gc.setTextAlign(TextAlignment.CENTER);
+                score = 0;
+                
+            }
+
+            gc.fillRect(racketXPos - racketWidth / 2, racketYPos - racketHeight / 2, racketWidth, racketHeight);
+
+        } else {
+            gc.setStroke(Color.YELLOW);
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.setFont(Font.font("Courier New",  FontWeight.LIGHT, 25));
+			
+			
 			gc.strokeText("Jouer", width / 2, height / 2 + 3);
             gc.strokeRect(rectX, rectY, rectWidth, rectHeight);
-			ballXPos = width / 2;
-			ballYPos = height / 2;
-		}
-		
-	}
+
+            // Afficher le meilleur score
+            gc.strokeText("Best Score: " + bestScore, width / 2, height / 2 + 30);
+
+            ballXPos = width / 2;
+            ballYPos = height / 2;
+        }
+        
+    }
+
 
     public static void main(String[] args) {
         launch(args);
     }
-
 }
