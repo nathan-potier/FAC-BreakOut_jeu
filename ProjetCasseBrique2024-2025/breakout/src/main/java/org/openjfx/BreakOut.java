@@ -24,15 +24,15 @@ public class BreakOut extends Application {
     private double racketYPos = height - 40;
     private double ballXPos = width / 2; // ball at the center at game start
     private double ballYPos = height / 2;
-    private int ballYSpeed = 1;
-    private int ballXSpeed = 1;
-    private int ballSize = 10;
+
+    private int ballYSpeed = 4;
+	private int ballXSpeed = 4;
+    private int ballSize = 10;    
+
     private boolean gameStarted = false;
     private final int brickRows = 5;
     private final int brickCols = 12;
-    private final double brickWidth = 80;
-    private final double brickHeight = 20;
-    private boolean[][] bricks = new boolean[brickRows][brickCols];
+    private Brick[][] bricks = new Brick[brickRows][brickCols];
     private int score = 0;
     private int bestScore = 0; // Meilleur score
 
@@ -53,7 +53,14 @@ public class BreakOut extends Application {
         // Initialise les briques
         for (int i = 0; i < brickRows; i++) {
             for (int j = 0; j < brickCols; j++) {
-                bricks[i][j] = true; // Toutes les briques sont présentes au début
+                if(i%2 != 0){
+                    bricks[i][j] = new BrickBleue(true, 80, 20);
+                }
+                else{
+                    bricks[i][j] = new BrickRouge(true, 80, 20);
+                }
+
+        
             }
         }
 
@@ -81,11 +88,11 @@ public class BreakOut extends Application {
             // Dessiner les briques
             for (int i = 0; i < brickRows; i++) {
                 for (int j = 0; j < brickCols; j++) {
-                    if (bricks[i][j]) {
-                        double brickX = j * (brickWidth + 5);
-                        double brickY = i * (brickHeight + 5);
-                        gc.setFill(Color.BLUE);
-                        gc.fillRect(brickX, brickY, brickWidth, brickHeight);
+                    if (bricks[i][j].isNotBreak) {
+                        double brickX = j * (bricks[i][j].getWidth() + 5);
+                        double brickY = i * (bricks[i][j].getHeight() + 5);
+                        gc.setFill(bricks[i][j].couleur());
+                        gc.fillRect(brickX, brickY, bricks[i][j].getWidth(), bricks[i][j].getHeight());
                     }
                 }
             }
@@ -93,18 +100,22 @@ public class BreakOut extends Application {
             // Détection de collision avec les briques
             for (int i = 0; i < brickRows; i++) {
                 for (int j = 0; j < brickCols; j++) {
-                    if (bricks[i][j]) {
-                        double brickX = j * (brickWidth + 5);
-                        double brickY = i * (brickHeight + 5);
 
+                    if (bricks[i][j].isNotBreak) {
+                        double brickX = j * (bricks[i][j].getWidth() + 5);
+                        double brickY = i * (bricks[i][j].getHeight() + 5);
+            
                         if (ballXPos + ballSize >= brickX &&
-                                ballXPos <= brickX + brickWidth &&
-                                ballYPos + ballSize >= brickY &&
-                                ballYPos <= brickY + brickHeight) {
-
-                            ballYSpeed = -ballYSpeed;
-                            bricks[i][j] = false;
-                            score += 10;
+                            ballXPos <= brickX + bricks[i][j].getWidth() &&
+                            ballYPos + ballSize >= brickY &&
+                            ballYPos <= brickY + bricks[i][j].getHeight()) {
+            
+                            ballYSpeed = -ballYSpeed; 
+                            if(bricks[i][j].couleur() != Color.GRAY){
+                                bricks[i][j].isNotBreak = false;
+                                score += 10; 
+                            }
+                             
                         }
                     }
                 }
@@ -133,6 +144,18 @@ public class BreakOut extends Application {
 
                 ballYSpeed = -ballYSpeed; // Rebond de la balle
             }
+            if (ballYPos > racketYPos){
+                gameStarted=false;
+                for (int i = 0; i < brickRows; i++) {
+                    for (int j = 0; j < brickCols; j++) {
+                        bricks[i][j].isNotBreak = true; // Toutes les briques sont présentes au début
+                    }
+                }
+                score = 0;
+            }
+
+
+
             gc.fillRect(racketXPos - racketWidth / 2, racketYPos - racketHeight / 2, racketWidth, racketHeight);
 
         } else {
@@ -149,6 +172,9 @@ public class BreakOut extends Application {
 
         
     }
+
+
+
 
 
 
