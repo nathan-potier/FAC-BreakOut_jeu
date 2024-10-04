@@ -133,6 +133,7 @@ public class BreakOut extends Application {
 
                 ballYSpeed = -ballYSpeed; // Rebond de la balle
             }
+            gc.fillRect(racketXPos - racketWidth / 2, racketYPos - racketHeight / 2, racketWidth, racketHeight);
 
         } else {
             gc.setStroke(Color.YELLOW);
@@ -146,13 +147,13 @@ public class BreakOut extends Application {
             ballYPos = height / 2;
         }
 
-        gc.fillRect(racketXPos - racketWidth / 2, racketYPos - racketHeight / 2, racketWidth, racketHeight);
+        
     }
 
 
 
 
-    
+
     public static void main(String[] args) {
         launch(args);
     }
