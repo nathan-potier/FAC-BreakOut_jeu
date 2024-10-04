@@ -9,6 +9,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -34,7 +35,12 @@ public class BreakOut extends Application {
     private final int brickCols = 12;
     private Brick[][] bricks = new Brick[brickRows][brickCols];
     private int score = 0;
+    private double rectWidth = 100;
+    private double rectHeight = 50;
+    private double rectX = (width - rectWidth) / 2;
+    private double rectY = (height - rectHeight) / 2;
     private int bestScore = 0; // Meilleur score
+
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -42,9 +48,17 @@ public class BreakOut extends Application {
         Canvas canvas = new Canvas(width, height);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run(gc)));
-        tl.setCycleCount(Timeline.INDEFINITE);
-        canvas.setOnMouseMoved(e -> racketXPos = e.getX());
-        canvas.setOnMouseClicked(e -> gameStarted = true);
+		tl.setCycleCount(Timeline.INDEFINITE);
+		canvas.setOnMouseMoved(e ->  racketXPos  = e.getX());
+		canvas.setOnMouseClicked(e -> {
+            double clickX = e.getX();
+            double clickY = e.getY();
+        
+            if (clickX >= rectX && clickX <= rectX + rectWidth && clickY >= rectY && clickY <= rectY + rectHeight) {
+                gameStarted = true;
+            }
+        });
+
         stage.setWidth(width);
         stage.setHeight(height);
         stage.setTitle("Breakout");
@@ -147,18 +161,21 @@ public class BreakOut extends Application {
                         bricks[i][j].isNotBreak = true; // Toutes les briques sont présentes au début
                     }
                 }
+
                 score = 0;
                 
             }
-
-
 
             gc.fillRect(racketXPos - racketWidth / 2, racketYPos - racketHeight / 2, racketWidth, racketHeight);
 
         } else {
             gc.setStroke(Color.YELLOW);
             gc.setTextAlign(TextAlignment.CENTER);
-            gc.strokeText("Click to Start", width / 2, height / 2);
+            gc.setFont(Font.font("Courier New",  FontWeight.LIGHT, 25));
+			
+			
+			gc.strokeText("Jouer", width / 2, height / 2 + 3);
+            gc.strokeRect(rectX, rectY, rectWidth, rectHeight);
 
             // Afficher le meilleur score
             gc.strokeText("Best Score: " + bestScore, width / 2, height / 2 + 30);
@@ -166,15 +183,8 @@ public class BreakOut extends Application {
             ballXPos = width / 2;
             ballYPos = height / 2;
         }
-
         
     }
-
-
-
-
-
-
 
 
     public static void main(String[] args) {
