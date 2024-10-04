@@ -4,15 +4,17 @@ import javafx.scene.paint.Color;
 
 public class BrickUnbreakable extends Brick{
 
-    public boolean isNotBreak;
 
-    public BrickUnbreakable(boolean isNotBreak){
-        super(isNotBreak);
+    public BrickUnbreakable(boolean isNotBreak, double brickWidth, double brickHeight){
+        super(isNotBreak, brickWidth, brickHeight);
+        
 
     }
 
     public Color couleur(){
         return Color.GRAY;
     }
+
+    
     
 }
