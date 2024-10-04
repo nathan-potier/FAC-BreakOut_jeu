@@ -174,11 +174,11 @@ public class BreakOut extends Application {
             gc.setFont(Font.font("Courier New",  FontWeight.LIGHT, 25));
 			
 			
-			gc.strokeText("Jouer", width / 2, height / 2 + 3);
+			gc.strokeText("Jouer", width / 2, height / 2 + 6);
             gc.strokeRect(rectX, rectY, rectWidth, rectHeight);
 
             // Afficher le meilleur score
-            gc.strokeText("Best Score: " + bestScore, width / 2, height / 2 + 30);
+            gc.strokeText("Best Score: " + bestScore, width / 2, height / 2 + 60);
 
             ballXPos = width / 2;
             ballYPos = height / 2;
