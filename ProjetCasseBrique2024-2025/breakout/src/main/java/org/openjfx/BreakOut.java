@@ -161,9 +161,7 @@ public class BreakOut extends Application {
 			gc.setStroke(Color.YELLOW);
 			gc.setTextAlign(TextAlignment.CENTER);
 			gc.strokeText("Jouer", width / 2, height / 2 + 3);
-
             gc.strokeRect(rectX, rectY, rectWidth, rectHeight);
-
 			ballXPos = width / 2;
 			ballYPos = height / 2;
 		}
