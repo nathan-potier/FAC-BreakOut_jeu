@@ -20,3 +20,6 @@ gradle-app.setting
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 breakout/bin/main/org/openjfx/BreakOut.class
+
+# local score
+score.txt
