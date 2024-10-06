@@ -204,9 +204,7 @@ public class BreakOut extends Application {
                         bricks[i][j].isNotBreak = true; // Toutes les briques sont présentes au début
                     }
                 }
-
-                //score = 0;
-                
+      
             }
 
             gc.fillRect(racketXPos - racketWidth / 2, racketYPos - racketHeight / 2, racketWidth, racketHeight);
