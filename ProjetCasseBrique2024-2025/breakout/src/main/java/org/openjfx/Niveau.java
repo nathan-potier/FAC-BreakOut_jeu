@@ -1,4 +1,4 @@
-package main.java.org.openjfx;
+package org.openjfx;
 import java.util.Random;
 
 
