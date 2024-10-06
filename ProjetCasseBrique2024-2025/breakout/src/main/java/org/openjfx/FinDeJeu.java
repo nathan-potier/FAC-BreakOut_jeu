@@ -24,7 +24,7 @@ public class FinDeJeu {
 
         //Message perdant
         gc.fillText("Game Over !", width/2, height/2-30);
-        //gc.fillText("Score: " + score, width/2, height/2);
+        gc.fillText("Score: " + score, width/2, height/2);
 
         //Mettre à jour + afficher le meilleur score
         if(score > this.bestScore){
@@ -35,7 +35,7 @@ public class FinDeJeu {
     }
 
     //Affiche le bouton "Retour"
-    public void afficherBoutonRejouer(GraphicsContext gc, double replayButtonX, double replayButtonY, double replayButtonWidth, double replayButtonHeight){
+    public void afficherBoutonRetour(GraphicsContext gc, double replayButtonX, double replayButtonY, double replayButtonWidth, double replayButtonHeight){
         gc.setStroke(Color.YELLOW);
         gc.strokeRect(replayButtonX, replayButtonY, replayButtonWidth, replayButtonHeight);
         gc.setStroke(Color.YELLOW);
@@ -43,8 +43,8 @@ public class FinDeJeu {
         gc.strokeText("Retour", replayButtonX+replayButtonWidth/2, replayButtonY+replayButtonHeight/2+10);
     }
 
-    //Méthode qui vérifie si le joueur cliquer sur le bouton Rejouer
-    public boolean verifierCliqueRejouer(double mouseX, double mouseY, double replayButtonX, double replayButtonY, double replayButtonWidth, double replayButtonHeight){
+    //Méthode qui vérifie si le joueur cliquer sur le bouton "Retour"
+    public boolean verifierCliqueRetour(double mouseX, double mouseY, double replayButtonX, double replayButtonY, double replayButtonWidth, double replayButtonHeight){
         boolean clicked = (mouseX >= replayButtonX && mouseX <= replayButtonX + replayButtonWidth && mouseY >= replayButtonY && mouseY <= replayButtonY + replayButtonHeight);
         System.out.println("Clicked " + clicked); //juste pour vérifier si le joueur a bien cliqué sur le bouton
         return clicked;
