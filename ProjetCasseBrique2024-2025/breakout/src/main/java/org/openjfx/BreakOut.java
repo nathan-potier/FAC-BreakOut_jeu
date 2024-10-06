@@ -134,7 +134,7 @@ public class BreakOut extends Application {
                             ballYSpeed = -ballYSpeed; 
                             if(bricks[i][j].couleur() != Color.GRAY){
                                 bricks[i][j].isNotBreak = false;
-                                score += 10; 
+                                score += bricks[i][j].getScore(); 
                             }
                              
                         }

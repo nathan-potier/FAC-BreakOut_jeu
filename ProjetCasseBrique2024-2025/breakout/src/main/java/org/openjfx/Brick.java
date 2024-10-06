@@ -8,11 +8,13 @@ public class Brick {
     public boolean isNotBreak;
     private final double brickWidth;
     private final double brickHeight;
+    private final int score; 
 
     public Brick(boolean isNotBreak, double brickWidth, double brickHeight){
         this.isNotBreak = isNotBreak;
         this.brickWidth = brickWidth;
         this.brickHeight = brickHeight;
+        this.score = 0;
 
         
 
@@ -29,5 +31,9 @@ public class Brick {
 
     public double getHeight(){
         return this.brickHeight;
+    }
+
+    public int getScore(){
+        return this.score;
     }
 }
