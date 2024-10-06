@@ -31,9 +31,11 @@ public class BreakOut extends Application {
     private int ballSize = 10;    
 
     private boolean gameStarted = false;
-    private final int brickRows = 5;
+    private int diff = 1;
+    private Niveau niv = new Niveau(5, 12, 1);
+    private final int brickRows = niv.getBrickRows();
     private final int brickCols = 12;
-    private Brick[][] bricks = new Brick[brickRows][brickCols];
+    private Brick[][] bricks;
     private int score = 0;
     private double rectWidth = 100;
     private double rectHeight = 50;
@@ -65,6 +67,8 @@ public class BreakOut extends Application {
         stage.setScene(new Scene(new StackPane(canvas)));
 
         // Initialise les briques
+        bricks = niv.makeNiveau();
+        /* 
         for (int i = 0; i < brickRows; i++) {
             for (int j = 0; j < brickCols; j++) {
                 if(i%2 != 0){
@@ -77,6 +81,9 @@ public class BreakOut extends Application {
         
             }
         }
+        */
+    
+            
 
         // Charger le meilleur score au début
         bestScore = Score.getBestScore();

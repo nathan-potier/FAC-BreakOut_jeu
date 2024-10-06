@@ -4,35 +4,35 @@ import java.util.Random;
 
 public class Niveau {
 
-    private int nbRows;
-    private int nbCols;
-    private int brickRows = 5;
-    private int brickCols = 12;
+    private int brickRows;
+    private int brickCols;
     private int diff; /* diff >=1 */
 
-    Niveau(int row, int col, int bCols, int bRows, int diff){
-        nbCols = col;
-        nbRows = row;
+    Niveau(int bRows, int bCols, int diff){
+        brickRows = bRows + diff - 1;
         brickCols = bCols;
-        brickRows = bRows;
         this.diff = diff;
     }
 
 
+    public int getBrickRows(){
+        return brickRows;
+    }
     
-    private Brick[][] makeNiveau(){
+    public Brick[][] makeNiveau(){
         Random rd = new Random();
-        Brick[][] tab = new Brick[nbRows][nbCols];
-        /* nb de ligne de brique incrémenté de 1 par niveau de difficulté -1 */
-        for(int i = 0; i < brickRows + diff -1; i++){
+        Brick[][] tab = new Brick[brickRows][brickCols];
+        
+        // nb de ligne de brique incrémenté de 1 par niveau de difficulté -1 
+        for(int i = 0; i < brickRows; i++){
             for (int j = 0; j < brickCols; j++) {
                 int r = rd.nextInt(100);
 
-                /* probabilité d'avoir une brique incassable (augmente selon la diff */
+                // probabilité d'avoir une brique incassable (augmente selon la diff)
                 if (r < diff*2){
                     tab[i][j] = new BrickUnbreakable(true, 80, 20);
-                /* probabilité d'avoir une brique avec bonus  (diminue selon la diff*/
-                }else if (r < 25){
+                // probabilité d'avoir une brique avec bonus  (diminue selon la diff)
+                }else if (r < 20){
                     tab[i][j] = new BrickRouge(true, 80, 20);
                 }else{
                     tab[i][j] = new BrickBleue(true, 80, 20);
@@ -40,9 +40,6 @@ public class Niveau {
 
             }
         }
-        int r = rd.nextInt(100);
-
-
-        return null;
+        return tab;
     }
 }
