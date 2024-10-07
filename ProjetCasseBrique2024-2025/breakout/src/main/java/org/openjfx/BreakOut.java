@@ -43,6 +43,31 @@ public class BreakOut extends Application {
     private double rectY = (height - rectHeight) / 2;
     private int bestScore = 0; // Meilleur score
 
+    private FinDeJeu finDeJeu; //pour gérer la fin de jeu
+    private boolean gameOver = false;
+
+    //coordonnées d'affichage du bouton "Retour"
+    double replayButtonX = width/2-50;
+    double replayButtonY = height/2+60; //position du bouton "Retour" sous le meilleur score
+    double replayButtonWidth = 100;
+    double replayButtonHeight = 40;
+
+    //Réinitialise l'état du jeu pour recommencer une nouvelle partie
+    private void resetGame(){
+        this.ballXPos = width/2;
+        this.ballXPos = width/2;
+        this.score = 0;
+        this.ballXSpeed = 4;
+        this.ballYSpeed = 4;
+        this.gameOver = false;
+        this.gameStarted = false;
+        for(int i=0; i<brickRows; i++){
+            for(int j=0; j<brickCols; j++){
+                bricks[i][j].isNotBreak = true;
+            }
+        }
+        finDeJeu = new FinDeJeu(width, height, this.bestScore);
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -55,8 +80,12 @@ public class BreakOut extends Application {
 		canvas.setOnMouseClicked(e -> {
             double clickX = e.getX();
             double clickY = e.getY();
-        
-            if (clickX >= rectX && clickX <= rectX + rectWidth && clickY >= rectY && clickY <= rectY + rectHeight) {
+            
+            if(gameOver){
+                if(finDeJeu.verifierCliqueRetour(clickX, clickY, replayButtonX, replayButtonY, replayButtonWidth, replayButtonHeight)){
+                    resetGame(); //Réinitialise le jeu -> retour au menu
+                }
+            }else if (clickX >= rectX && clickX <= rectX + rectWidth && clickY >= rectY && clickY <= rectY + rectHeight) {
                 gameStarted = true;
             }
         });
@@ -88,6 +117,8 @@ public class BreakOut extends Application {
         // Charger le meilleur score au début
         bestScore = Score.getBestScore();
 
+        finDeJeu = new FinDeJeu(width, height, this.bestScore); //Initialise finDeJeu après avoir récupéré le meilleur score
+
         stage.show();
         tl.play();
     }
@@ -100,6 +131,10 @@ public class BreakOut extends Application {
         gc.setFont(Font.font(25));
         gc.setFill(Color.WHITE);
 
+        if(gameOver){
+            finDeJeu.afficherFinDeJeu(gc, score); //Affiche la fin du jeu
+            finDeJeu.afficherBoutonRetour(gc, replayButtonX, replayButtonY, replayButtonWidth, replayButtonHeight); //Affiche le bouton "Retour"
+        }else 
         if (gameStarted) {
             gc.fillText("Score: " + score, width / 2, height / 2);
             ballXPos += ballXSpeed;
@@ -163,14 +198,13 @@ public class BreakOut extends Application {
                 Score.saveScoreToFile(score); // Enregistrer le score dans un fichier
                 bestScore = Score.getBestScore(); // Mettre à jour le meilleur score
                 gameStarted = false; // Fin de la partie
+                gameOver = true; 
                 for (int i = 0; i < brickRows; i++) {
                     for (int j = 0; j < brickCols; j++) {
                         bricks[i][j].isNotBreak = true; // Toutes les briques sont présentes au début
                     }
                 }
-
-                score = 0;
-                
+      
             }
 
             gc.fillRect(racketXPos - racketWidth / 2, racketYPos - racketHeight / 2, racketWidth, racketHeight);
