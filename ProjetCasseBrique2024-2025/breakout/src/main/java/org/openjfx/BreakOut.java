@@ -104,7 +104,8 @@ public class BreakOut extends Application {
         });
 
         initBackgroundMusic();//Initialiser la music 
-        initPaddleBoundSound(); // 初始化挡板反弹声音
+        initPaddleBoundSound(); //Initialiser le son de rebond de balle
+        initBrickBreakSound(); // Initialiser le son des briques cassées
 
         stage.setWidth(width);
         stage.setHeight(height);
@@ -154,6 +155,13 @@ public class BreakOut extends Application {
         String paddleBoundFile = "src/main/resources/sounds/bound.wav"; // 
         Media paddleBoundSound = new Media(Paths.get(paddleBoundFile).toUri().toString());
         paddleBoundPlayer = new MediaPlayer(paddleBoundSound);
+    }
+    
+    //Methode pour initialiser le son des briques cassées
+    private void initBrickBreakSound() {
+        String brickBreakFile = "src/main/resources/sounds/hit.wav"; 
+        Media brickBreakSound = new Media(Paths.get(brickBreakFile).toUri().toString());
+        brickBreakPlayer = new MediaPlayer(brickBreakSound);
     }
     
     private void run(GraphicsContext gc) {
@@ -207,8 +215,9 @@ public class BreakOut extends Application {
                             if(bricks[i][j].couleur() != Color.GRAY){
                                 bricks[i][j].isNotBreak = false;
                                 score += bricks[i][j].getScore(); 
+                                brickBreakPlayer.stop(); // le son des briques cassées
+                                brickBreakPlayer.play(); // 
                             }
-                             
                         }
                     }
                 }
@@ -231,9 +240,9 @@ public class BreakOut extends Application {
 
                 ballYSpeed = -ballYSpeed; // Rebond de la balle
                  
-                // 播放挡板反弹声音
-                paddleBoundPlayer.stop(); // 确保音效停止播放
-                paddleBoundPlayer.play(); // 播放挡板反弹声音
+                // Jouer le son de rebond de balle
+                paddleBoundPlayer.stop(); 
+                paddleBoundPlayer.play(); 
             }
             if (ballYPos > racketYPos){
                 Score.saveScoreToFile(score); // Enregistrer le score dans un fichier
