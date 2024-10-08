@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 
 public class BreakOut extends Application {
 
+    private static final String GAME_TITLE = "BreakOut";
     private static final int width = 1024;
     private static final int height = 768;
     private int racketWidth = 50;
@@ -268,8 +269,36 @@ public class BreakOut extends Application {
 			gc.strokeText("Jouer", width / 2, height / 2 + 6);
             gc.strokeRect(rectX, rectY, rectWidth, rectHeight);
 
+            gc.setFill(Color.YELLOW);
+            gc.setFont(Font.font("Courier New", FontWeight.EXTRA_BOLD, 105));
+            gc.fillText(GAME_TITLE, width / 2,110);
+
             // Afficher le meilleur score
+            gc.setFont(Font.font("Arial", FontWeight.NORMAL, 25));
             gc.strokeText("Best Score: " + bestScore, width / 2, height / 2 + 60);
+
+            // Afficher les 5 derniers scores à droite
+            int[] lastFiveScores = Score.getLastFiveScores();
+
+            // Déterminer la largeur et la hauteur du rectangle
+            double scoresWidth = 200; // Largeur du rectangle
+            double scoresHeight = 180; // Hauteur du rectangle
+            double scoresX = width - scoresWidth - 20; // Position X (20 pixels à partir du bord droit)
+            double scoresY = (height - scoresHeight) / 2; // Centré verticalement
+
+            // Dessiner le contour jaune du rectangle
+            gc.setStroke(Color.YELLOW); // Couleur des bords
+            gc.strokeRect(scoresX, scoresY, scoresWidth, scoresHeight); // Dessiner le contour
+
+            // Afficher les scores à l'intérieur du rectangle
+            gc.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
+            gc.setFill(Color.YELLOW); // Couleur du texte
+            gc.setTextAlign(TextAlignment.LEFT); // Alignement à gauche
+
+            gc.fillText("Last scores :", scoresX + 10, scoresY + 20);
+            for (int i = 0; i < lastFiveScores.length; i++) {
+                gc.fillText("" + lastFiveScores[i], scoresX + 10, scoresY + 50 + (i * 30));
+            }
 
             ballXPos = width / 2;
             ballYPos = height / 2;

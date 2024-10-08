@@ -1,5 +1,7 @@
 package org.openjfx;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Score {
@@ -30,5 +32,28 @@ public class Score {
             }
             return bestScore;
         }
+
+        // Méthode pour obtenir les 5 derniers scores
+        public static int[] getLastFiveScores() {
+            String fileName = "scores.txt";
+            List<Integer> scores = new ArrayList<>();
+            try (Scanner scanner = new Scanner(new File(fileName))) {
+                while (scanner.hasNextInt()) {
+                    scores.add(scanner.nextInt());
+                }
+            } catch (FileNotFoundException e) {
+                System.out.println("Aucun fichier de scores trouvé.");
+            }
+
+            // Obtenir les 5 derniers scores
+            int[] lastFiveScores = new int[5];
+            int startIndex = Math.max(0, scores.size() - 5);
+            for (int i = 0; i < 5; i++) {
+                lastFiveScores[i] = (startIndex + i < scores.size()) ? scores.get(startIndex + i) : 0; // Remplir avec 0 si moins de 5 scores
+            }
+
+            return lastFiveScores;
+        }
+
         
 }
