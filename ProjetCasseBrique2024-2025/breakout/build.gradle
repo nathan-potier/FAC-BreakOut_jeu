@@ -1,6 +1,6 @@
 plugins {
   id 'application'
-  id 'org.openjfx.javafxplugin' version '0.1.0'
+  id 'org.openjfx.javafxplugin' version '0.0.13'
 }
 
 repositories {
@@ -9,9 +9,11 @@ repositories {
 
 javafx {
     version = "21"
-    modules = [ 'javafx.controls', 'javafx.fxml' ]
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.media']
 }
 
 application {
     mainClass = 'org.openjfx.BreakOut'
 }
+
+
