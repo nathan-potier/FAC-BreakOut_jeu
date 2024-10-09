@@ -1,6 +1,6 @@
 package org.openjfx;
 
-import java.nio.file.Paths;
+
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -9,12 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
+
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -24,90 +20,90 @@ public class BreakOut extends Application {
     private static final String GAME_TITLE = "BreakOut";
     private static final int width = 1024;
     private static final int height = 768;
-    private int racketWidth = 50;
-    private int racketHeight = 10;
-    private double racketXPos = width / 2.;
-    private double racketYPos = height - 40;
-    private double ballXPos = width / 2; // ball at the center at game start
-    private double ballYPos = height / 2;
 
-    private int ballYSpeed = 3;
-	private int ballXSpeed = 3;
-    private int ballSize = 10;    
+
+    
+ 
 
     private boolean gameStarted = false;
     private int diff = 1;
     private Niveau niv = new Niveau(5, 12, diff);
+
     private final int brickRows = niv.getBrickRows();
     private final int brickCols = 12;
     private Brick[][] bricks;
+
     private int score = 0;
+    private int bestScore = 0; // Meilleur score
+    
     private double rectWidth = 100;
     private double rectHeight = 50;
     private double rectX = (width - rectWidth) / 2;
     private double rectY = (height - rectHeight) / 2;
 
-    private MediaPlayer mediaPlayer; // La music du jeu
-    private MediaPlayer paddleBoundPlayer; // Le son de rebond de balle
-    private MediaPlayer brickBreakPlayer; // Le son des brick cassées
+ 
 
-    private int bestScore = 0; // Meilleur score
+    
 
-    private FinDeJeu finDeJeu; //pour gérer la fin de jeu
+
     private boolean gameOver = false;
 
-    //coordonnées d'affichage du bouton "Retour"
-    double replayButtonX = width/2-50;
-    double replayButtonY = height/2+60; //position du bouton "Retour" sous le meilleur score
-    double replayButtonWidth = 100;
-    double replayButtonHeight = 40;
+
+
+
+    public static int getWidth(){ return width; }
+    public static int getHeight(){ return height; }
+    public static String getTitre(){ return GAME_TITLE; }
 
     //Réinitialise l'état du jeu pour recommencer une nouvelle partie
     private void resetGame(){
-        this.ballXPos = width/2;
-        this.ballXPos = width/2;
+
         this.score = 0;
-        this.ballXSpeed = 3;
-        this.ballYSpeed = 3;
+
+        Balle.reset();
+  
         this.gameOver = false;
         this.gameStarted = false;
-        mediaPlayer.stop(); // La musique s'arrête
+        Son.StopMusique();  // La musique s'arrête
         
         for(int i=0; i<brickRows; i++){
             for(int j=0; j<brickCols; j++){
                 bricks[i][j].isNotBreak = true;
             }
         }
-        //finDeJeu = new FinDeJeu(width, height, this.bestScore);
-        mediaPlayer.play(); // Rejouer la musique
+        
+        Son.JouerMusique(); // Rejouer la musique
     }
         
 
     @Override
     public void start(Stage stage) throws Exception {
+
         Canvas canvas = new Canvas(width, height);
         GraphicsContext gc = canvas.getGraphicsContext2D();
+
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run(gc)));
 		tl.setCycleCount(Timeline.INDEFINITE);
-		canvas.setOnMouseMoved(e ->  racketXPos  = e.getX());
+		canvas.setOnMouseMoved(e ->  Racket.setXpos( e.getX() ) );
 		canvas.setOnMouseClicked(e -> {
             double clickX = e.getX();
             double clickY = e.getY();
             
             if(gameOver){
-                if(finDeJeu.verifierCliqueRetour(clickX, clickY, replayButtonX, replayButtonY, replayButtonWidth, replayButtonHeight)){
+                if( verifierCliqueRetour(clickX, clickY, Affichage.getBtnX(), Affichage.getBtnY(), Affichage.getBtnWidth(), Affichage.getBtnHeight())){
                     resetGame(); //Réinitialise le jeu -> retour au menu
-                    mediaPlayer.play(); // Rejour de la music
+                    Son.JouerMusique(); // Rejour de la music
                 }
             }else if (clickX >= rectX && clickX <= rectX + rectWidth && clickY >= rectY && clickY <= rectY + rectHeight) {
                 gameStarted = true;
-                mediaPlayer.play(); // Rejouer la musique
+                Son.JouerMusique(); // Rejouer la musique
             }
         });
 
-        initBackgroundMusic();//Initialiser la music 
-        initPaddleBoundSound(); //Initialiser le son de rebond de balle
-        initBrickBreakSound(); // Initialiser le son des briques cassées
+        Son.initBackgroundMusic();//Initialiser la music 
+        Son.initPaddleBoundSound(); //Initialiser le son de rebond de balle
+        Son.initBrickBreakSound(); // Initialiser le son des briques cassées
+
 
         stage.setWidth(width);
         stage.setHeight(height);
@@ -122,57 +118,35 @@ public class BreakOut extends Application {
         // Charger le meilleur score au début
         bestScore = Score.getBestScore();
 
-        finDeJeu = new FinDeJeu(width, height); //Initialise finDeJeu après avoir récupéré le meilleur score
+       
 
         stage.show();
         tl.play();
     }
 
-    //Methode pour initialiser la music de fond
-    private void initBackgroundMusic() {
-        String musicFile = "src/main/resources/sounds/music.mp3"; // L'endroit du fichier audio
-        Media sound = new Media(Paths.get(musicFile).toUri().toString());
-        mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // lecture en boucle
-        mediaPlayer.setVolume(0.5); // Le volume（entre 0.0-1.0）
-        //mediaPlayer.play();  
-    }
 
-   //Methode pour initialiser le son de la balle qui rebondit
-    private void initPaddleBoundSound() {
-        String paddleBoundFile = "src/main/resources/sounds/bound.wav"; // 
-        Media paddleBoundSound = new Media(Paths.get(paddleBoundFile).toUri().toString());
-        paddleBoundPlayer = new MediaPlayer(paddleBoundSound);
-    }
-    
-    //Methode pour initialiser le son des briques cassées
-    private void initBrickBreakSound() {
-        String brickBreakFile = "src/main/resources/sounds/hit.wav"; 
-        Media brickBreakSound = new Media(Paths.get(brickBreakFile).toUri().toString());
-        brickBreakPlayer = new MediaPlayer(brickBreakSound);
-    }
     
     private void run(GraphicsContext gc) {
-        // Fond noir
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, width, height);
-        gc.setFill(Color.WHITE);
-        gc.setFont(Font.font(25));
-        gc.setFill(Color.WHITE);
+
+
+        Affichage.setGC(gc);
 
         if(gameOver){
-            mediaPlayer.pause(); // stop music
-            finDeJeu.afficherFinDeJeu(gc, score); //Affiche la fin du jeu
-            finDeJeu.afficherBoutonRetour(gc, replayButtonX, replayButtonY, replayButtonWidth, replayButtonHeight); //Affiche le bouton "Retour"
+            Son.PauseMusique(); // stop music
+            Affichage.afficherFinDeJeu(gc, score); //Affiche la fin du jeu
+
+            Affichage.afficherBoutonRetour(gc); //Affiche le bouton "Retour"
         }else 
         if (gameStarted) {
-            if (!mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING)) { // Rejouer la music pendant que le jeu en cours
-                mediaPlayer.play();
+            if (!Son.MusiqueEnCours()) { // Rejouer la music pendant que le jeu en cours
+                Son.JouerMusique();
             }
             gc.fillText("Score: " + score, width / 2, height / 2);
-            ballXPos += ballXSpeed;
-            ballYPos += ballYSpeed;
-            gc.fillOval(ballXPos, ballYPos, ballSize, ballSize);
+
+            Balle.MAJPosHorizontal();
+            Balle.MAJPosVertical();
+            
+            gc.fillOval(Balle.getXPos(), Balle.getYPos(), Balle.getSize(), Balle.getSize());
 
             // Dessiner les briques
             for (int i = 0; i < brickRows; i++) {
@@ -194,17 +168,20 @@ public class BreakOut extends Application {
                         double brickX = j * (bricks[i][j].getWidth() + 5);
                         double brickY = i * (bricks[i][j].getHeight() + 5);
             
-                        if (ballXPos + ballSize >= brickX &&
-                            ballXPos <= brickX + bricks[i][j].getWidth() &&
-                            ballYPos + ballSize >= brickY &&
-                            ballYPos <= brickY + bricks[i][j].getHeight()) {
+                        if (Balle.getXPos() + Balle.getSize() >= brickX &&
+                            Balle.getXPos() <= brickX + bricks[i][j].getWidth() &&
+                            Balle.getYPos() + Balle.getSize() >= brickY &&
+                            Balle.getYPos() <= brickY + bricks[i][j].getHeight()) {
             
-                            ballYSpeed = -ballYSpeed; 
+                            Balle.Rebond();
+
                             if(bricks[i][j].couleur() != Color.GRAY && bricks[i][j].getNbrVie() == 0){
                                 bricks[i][j].isNotBreak = false;
                                 score += bricks[i][j].getScore(); 
-                                brickBreakPlayer.stop(); // le son des briques cassées
-                                brickBreakPlayer.play(); // 
+
+                                Son.StopSonBrique();; // le son des briques cassées
+                                Son.JouerSonBrique();; // 
+
                             }else{
                                 bricks[i][j].setNbrVie(bricks[i][j].getNbrVie() - 1);
                             }
@@ -214,27 +191,27 @@ public class BreakOut extends Application {
             }
 
             // Collision avec les murs
-            if (ballXPos <= 0 || ballXPos >= width - ballSize) {
-                ballXSpeed = -ballXSpeed; // Rebond horizontal
+            if (Balle.getXPos() <= 0 || Balle.getXPos() >= width - Balle.getSize()) {
+                Balle.rebondHorizontal();
             }
 
-            if (ballYPos <= 0) {
-                ballYSpeed = -ballYSpeed; // Rebond vertical
+            if (Balle.getYPos() <= 0) {
+                Balle.rebondVertical();
             }
 
 
             // Collision avec la raquette
-            if (ballYPos + ballSize >= racketYPos - racketHeight / 2 &&
-                    ballXPos + ballSize >= racketXPos - racketWidth / 2 &&
-                    ballXPos <= racketXPos + racketWidth / 2) {
+            if (Balle.getYPos() + Balle.getSize() >= Racket.getYPos() - Racket.getHeight() / 2 &&
+                Balle.getXPos() + Balle.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
+                Balle.getXPos() <= Racket.getXPos() + Racket.getWidth() / 2) {
 
-                ballYSpeed = -ballYSpeed; // Rebond de la balle
+                Balle.Rebond();
                  
                 // Jouer le son de rebond de balle
-                paddleBoundPlayer.stop(); 
-                paddleBoundPlayer.play(); 
+                Son.StopSonRebond();
+                Son.JouerSonRebond();
             }
-            if (ballYPos > racketYPos){
+            if (Balle.getYPos() > Racket.getYPos()){
                 Score.saveScoreToFile(score);
                 bestScore = Score.getBestScore(); // Mettre à jour le meilleur score
                 gameStarted = false; // Fin de la partie
@@ -247,55 +224,23 @@ public class BreakOut extends Application {
       
             }
             gc.setFill(Color.YELLOW);
-            gc.fillRect(racketXPos - racketWidth / 2, racketYPos - racketHeight / 2, racketWidth, racketHeight);
+            gc.fillRect(Racket.getXPos() - Racket.getWidth() / 2,
+                         Racket.getYPos() - Racket.getHeight() / 2,
+                          Racket.getWidth(), Racket.getHeight());
 
         } else {
-            gc.setStroke(Color.YELLOW);
-            gc.setTextAlign(TextAlignment.CENTER);
-            gc.setFont(Font.font("Courier New",  FontWeight.LIGHT, 25));
-			
-			
-			gc.strokeText("Jouer", width / 2, height / 2 + 6);
-            gc.strokeRect(rectX, rectY, rectWidth, rectHeight);
 
-            gc.setFill(Color.YELLOW);
-            gc.setFont(Font.font("Courier New", FontWeight.EXTRA_BOLD, 105));
-            gc.fillText(GAME_TITLE, width / 2,110);
+           Affichage.MenuPrincipal(gc, rectX, rectY, rectWidth, rectHeight);
 
-            // Afficher le meilleur score
-            gc.setFont(Font.font("Arial", FontWeight.NORMAL, 25));
-            gc.strokeText("Best Score: " + bestScore, width / 2, height / 2 + 60);
-
-            // Afficher les 5 derniers scores à droite
-            int[] lastFiveScores = Score.getLastFiveScores();
-
-            // Déterminer la largeur et la hauteur du rectangle
-            double scoresWidth = 200; // Largeur du rectangle
-            double scoresHeight = 180; // Hauteur du rectangle
-            double scoresX = width - scoresWidth - 20; // Position X (20 pixels à partir du bord droit)
-            double scoresY = (height - scoresHeight) / 2; // Centré verticalement
-
-            // Dessiner le contour jaune du rectangle
-            gc.setStroke(Color.YELLOW); // Couleur des bords
-            gc.strokeRect(scoresX, scoresY, scoresWidth, scoresHeight); // Dessiner le contour
-
-            // Afficher les scores à l'intérieur du rectangle
-            gc.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
-            gc.setFill(Color.YELLOW); // Couleur du texte
-            gc.setTextAlign(TextAlignment.LEFT); // Alignement à gauche
-
-            
-            
-            // affiche les 5 dernier scores
-            gc.fillText("Last scores :", scoresX + 10, scoresY + 20);
-            for (int i = 0; i < lastFiveScores.length; i++) {
-                gc.fillText("" + lastFiveScores[i], scoresX + 10, scoresY + 50 + (i * 30));
-            }
-
-            ballXPos = width / 2;
-            ballYPos = height / 2;
+            Balle.reset();
         }
         
+    }
+
+    public static boolean verifierCliqueRetour(double mouseX, double mouseY, double replayButtonX, double replayButtonY, double replayButtonWidth, double replayButtonHeight){
+        boolean clicked = (mouseX >= replayButtonX && mouseX <= replayButtonX + replayButtonWidth && mouseY >= replayButtonY && mouseY <= replayButtonY + replayButtonHeight);
+        System.out.println("Clicked " + clicked); //juste pour vérifier si le joueur a bien cliqué sur le bouton
+        return clicked;
     }
 
     
