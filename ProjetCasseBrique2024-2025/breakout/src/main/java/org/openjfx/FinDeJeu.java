@@ -26,11 +26,7 @@ public class FinDeJeu {
         gc.fillText("Game Over !", width/2, height/2-30);
         gc.fillText("Score: " + score, width/2, height/2);
 
-        //Mettre à jour + afficher le meilleur score
-        if(score > this.bestScore){
-            Score.saveScoreToFile(score);
-            this.bestScore = score;
-        }
+
         gc.fillText("Best Score: " + bestScore, width/2, height/2+30);
     }
 

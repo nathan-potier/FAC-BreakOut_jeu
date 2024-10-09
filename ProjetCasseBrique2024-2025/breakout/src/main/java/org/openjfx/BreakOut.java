@@ -233,7 +233,7 @@ public class BreakOut extends Application {
                 paddleBoundPlayer.play(); 
             }
             if (ballYPos > racketYPos){
-                
+                Score.saveScoreToFile(score);
                 bestScore = Score.getBestScore(); // Mettre à jour le meilleur score
                 gameStarted = false; // Fin de la partie
                 gameOver = true; 
