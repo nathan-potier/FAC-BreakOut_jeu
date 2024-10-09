@@ -11,14 +11,16 @@ public class Score {
             String fileName = "scores.txt";
             ArrayList<Integer> scores = getScores();
 
-            Collections.sort(scores);
+            scores.add(score);
             
+            Collections.sort(scores);
+
             //garder les 5 derniers
             if (scores.size() > 5) {
                 scores = new ArrayList<>(scores.subList(scores.size() - 5, scores.size()));
             }
 
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
                 for (int e : scores){
                     writer.write(String.valueOf(e));
                     writer.newLine(); // retour a la ligne
