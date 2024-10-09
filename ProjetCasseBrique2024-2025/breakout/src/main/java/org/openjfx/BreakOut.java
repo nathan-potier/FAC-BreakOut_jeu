@@ -1,5 +1,7 @@
 package org.openjfx;
 
+import java.nio.file.Paths;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -7,15 +9,14 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import java.nio.file.Paths;
 
 
 public class BreakOut extends Application {
@@ -30,8 +31,8 @@ public class BreakOut extends Application {
     private double ballXPos = width / 2; // ball at the center at game start
     private double ballYPos = height / 2;
 
-    private int ballYSpeed = 4;
-	private int ballXSpeed = 4;
+    private int ballYSpeed = 3;
+	private int ballXSpeed = 3;
     private int ballSize = 10;    
 
     private boolean gameStarted = false;
@@ -243,7 +244,7 @@ public class BreakOut extends Application {
                 }
       
             }
-
+            gc.setFill(Color.YELLOW);
             gc.fillRect(racketXPos - racketWidth / 2, racketYPos - racketHeight / 2, racketWidth, racketHeight);
 
         } else {
