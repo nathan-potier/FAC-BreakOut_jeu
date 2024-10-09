@@ -10,7 +10,7 @@ public class Score {
             String fileName = "scores.txt";
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
                 writer.write(String.valueOf(score));
-                writer.newLine();
+                writer.newLine(); // retour a la ligne
             } catch (IOException e) {
                 System.out.println("Erreur lors de la sauvegarde du score : " + e.getMessage());
             }

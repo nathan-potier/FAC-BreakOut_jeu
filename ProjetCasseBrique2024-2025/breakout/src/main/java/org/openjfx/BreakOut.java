@@ -77,7 +77,7 @@ public class BreakOut extends Application {
                 bricks[i][j].isNotBreak = true;
             }
         }
-        finDeJeu = new FinDeJeu(width, height, this.bestScore);
+        //finDeJeu = new FinDeJeu(width, height, this.bestScore);
         mediaPlayer.play(); // Rejouer la musique
     }
         
@@ -115,20 +115,6 @@ public class BreakOut extends Application {
 
         // Initialise les briques
         bricks = niv.makeNiveau();
-        /* 
-        for (int i = 0; i < brickRows; i++) {
-            for (int j = 0; j < brickCols; j++) {
-                if(i%2 != 0){
-                    bricks[i][j] = new BrickBleue(true, 80, 20);
-                }
-                else{
-                    bricks[i][j] = new BrickRouge(true, 80, 20);
-                }
-
-        
-            }
-        }
-        */
     
             
 
@@ -246,7 +232,7 @@ public class BreakOut extends Application {
                 paddleBoundPlayer.play(); 
             }
             if (ballYPos > racketYPos){
-                Score.saveScoreToFile(score); // Enregistrer le score dans un fichier
+                
                 bestScore = Score.getBestScore(); // Mettre à jour le meilleur score
                 gameStarted = false; // Fin de la partie
                 gameOver = true; 
@@ -295,6 +281,9 @@ public class BreakOut extends Application {
             gc.setFill(Color.YELLOW); // Couleur du texte
             gc.setTextAlign(TextAlignment.LEFT); // Alignement à gauche
 
+            
+            
+            // affiche les 5 dernier scores
             gc.fillText("Last scores :", scoresX + 10, scoresY + 20);
             for (int i = 0; i < lastFiveScores.length; i++) {
                 gc.fillText("" + lastFiveScores[i], scoresX + 10, scoresY + 50 + (i * 30));
