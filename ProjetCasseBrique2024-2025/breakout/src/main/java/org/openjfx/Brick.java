@@ -4,7 +4,7 @@ import javafx.scene.paint.Color;
 
 public class Brick {
 
-    
+    private int nbrVie;
     public boolean isNotBreak;
     private final double brickWidth;
     private final double brickHeight;
@@ -15,6 +15,7 @@ public class Brick {
         this.brickWidth = brickWidth;
         this.brickHeight = brickHeight;
         this.score = 0;
+        this.nbrVie = 0;
 
         
 
@@ -35,5 +36,13 @@ public class Brick {
 
     public int getScore(){
         return this.score;
+    }
+
+    public int getNbrVie(){
+        return this.nbrVie;
+    }
+
+    public void setNbrVie(int nbrVie) {
+        this.nbrVie = nbrVie;
     }
 }

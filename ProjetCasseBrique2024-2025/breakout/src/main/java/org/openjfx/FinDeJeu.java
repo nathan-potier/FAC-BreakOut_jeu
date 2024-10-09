@@ -10,10 +10,9 @@ public class FinDeJeu {
     private int height;
     private int bestScore;
 
-    public FinDeJeu(int width, int height, int bestScore){
+    public FinDeJeu(int width, int height){
         this.width = width;
         this.height = height;
-        this.bestScore = bestScore;
     }
 
     //Méthode pour afficher la fin du jeu
@@ -25,8 +24,7 @@ public class FinDeJeu {
         //Message perdant
         gc.fillText("Game Over !", width/2, height/2-30);
         gc.fillText("Score: " + score, width/2, height/2);
-
-
+        bestScore = Score.getBestScore();
         gc.fillText("Best Score: " + bestScore, width/2, height/2+30);
     }
 
@@ -45,4 +43,6 @@ public class FinDeJeu {
         System.out.println("Clicked " + clicked); //juste pour vérifier si le joueur a bien cliqué sur le bouton
         return clicked;
     }
+
+    
 }

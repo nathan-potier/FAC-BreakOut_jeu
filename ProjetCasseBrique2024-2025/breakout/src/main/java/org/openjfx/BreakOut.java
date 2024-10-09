@@ -37,7 +37,7 @@ public class BreakOut extends Application {
 
     private boolean gameStarted = false;
     private int diff = 1;
-    private Niveau niv = new Niveau(5, 12, 1);
+    private Niveau niv = new Niveau(5, 12, diff);
     private final int brickRows = niv.getBrickRows();
     private final int brickCols = 12;
     private Brick[][] bricks;
@@ -67,8 +67,8 @@ public class BreakOut extends Application {
         this.ballXPos = width/2;
         this.ballXPos = width/2;
         this.score = 0;
-        this.ballXSpeed = 4;
-        this.ballYSpeed = 4;
+        this.ballXSpeed = 3;
+        this.ballYSpeed = 3;
         this.gameOver = false;
         this.gameStarted = false;
         mediaPlayer.stop(); // La musique s'arrête
@@ -122,7 +122,7 @@ public class BreakOut extends Application {
         // Charger le meilleur score au début
         bestScore = Score.getBestScore();
 
-        finDeJeu = new FinDeJeu(width, height, this.bestScore); //Initialise finDeJeu après avoir récupéré le meilleur score
+        finDeJeu = new FinDeJeu(width, height); //Initialise finDeJeu après avoir récupéré le meilleur score
 
         stage.show();
         tl.play();
@@ -200,11 +200,13 @@ public class BreakOut extends Application {
                             ballYPos <= brickY + bricks[i][j].getHeight()) {
             
                             ballYSpeed = -ballYSpeed; 
-                            if(bricks[i][j].couleur() != Color.GRAY){
+                            if(bricks[i][j].couleur() != Color.GRAY && bricks[i][j].getNbrVie() == 0){
                                 bricks[i][j].isNotBreak = false;
                                 score += bricks[i][j].getScore(); 
                                 brickBreakPlayer.stop(); // le son des briques cassées
                                 brickBreakPlayer.play(); // 
+                            }else{
+                                bricks[i][j].setNbrVie(bricks[i][j].getNbrVie() - 1);
                             }
                         }
                     }
