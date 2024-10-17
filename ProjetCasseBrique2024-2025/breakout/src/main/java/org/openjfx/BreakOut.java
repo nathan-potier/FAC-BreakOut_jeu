@@ -9,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
-
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -170,8 +169,8 @@ public class BreakOut extends Application {
             
                         if (Balle.getXPos() + Balle.getSize() >= brickX &&
                             Balle.getXPos() <= brickX + bricks[i][j].getWidth() &&
-                            Balle.getYPos() + Balle.getSize() >= brickY &&
-                            Balle.getYPos() <= brickY + bricks[i][j].getHeight()) {
+                            Balle.getYPos() + Balle.getSize() >= brickY +5 &&
+                            Balle.getYPos() <= brickY + bricks[i][j].getHeight() + 5) {
             
                             Balle.Rebond();
 
@@ -179,8 +178,8 @@ public class BreakOut extends Application {
                                 bricks[i][j].isNotBreak = false;
                                 score += bricks[i][j].getScore(); 
 
-                                Son.StopSonBrique();; // le son des briques cassées
-                                Son.JouerSonBrique();; // 
+                                Son.StopSonBrique(); // le son des briques cassées
+                                Son.JouerSonBrique(); // 
 
                             }else{
                                 bricks[i][j].setNbrVie(bricks[i][j].getNbrVie() - 1);
@@ -201,9 +200,9 @@ public class BreakOut extends Application {
 
 
             // Collision avec la raquette
-            if (Balle.getYPos() + Balle.getSize() >= Racket.getYPos() - Racket.getHeight() / 2 &&
+            if (Balle.getYPos() + Balle.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
                 Balle.getXPos() + Balle.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
-                Balle.getXPos() <= Racket.getXPos() + Racket.getWidth() / 2) {
+                Balle.getXPos() <= Racket.getXPos() + Racket.getWidth() / 2 && Balle.getYSpeed() > 0){
 
                 Balle.Rebond();
                  
