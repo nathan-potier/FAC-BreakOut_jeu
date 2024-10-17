@@ -23,6 +23,11 @@ public class BrickRouge extends Brick{
         return this.score;
     }
 
+
+    public void powerUp(){
+        
+    }
+
     
 
 
