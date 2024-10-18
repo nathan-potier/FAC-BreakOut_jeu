@@ -5,6 +5,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.image.Image;
+
 
 public class Affichage {
 
@@ -13,6 +15,8 @@ public class Affichage {
     private static double replayButtonY = BreakOut.getHeight() / 2+60; //position du bouton "Retour" sous le meilleur score
     private static double replayButtonWidth = 100;
     private static double replayButtonHeight = 40;
+    private static Image backgroundImage = backgroundImage = new Image("file:src/main/resources/Background/Retro_neon.jpg");
+
     
 
     
@@ -21,14 +25,25 @@ public class Affichage {
     public static double getBtnWidth() { return replayButtonWidth; }
     public static double getBtnHeight() { return replayButtonHeight; }
 
+
+    public static void setBackGound(String BackGround){
+        String src = "file:src/main/resources/Background/"+ backgroundImage;
+        backgroundImage = new Image(src);
+    }
+
     public static void setGC(GraphicsContext gc){
-        
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, BreakOut.getWidth(), BreakOut.getHeight());
-        gc.setFill(Color.WHITE);
+
+
+
+
+        gc.drawImage(backgroundImage, 0, 0, BreakOut.getWidth(), BreakOut.getHeight());
+
+
         gc.setFont(Font.font(25));
         gc.setFill(Color.WHITE);
     }
+
+
     //Méthode pour afficher la fin du jeu
     public static void afficherFinDeJeu(GraphicsContext gc, int score, Bouton boutonRetour) {
         gc.setFill(Color.YELLOW);

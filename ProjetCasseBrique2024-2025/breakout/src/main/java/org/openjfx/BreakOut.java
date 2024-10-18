@@ -83,6 +83,7 @@ public class BreakOut extends Application {
 
         Canvas canvas = new Canvas(width, height);
         GraphicsContext gc = canvas.getGraphicsContext2D();
+        
 
         // Initialiser les boutons
         boutonRetour = new Bouton(width / 2 - 50, height / 2 + 60, 100, 40, "Retour");
@@ -134,8 +135,9 @@ public class BreakOut extends Application {
     
     private void run(GraphicsContext gc) {
 
-
+        
         Affichage.setGC(gc);
+
 
         if(gameOver){
             Son.PauseMusique(); // stop music
