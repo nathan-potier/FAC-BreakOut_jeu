@@ -26,14 +26,20 @@ public class Niveau {
         // nb de ligne de brique incrémenté de 1 par niveau de difficulté -1 
         for(int i = 0; i < brickRows; i++){
             for (int j = 0; j < brickCols; j++) {
-                int r = rd.nextInt(100);
+                int val = rd.nextInt(100);
 
                 // probabilité d'avoir une brique incassable (augmente selon la diff)
-                if (r < diff*2){
+                if (val < diff*2){
                     tab[i][j] = new BrickUnbreakable(true, 80, 20);
-                // probabilité d'avoir une brique avec bonus  (diminue selon la diff)
-                }else if (r < 20){
+                
+                    // probabilité d'avoir une brique avec bonus  (diminue selon la diff)
+                }else if (val < 20){
                     tab[i][j] = new BrickRouge(true, 80, 20); 
+
+                    //probabilité d'avoir une brique a 2 pv (augmente selon la diff)
+                }else if (val < 20 + (5 * diff)) {
+                    tab[i][j] = new BrickDouble(true, 80, 20);
+
                 }else{
                     tab[i][j] = new BrickBleue(true, 80, 20);
                 }
