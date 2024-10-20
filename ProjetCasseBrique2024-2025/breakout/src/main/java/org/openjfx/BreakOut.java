@@ -26,7 +26,7 @@ public class BreakOut extends Application {
 
     private boolean gameStarted = false;
     private int diff = 1;
-    private Niveau niv = new Niveau(5, 12, diff);
+    private Niveau niv = new Niveau(5, diff);
 
     private final int brickRows = niv.getBrickRows();
     private final int brickCols = 12;

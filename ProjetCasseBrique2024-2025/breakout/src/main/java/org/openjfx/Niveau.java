@@ -5,13 +5,17 @@ import java.util.Random;
 public class Niveau {
 
     private final int brickRows;
-    private final int brickCols;
+    private final int brickCols = 12;
     private final int diff; /* diff >=1 */
 
-    Niveau(int bRows, int bCols, int diff){
+    Niveau(int bRows, int diff){
         brickRows = bRows + diff - 1;
-        brickCols = bCols;
         this.diff = diff;
+    }
+
+    Niveau(){
+        diff = 0;
+        brickRows = 15;
     }
 
 
