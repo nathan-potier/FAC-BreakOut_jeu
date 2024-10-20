@@ -4,9 +4,9 @@ import java.util.Random;
 
 public class Niveau {
 
-    private int brickRows;
-    private int brickCols;
-    private int diff; /* diff >=1 */
+    private final int brickRows;
+    private final int brickCols;
+    private final int diff; /* diff >=1 */
 
     Niveau(int bRows, int bCols, int diff){
         brickRows = bRows + diff - 1;
