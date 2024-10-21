@@ -8,6 +8,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 
 import javafx.scene.paint.Color;
@@ -73,6 +74,7 @@ public class BreakOut extends Application {
             }
         }
         
+        Affichage.resetPseudoInput(); // Réactiver la saisie du pseudo après réinitialisation du jeu
         Son.JouerMusique(); // Rejouer la musique
     }
     
@@ -103,6 +105,7 @@ public class BreakOut extends Application {
                 }
             }else if (boutonJouer.estClique(clickX, clickY)) {
                 gameStarted = true;
+                Affichage.enregistrerPseudo();  // Stocker le pseudo avant de commencer
                 Son.JouerMusique(); // Rejouer la musique
             }
         });
@@ -111,11 +114,15 @@ public class BreakOut extends Application {
         Son.initPaddleBoundSound(); //Initialiser le son de rebond de balle
         Son.initBrickBreakSound(); // Initialiser le son des briques cassées
 
+        // Gestion des touches clavier pour entrer le pseudo
+        canvas.setOnKeyPressed(Affichage::handleKeyPress);
+
 
         stage.setWidth(width);
         stage.setHeight(height);
         stage.setTitle("Breakout");
         stage.setScene(new Scene(new StackPane(canvas)));
+        canvas.setFocusTraversable(true);  // Nécessaire pour capter les événements de clavier
 
         // Initialise les briques
         bricks = niv.makeNiveau();
@@ -148,6 +155,7 @@ public class BreakOut extends Application {
             if (!Son.MusiqueEnCours()) { // Rejouer la music pendant que le jeu en cours
                 Son.JouerMusique();
             }
+            
             gc.fillText("Score: " + score, width / 2, height / 2);
 
             Balle.MAJPosHorizontal();
