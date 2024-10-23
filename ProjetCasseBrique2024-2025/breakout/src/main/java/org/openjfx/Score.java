@@ -27,14 +27,14 @@ public class Score {
                 }
 
                 // Mettre à jour la ligne avec les nouveaux scores
-                lines.set(i, pseudo + ":" + scoreList.toString());
+                lines.set(i, pseudo + ":" + formatScores(scoreList));   
                 break;
             }
         }
 
         // Si le pseudo n'existe pas, on l'ajoute à la fin
         if (!pseudoFound) {
-            lines.add(pseudo + ":" + score + "");
+            lines.add(pseudo + ":" + score);
         }
 
         // Écriture dans le fichier
@@ -47,6 +47,19 @@ public class Score {
             System.out.println("Erreur lors de la sauvegarde du score : " + e.getMessage());
         }
     }
+
+    // Méthode pour formater les scores en chaîne
+    private static String formatScores(List<Integer> scoreList) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < scoreList.size(); i++) {
+            sb.append(scoreList.get(i));
+            if (i < scoreList.size() - 1) {
+                sb.append(","); // Ajoute une virgule entre les scores
+            }
+        }
+        return sb.toString(); // Retourne la chaîne formatée
+    }
+
 
     // Méthode pour récupérer tous les pseudos
     public static List<String> getAllPseudos() {

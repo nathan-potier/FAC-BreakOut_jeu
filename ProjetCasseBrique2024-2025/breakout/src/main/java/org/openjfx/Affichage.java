@@ -73,7 +73,10 @@ public static void afficherMenuPrincipal(GraphicsContext gc, Bouton boutonJouer)
     afficherTitre(gc);
 
     // Afficher le champ de texte pour le pseudo
-    afficherChampPseudo(gc);
+    if (!Pseudo.estDef()){
+        afficherChampPseudo(gc);
+    }
+    
 
     // Afficher le meilleur score
     afficherMeilleurScore(gc);
