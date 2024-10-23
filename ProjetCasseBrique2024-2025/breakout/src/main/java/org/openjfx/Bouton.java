@@ -21,6 +21,8 @@ public class Bouton {
     public double getY() { return y; }
     public double getWidth() { return width; }
     public double getHeight() { return height; }
+    public String getText() { return text; }
+    public void setText(String text) { this.text=text; }
 
     // Afficher le bouton sur l'écran
     public void afficher(GraphicsContext gc) {

@@ -40,7 +40,8 @@ public class BreakOut extends Application {
 
     private Bouton boutonRetour;
     private Bouton boutonJouer;
-
+    private BoutonMusique boutonMusique;//bouton pour le mode muet et active
+    private BoutonPause boutonPause; 
  
 
     
@@ -87,22 +88,46 @@ public class BreakOut extends Application {
         // Initialiser les boutons
         boutonRetour = new Bouton(width / 2 - 50, height / 2 + 60, 100, 40, "Retour");
         boutonJouer = new Bouton(rectX, rectY, rectWidth, rectHeight, "Jouer");
-
+        boutonMusique = new BoutonMusique(120, height - 50, 100, 40, "Son activé");
+        boutonPause = new BoutonPause(10, height - 50, 100, 40,"Pause"); 
+       
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run(gc)));
 		tl.setCycleCount(Timeline.INDEFINITE);
 		canvas.setOnMouseMoved(e ->  Racket.setXpos( e.getX() ) );
 		canvas.setOnMouseClicked(e -> {
             double clickX = e.getX();
             double clickY = e.getY();
+            if (boutonMusique.estClique(clickX, clickY)) {
+                boutonMusique.toggleMuted(); // change le mode muet
+        
+                if (boutonMusique.isMuted()) {
+                    Son.StopMusique();  
+                    Son.muteAllSounds(); // arrete les sons
+                } else {
+                    Son.JouerMusique(); // rejouer
+                    Son.unmuteAllSounds(); // rejouer les sons
+                }
+            }
+
+            // parametre du bouton pause
+            if (boutonPause.estClique(clickX, clickY)) {
+                boutonPause.togglePaused(); // change le mode pause
+
+                if (boutonPause.isPaused()) {
+                    gameStarted = false; // arret le jeu
+                    Son.PauseMusique(); // stop les sons
+                } else {
+                    gameStarted = true; // rejouer le jeu
+                    Son.JouerMusique(); // rejouer les sons
+                }
+            }
             
             if(gameOver){
                 if(boutonRetour.estClique(clickX, clickY)){
                     resetGame(); //Réinitialise le jeu -> retour au menu
-                    Son.JouerMusique(); // Rejour de la music
                 }
             }else if (boutonJouer.estClique(clickX, clickY)) {
                 gameStarted = true;
-                Son.JouerMusique(); // Rejouer la musique
             }
         });
 
@@ -136,7 +161,8 @@ public class BreakOut extends Application {
 
         
         Affichage.setGC(gc);
-
+        boutonMusique.afficher(gc);// affichage le bouton
+        boutonPause.afficher(gc); // affichage le bouton
 
         if(gameOver){
             Son.PauseMusique(); // stop music
@@ -205,6 +231,8 @@ public class BreakOut extends Application {
                 Balle.rebondVertical();
             }
 
+            boutonMusique.afficher(gc);// affichage le bouton
+            boutonPause.afficher(gc); // affichage le bouton
 
             // Collision avec la raquette
             if (Balle.getYPos() + Balle.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
