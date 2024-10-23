@@ -20,9 +20,6 @@ public class BreakOut extends Application {
     private static final int width = 1024;
     private static final int height = 768;
 
-
-
-    private boolean gameStarted = false;
     private int diff = 1;
     private Niveau niv = new Niveau(5, 12, diff);
 
@@ -46,10 +43,9 @@ public class BreakOut extends Application {
 
     
 
-
+    private boolean gameStarted = false;
+    private boolean isGamePaused = false;
     private boolean gameOver = false;
-
-
 
 
     public static int getWidth(){ return width; }
@@ -64,7 +60,9 @@ public class BreakOut extends Application {
         Balle.reset();
   
         this.gameOver = false;
-        this.gameStarted = false;
+        this.gameStarted = true;
+        this.isGamePaused = false; 
+        boutonJouer.setText("Jouer"); // bouton de réinitialisation
         Son.StopMusique();  // La musique s'arrête
         
         for(int i=0; i<brickRows; i++){
@@ -114,20 +112,29 @@ public class BreakOut extends Application {
                 boutonPause.togglePaused(); // change le mode pause
 
                 if (boutonPause.isPaused()) {
+                    isGamePaused = true; // mode pause
                     gameStarted = false; // arret le jeu
+                    boutonJouer.setText("ReJouer"); // bouton recommence le jeu
                     Son.PauseMusique(); // stop les sons
                 } else {
                     gameStarted = true; // rejouer le jeu
+                    isGamePaused = false; // mode en cours
                     Son.JouerMusique(); // rejouer les sons
                 }
             }
-            
-            if(gameOver){
-                if(boutonRetour.estClique(clickX, clickY)){
-                    resetGame(); //Réinitialise le jeu -> retour au menu
+
+            // bouton de réinitialisation/rejouer
+            if (boutonJouer.estClique(clickX, clickY)) {
+                if (isGamePaused) {
+                    resetGame(); // recommence le jeu
+                } else if (!gameStarted || gameOver) {
+                    resetGame(); // commence le jeu
                 }
-            }else if (boutonJouer.estClique(clickX, clickY)) {
-                gameStarted = true;
+            }
+
+            
+            if(gameOver && boutonRetour.estClique(clickX, clickY)){
+                resetGame(); //Réinitialise le jeu -> retour au menu
             }
         });
 
