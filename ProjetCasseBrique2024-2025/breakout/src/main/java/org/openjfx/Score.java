@@ -1,95 +1,128 @@
 package org.openjfx;
+
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Collections;
+import java.util.*;
 
 public class Score {
-        // Méthode pour sauvegarder le score dans un fichier local
-        public static void saveScoreToFile(int score) {
-            String fileName = "scores.txt";
-            ArrayList<Integer> scores = getScores();
 
-            scores.add(score);
-            
-            Collections.sort(scores);
+    // Méthode pour sauvegarder un score pour un pseudo
+    public static void saveScoreToFile(String pseudo, int score) {
+        String fileName = "scores.txt";
+        List<String> lines = getAllScores();  // Récupérer toutes les lignes du fichier
+        boolean pseudoFound = false;
 
-            //garder les 5 derniers
-            if (scores.size() > 5) {
-                scores = new ArrayList<>(scores.subList(scores.size() - 5, scores.size()));
-            }
+        // Parcourir les lignes pour trouver le pseudo
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+            if (line.startsWith(pseudo + ":")) {
+                pseudoFound = true;
+                String scoreString = line.substring(pseudo.length() + 1);
+                List<Integer> scoreList = parseScores(scoreString);
+                scoreList.add(score);
+                Collections.sort(scoreList);
 
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-                for (int e : scores){
-                    writer.write(String.valueOf(e));
-                    writer.newLine(); // retour a la ligne
-
+                // Ne garder que les 5 meilleurs scores
+                if (scoreList.size() > 5) {
+                    scoreList = scoreList.subList(scoreList.size() - 5, scoreList.size());
                 }
-                
-            } catch (IOException e) {
-                System.out.println("Erreur lors de la sauvegarde du score : " + e.getMessage());
-            }
 
+                // Mettre à jour la ligne avec les nouveaux scores
+                lines.set(i, pseudo + ":" + scoreList.toString());
+                break;
+            }
+        }
+
+        // Si le pseudo n'existe pas, on l'ajoute à la fin
+        if (!pseudoFound) {
+            lines.add(pseudo + ":" + score + "");
+        }
+
+        // Écriture dans le fichier
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (String line : lines) {
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Erreur lors de la sauvegarde du score : " + e.getMessage());
+        }
+    }
+
+    // Méthode pour récupérer tous les pseudos
+    public static List<String> getAllPseudos() {
+        List<String> lines = getAllScores();
+        List<String> pseudos = new ArrayList<>();
+
+        for (String line : lines) {
+            String[] parts = line.split(":");
+            if (parts.length > 0) {
+                pseudos.add(parts[0]);
+            }
+        }
+
+        return pseudos;
+    }
+
+    // Méthode pour obtenir tous les scores d'un pseudo donné
+    public static List<Integer> getScoresForPseudo(String pseudo) {
+        List<String> lines = getAllScores();
+
+        for (String line : lines) {
+            if (line.startsWith(pseudo + ":")) {
+                String scoreString = line.substring(pseudo.length() + 1);
+                return parseScores(scoreString);
+            }
+        }
+
+        System.out.println("Aucun score trouvé pour le pseudo : " + pseudo);
+        return new ArrayList<>();
+    }
+
+    // Méthode pour obtenir le meilleur score d'un pseudo
+    public static int getBestScore(String pseudo) {
+        List<Integer> scores = getScoresForPseudo(pseudo);
+        if (!scores.isEmpty()) {
+            return Collections.max(scores);
+        } else {
+            return 0;
+        }
+    }
+
+    // Méthode pour obtenir les 5 derniers scores d'un pseudo
+    public static int [] getLastFiveScores(String pseudo) {
+        List<Integer> scores = getScoresForPseudo(pseudo);
         
 
+        int [] res = new int[scores.size()];
+        for (int i = 0; i < scores.size(); i++) {
+            res[i] = scores.get(i);
+        }
+        return res;
+    }
+
+    // Méthode auxiliaire pour lire toutes les lignes du fichier
+    private static List<String> getAllScores() {
+        String fileName = "scores.txt";
+        List<String> lines = new ArrayList<>();
+
+        try (Scanner scanner = new Scanner(new File(fileName))) {
+            while (scanner.hasNextLine()) {
+                lines.add(scanner.nextLine());
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Aucun fichier de scores trouvé.");
         }
 
-        public static ArrayList<Integer> getScores(){
-            String fileName = "scores.txt";
-            ArrayList<Integer> scores = new ArrayList<>();
-            try (Scanner scanner = new Scanner(new File(fileName))) {
+        return lines;
+    }
 
-                while (scanner.hasNextInt()) {
-                    int score = scanner.nextInt();
-                    scores.add(score);
-                }
-
-            } catch (FileNotFoundException e) {
-                System.out.println("Aucun fichier de scores trouvé.");
-            }
-            return scores;
-
+    // Méthode auxiliaire pour convertir une chaîne de scores en liste d'entiers
+    private static List<Integer> parseScores(String scoreString) {
+        List<Integer> scoreList = new ArrayList<>();
+        String[] scoreArray = scoreString.split(",");
+        for (String s : scoreArray) {
+            scoreList.add(Integer.parseInt(s.trim()));
         }
-    
-        // Méthode pour obtenir le meilleur score à partir du fichier local
-        public static int getBestScore() {
-            String fileName = "scores.txt";
-            int bestScore = 0;
-            try (Scanner scanner = new Scanner(new File(fileName))) {
-                while (scanner.hasNextInt()) {
-                    int score = scanner.nextInt();
-                    if (score > bestScore) {
-                        bestScore = score;
-                    }
-                }
-            } catch (FileNotFoundException e) {
-                System.out.println("Aucun fichier de scores trouvé.");
-            }
-            return bestScore;
-        }
-
-        // Méthode pour obtenir les 5 derniers scores
-        public static int[] getLastFiveScores() {
-            String fileName = "scores.txt";
-            List<Integer> scores = new ArrayList<>();
-            try (Scanner scanner = new Scanner(new File(fileName))) {
-                while (scanner.hasNextInt()) {
-                    scores.add(scanner.nextInt());
-                }
-            } catch (FileNotFoundException e) {
-                System.out.println("Aucun fichier de scores trouvé.");
-            }
-
-            // Obtenir les 5 derniers scores
-            int[] lastFiveScores = new int[5];
-            int startIndex = Math.max(0, scores.size() - 5);
-            for (int i = 0; i < 5; i++) {
-                lastFiveScores[i] = (startIndex + i < scores.size()) ? scores.get(startIndex + i) : 0; // Remplir avec 0 si moins de 5 scores
-            }
-
-            return lastFiveScores;
-        }
-
-        
+        return scoreList;
+    }
 }

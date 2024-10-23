@@ -60,7 +60,7 @@ public class Affichage {
         // Message "Game Over" et score
         gc.fillText("Game Over!", BreakOut.getWidth() / 2, BreakOut.getHeight() / 2 - 30);
         gc.fillText("Score: " + score, BreakOut.getWidth() / 2, BreakOut.getHeight() / 2);
-        gc.fillText("Best Score: " + Score.getBestScore(), BreakOut.getWidth() / 2, BreakOut.getHeight() / 2 + 30);
+        gc.fillText("Best Score: " + Score.getBestScore(Pseudo.getPseudo()), BreakOut.getWidth() / 2, BreakOut.getHeight() / 2 + 30);
 
         // Afficher le bouton "Retour"
         boutonRetour.afficher(gc);
@@ -98,7 +98,7 @@ private static void afficherMeilleurScore(GraphicsContext gc) {
     gc.setFont(Font.font("Arial", FontWeight.NORMAL, 25));
     gc.setStroke(Color.YELLOW);
     gc.setTextAlign(TextAlignment.CENTER);
-    gc.strokeText("Best Score: " + Score.getBestScore(), BreakOut.getWidth() / 2, BreakOut.getHeight() / 2 + 60);
+    gc.strokeText("Best Score: " + Score.getBestScore(Pseudo.getPseudo()), BreakOut.getWidth() / 2, BreakOut.getHeight() / 2 + 60);
 }
 
 // Méthode pour afficher le bouton "Jouer"
@@ -114,7 +114,7 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
 
     // Méthode pour afficher les 5 derniers scores dans un rectangle à droite
     private static void afficherDerniersScores(GraphicsContext gc) {
-        int[] lastFiveScores = Score.getLastFiveScores();
+        int[] lastFiveScores = Score.getLastFiveScores(Pseudo.getPseudo());
 
         // Déterminer la position et la taille du rectangle
         double scoresWidth = 200;

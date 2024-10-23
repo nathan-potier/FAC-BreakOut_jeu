@@ -130,7 +130,7 @@ public class BreakOut extends Application {
             
 
         // Charger le meilleur score au début
-        bestScore = Score.getBestScore();
+        bestScore = Score.getBestScore(Pseudo.getPseudo());
 
        
 
@@ -227,8 +227,8 @@ public class BreakOut extends Application {
                 Son.JouerSonRebond();
             }
             if (Balle.getYPos() > Racket.getYPos()){
-                Score.saveScoreToFile(score);
-                bestScore = Score.getBestScore(); // Mettre à jour le meilleur score
+                Score.saveScoreToFile(Pseudo.getPseudo(), score);
+                bestScore = Score.getBestScore(Pseudo.getPseudo()); // Mettre à jour le meilleur score
                 gameStarted = false; // Fin de la partie
                 gameOver = true; 
                 for (int i = 0; i < brickRows; i++) {
