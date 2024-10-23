@@ -39,6 +39,8 @@ public class BreakOut extends Application {
     private double rectHeight = 50;
     private double rectX = (width - rectWidth) / 2;
     private double rectY = (height - rectHeight) / 2;
+    private static double timePU1 = 0;
+    
 
  
 
@@ -46,6 +48,7 @@ public class BreakOut extends Application {
 
 
     private boolean gameOver = false;
+    private final Balle balle1 = new Balle();
 
 
 
@@ -59,7 +62,7 @@ public class BreakOut extends Application {
 
         this.score = 0;
 
-        Balle.reset();
+        balle1.reset();
   
         this.gameOver = false;
         this.gameStarted = false;
@@ -89,7 +92,7 @@ public class BreakOut extends Application {
             double clickY = e.getY();
             
             if(gameOver){
-                if( verifierCliqueRetour(clickX, clickY, Affichage.getBtnX(), Affichage.getBtnY(), Affichage.getBtnWidth(), Affichage.getBtnHeight())){
+                if(verifierCliqueRetour(clickX, clickY, Affichage.getBtnX(), Affichage.getBtnY(), Affichage.getBtnWidth(), Affichage.getBtnHeight())){
                     resetGame(); //Réinitialise le jeu -> retour au menu
                     Son.JouerMusique(); // Rejour de la music
                 }
@@ -142,10 +145,15 @@ public class BreakOut extends Application {
             }
             gc.fillText("Score: " + score, width / 2, height / 2);
 
-            Balle.MAJPosHorizontal();
-            Balle.MAJPosVertical();
+            balle1.MAJPosHorizontal();
+            balle1.MAJPosVertical();
+
+            gc.fillOval(balle1.getXPos(), balle1.getYPos(), Balle.getSize(), Balle.getSize());
             
-            gc.fillOval(Balle.getXPos(), Balle.getYPos(), Balle.getSize(), Balle.getSize());
+
+            
+
+            
 
             // Dessiner les briques
             for (int i = 0; i < brickRows; i++) {
@@ -153,11 +161,21 @@ public class BreakOut extends Application {
                     if (bricks[i][j].isNotBreak) {
                         double brickX = j * (bricks[i][j].getWidth() + 5);
                         double brickY = i * (bricks[i][j].getHeight() + 5);
+                        //application des powerUp aux briques rouges
+                        if (bricks[i][j].couleur() == Color.RED && !bricks[i][j].getHavePower()){
+                            bricks[i][j].setPowerUp(new MoreBallSize(brickX,brickY));
+                            bricks[i][j].setHavePower(true);
+
+                        }
+                        
                         gc.setFill(bricks[i][j].couleur());
-                        gc.fillRect(brickX, brickY, bricks[i][j].getWidth(), bricks[i][j].getHeight());
+                        gc.fillRect(brickX, brickY, bricks[i][j].getWidth(), bricks[i][j].getHeight());   
+                        
                     }
                 }
             }
+
+            
             
             // Détection de collision avec les briques
             for (int i = 0; i < brickRows; i++) {
@@ -166,22 +184,34 @@ public class BreakOut extends Application {
                     if (bricks[i][j].isNotBreak) {
                         double brickX = j * (bricks[i][j].getWidth() + 5);
                         double brickY = i * (bricks[i][j].getHeight() + 5);
-            
-                        if (Balle.getXPos() + Balle.getSize() >= brickX &&
-                            Balle.getXPos() <= brickX + bricks[i][j].getWidth() &&
-                            Balle.getYPos() + Balle.getSize() >= brickY +5 &&
-                            Balle.getYPos() <= brickY + bricks[i][j].getHeight() + 5) {
-            
-                            Balle.Rebond();
 
-                            if(bricks[i][j].couleur() != Color.GRAY && bricks[i][j].getNbrVie() == 0){
+                        
+            
+                        if (balle1.getXPos() + Balle.getSize() >= brickX &&
+                            balle1.getXPos() <= brickX + bricks[i][j].getWidth() &&
+                            balle1.getYPos() + Balle.getSize() >= brickY +5 &&
+                            balle1.getYPos() <= brickY + bricks[i][j].getHeight() + 5) {
+            
+                            balle1.Rebond();
+
+                            if(bricks[i][j].couleur() == Color.RED){
+                                bricks[i][j].isNotBreak = false;
+                                score += bricks[i][j].getScore(); 
+                                bricks[i][j].getPowerUp().setActif(true);
+
+                                Son.StopSonBrique(); // le son des briques cassées
+                                Son.JouerSonBrique(); // 
+                            }
+
+                            else if(bricks[i][j].couleur() != Color.GRAY && bricks[i][j].getNbrVie() == 0){
                                 bricks[i][j].isNotBreak = false;
                                 score += bricks[i][j].getScore(); 
 
                                 Son.StopSonBrique(); // le son des briques cassées
                                 Son.JouerSonBrique(); // 
 
-                            }else{
+                            }
+                            else{
                                 bricks[i][j].setNbrVie(bricks[i][j].getNbrVie() - 1);
                             }
                         }
@@ -189,35 +219,70 @@ public class BreakOut extends Application {
                 }
             }
 
-            // Collision avec les murs
-            if (Balle.getXPos() <= 0 || Balle.getXPos() >= width - Balle.getSize()) {
-                Balle.rebondHorizontal();
+            //actualisation powerUp
+            for (int i = 0; i < brickRows; i++) {
+                for (int j = 0; j < brickCols; j++) {
+                    if (bricks[i][j].couleur() == Color.RED){
+                        if (bricks[i][j].getPowerUp().getActif()){
+                            gc.setFill(Color.BLUE);
+                            gc.fillOval(bricks[i][j].getPowerUp().getPux() + bricks[i][j].getWidth()/2, bricks[i][j].getPowerUp().getPuy(), PowerUp.getSize(), PowerUp.getSize());
+                            bricks[i][j].getPowerUp().actuPUy();
+                            if (bricks[i][j].getPowerUp().getPuy() + PowerUp.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
+                            bricks[i][j].getPowerUp().getPux() + PowerUp.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
+                            bricks[i][j].getPowerUp().getPux() <= Racket.getXPos() + Racket.getWidth() / 2){
+                                bricks[i][j].getPowerUp().applyEffect();
+                                bricks[i][j].getPowerUp().setActif(false);
+                            }
+                            if(bricks[i][j].getPowerUp().getPuy() > Racket.getYPos()){
+                                bricks[i][j].getPowerUp().setActif(false);
+                            }
+                        
+    
+                        }
+                    }
+                    
+                }
+            }
+            //verif powerUp BALLSIZE actif si oui augmente le temps passé
+            if (Balle.getBallSize() == 50){
+                timePU1++;
+                if (timePU1 >= 700){
+                    Balle.resetSize();
+                    timePU1 = 0;
+                }
+
             }
 
-            if (Balle.getYPos() <= 0) {
-                Balle.rebondVertical();
+            // Collision avec les murs
+            if (balle1.getXPos() <= 0 || balle1.getXPos() >= width - Balle.getSize()) {
+                balle1.rebondHorizontal();
+            }
+
+            if (balle1.getYPos() <= 0) {
+                balle1.rebondVertical();
             }
 
 
             // Collision avec la raquette
-            if (Balle.getYPos() + Balle.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
-                Balle.getXPos() + Balle.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
-                Balle.getXPos() <= Racket.getXPos() + Racket.getWidth() / 2 && Balle.getYSpeed() > 0){
+            if (balle1.getYPos() + Balle.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
+                balle1.getXPos() + Balle.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
+                balle1.getXPos() <= Racket.getXPos() + Racket.getWidth() / 2 && balle1.getYSpeed() > 0){
 
-                Balle.Rebond();
+                balle1.Rebond();
                  
                 // Jouer le son de rebond de balle
                 Son.StopSonRebond();
                 Son.JouerSonRebond();
             }
-            if (Balle.getYPos() > Racket.getYPos()){
+            if (balle1.getYPos() > Racket.getYPos()){
                 Score.saveScoreToFile(score);
                 bestScore = Score.getBestScore(); // Mettre à jour le meilleur score
                 gameStarted = false; // Fin de la partie
                 gameOver = true; 
                 for (int i = 0; i < brickRows; i++) {
                     for (int j = 0; j < brickCols; j++) {
-                        bricks[i][j].isNotBreak = true; // Toutes les briques sont présentes au début
+                        bricks[i][j].isNotBreak = true; 
+                        bricks[i][j].setHavePower(false);// Toutes les briques sont présentes au début
                     }
                 }
       
@@ -231,7 +296,7 @@ public class BreakOut extends Application {
 
            Affichage.MenuPrincipal(gc, rectX, rectY, rectWidth, rectHeight);
 
-            Balle.reset();
+            balle1.reset();
         }
         
     }

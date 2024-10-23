@@ -9,6 +9,8 @@ public class Brick {
     private final double brickWidth;
     private final double brickHeight;
     private final int score; 
+    private PowerUp powerup;
+    private boolean havePower;
 
     public Brick(boolean isNotBreak, double brickWidth, double brickHeight){
         this.isNotBreak = isNotBreak;
@@ -16,6 +18,8 @@ public class Brick {
         this.brickHeight = brickHeight;
         this.score = 0;
         this.nbrVie = 0;
+        this.powerup = null;
+        this.havePower = false;
 
         
 
@@ -44,5 +48,21 @@ public class Brick {
 
     public void setNbrVie(int nbrVie) {
         this.nbrVie = nbrVie;
+    }
+
+    public void setPowerUp(PowerUp p){
+        this.powerup = null;
+    }
+
+    public void setHavePower(boolean havePower){
+        this.havePower = havePower;
+    }
+
+    public boolean getHavePower(){
+        return this.havePower;
+    }
+
+    public PowerUp getPowerUp(){
+        return this.powerup;
     }
 }

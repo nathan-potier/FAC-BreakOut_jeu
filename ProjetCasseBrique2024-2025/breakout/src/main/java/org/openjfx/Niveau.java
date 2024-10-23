@@ -35,7 +35,7 @@ public class Niveau {
                 }else if (r < 20){
                     tab[i][j] = new BrickRouge(true, 80, 20); 
                 }else{
-                    tab[i][j] = new BrickBleue(true, 80, 20);
+                    tab[i][j] = new BrickRouge(true, 80, 20);
                 }
 
             }
