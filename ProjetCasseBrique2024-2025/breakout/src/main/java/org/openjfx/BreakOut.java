@@ -115,14 +115,21 @@ public class BreakOut extends Application {
         Son.initBrickBreakSound(); // Initialiser le son des briques cassées
 
         // Gestion des touches clavier pour entrer le pseudo
-        canvas.setOnKeyPressed(Affichage::handleKeyPress);
+        if (!Pseudo.estDef()){
+            canvas.setOnKeyPressed(Affichage::handleKeyPress);
+            canvas.setFocusTraversable(true);  // Nécessaire pour capter les événements de clavier
+        }else{
+            canvas.setOnKeyPressed(null);
+            canvas.setFocusTraversable(false);
+        }
+        
 
 
         stage.setWidth(width);
         stage.setHeight(height);
         stage.setTitle("Breakout");
         stage.setScene(new Scene(new StackPane(canvas)));
-        canvas.setFocusTraversable(true);  // Nécessaire pour capter les événements de clavier
+        
 
         // Initialise les briques
         bricks = niv.makeNiveau();
@@ -130,7 +137,7 @@ public class BreakOut extends Application {
             
 
         // Charger le meilleur score au début
-        bestScore = Score.getBestScore();
+        bestScore = Score.getBestScore(Pseudo.getPseudo());
 
        
 
@@ -227,8 +234,8 @@ public class BreakOut extends Application {
                 Son.JouerSonRebond();
             }
             if (Balle.getYPos() > Racket.getYPos()){
-                Score.saveScoreToFile(score);
-                bestScore = Score.getBestScore(); // Mettre à jour le meilleur score
+                Score.saveScoreToFile(Pseudo.getPseudo(), score);
+                bestScore = Score.getBestScore(Pseudo.getPseudo()); // Mettre à jour le meilleur score
                 gameStarted = false; // Fin de la partie
                 gameOver = true; 
                 for (int i = 0; i < brickRows; i++) {

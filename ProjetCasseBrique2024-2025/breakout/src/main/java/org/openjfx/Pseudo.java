@@ -1,7 +1,7 @@
 package org.openjfx;
 
 public class Pseudo {
-    private static String pseudo = "";
+    private static String pseudo ;
 
     // Méthode pour définir le pseudo
     public static void setPseudo(String newPseudo) {
@@ -16,5 +16,9 @@ public class Pseudo {
     // Réinitialiser le pseudo
     public static void resetPseudo() {
         pseudo = "";
+    }
+
+    public static boolean estDef(){
+        return pseudo != null;
     }
 }
