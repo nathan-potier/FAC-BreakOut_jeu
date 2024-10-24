@@ -3,12 +3,52 @@ package org.openjfx;
 import java.io.*;
 import java.util.*;
 
+/**
+ * La classe Score permet de gérer les scores des joueurs et de les sauvegarder
+ * dans un fichier. Chaque pseudo de joueur est associé à une liste de scores,
+ * et les 5 meilleurs scores sont conservés.
+ * 
+ * <p>
+ * Cette classe offre des méthodes pour :
+ * </p>
+ * 
+ * <ul>
+ * <li>Sauvegarder un score pour un joueur avec {@link #saveScoreToFile(String, int)}.</li>
+ * <li>Récupérer tous les pseudos enregistrés avec {@link #getAllPseudos()}.</li>
+ * <li>Obtenir les scores associés à un pseudo avec {@link #getScoresForPseudo(String)}.</li>
+ * <li>Obtenir le meilleur score d'un joueur avec {@link #getBestScore(String)}.</li>
+ * <li>Obtenir les cinq derniers scores d'un joueur avec {@link #getLastFiveScores(String)}.</li>
+ * </ul>
+ * 
+ * <p>
+ * Le fichier de score est nommé <strong>scores.txt</strong>, et chaque ligne est
+ * structurée sous la forme <code>pseudo:score1,score2,...</code>.
+ * </p>
+ * 
+ * <p>
+ * Les méthodes auxiliaires permettent également de lire et d'écrire dans le fichier,
+ * et de convertir une chaîne de caractères représentant une liste de scores en une
+ * liste d'entiers.
+ * </p>
+ * 
+ * @author Nathan POTIER
+ * @version 1.0
+ */
 public class Score {
 
+
+    /**
+     * Sauvegarde un score pour un joueur donné dans le fichier de scores. Si le pseudo
+     * existe déjà, le score est ajouté à sa liste et seuls les 5 meilleurs scores sont
+     * conservés.
+     *
+     * @param pseudo le pseudo du joueur
+     * @param score le score à ajouter pour ce joueur
+     */
     // Méthode pour sauvegarder un score pour un pseudo
     public static void saveScoreToFile(String pseudo, int score) {
         String fileName = "scores.txt";
-        List<String> lines = getAllScores();  // Récupérer toutes les lignes du fichier
+        List<String> lines = getAllScores(); // Récupérer toutes les lignes du fichier
         boolean pseudoFound = false;
 
         // Parcourir les lignes pour trouver le pseudo
@@ -27,7 +67,7 @@ public class Score {
                 }
 
                 // Mettre à jour la ligne avec les nouveaux scores
-                lines.set(i, pseudo + ":" + formatScores(scoreList));   
+                lines.set(i, pseudo + ":" + formatScores(scoreList));
                 break;
             }
         }
@@ -48,6 +88,12 @@ public class Score {
         }
     }
 
+    /**
+     * Formate une liste de scores en une chaîne de caractères, séparée par des virgules.
+     * 
+     * @param scoreList la liste de scores à formater
+     * @return une chaîne de caractères représentant les scores
+     */
     // Méthode pour formater les scores en chaîne
     private static String formatScores(List<Integer> scoreList) {
         StringBuilder sb = new StringBuilder();
@@ -60,7 +106,11 @@ public class Score {
         return sb.toString(); // Retourne la chaîne formatée
     }
 
-
+    /**
+     * Lit toutes les lignes du fichier de scores et les retourne sous forme de liste.
+     * 
+     * @return une liste de chaînes représentant chaque ligne du fichier de scores
+     */
     // Méthode pour récupérer tous les pseudos
     public static List<String> getAllPseudos() {
         List<String> lines = getAllScores();
@@ -76,6 +126,12 @@ public class Score {
         return pseudos;
     }
 
+    /**
+     * Récupère tous les scores associés à un pseudo donné.
+     * 
+     * @param pseudo le pseudo du joueur dont on veut les scores
+     * @return une liste des scores du joueur, ou une liste vide si le pseudo n'existe pas
+     */
     // Méthode pour obtenir tous les scores d'un pseudo donné
     public static List<Integer> getScoresForPseudo(String pseudo) {
         List<String> lines = getAllScores();
@@ -91,6 +147,12 @@ public class Score {
         return new ArrayList<>();
     }
 
+    /**
+     * Récupère le meilleur score d'un pseudo donné.
+     * 
+     * @param pseudo le pseudo du joueur
+     * @return le meilleur score du joueur, ou 0 si le pseudo n'a aucun score
+     */
     // Méthode pour obtenir le meilleur score d'un pseudo
     public static int getBestScore(String pseudo) {
         List<Integer> scores = getScoresForPseudo(pseudo);
@@ -101,18 +163,28 @@ public class Score {
         }
     }
 
+    /**
+     * Récupère les cinq derniers scores d'un pseudo donné.
+     * 
+     * @param pseudo le pseudo du joueur
+     * @return un tableau des cinq derniers scores du joueur
+     */
     // Méthode pour obtenir les 5 derniers scores d'un pseudo
-    public static int [] getLastFiveScores(String pseudo) {
+    public static int[] getLastFiveScores(String pseudo) {
         List<Integer> scores = getScoresForPseudo(pseudo);
-        
 
-        int [] res = new int[scores.size()];
+        int[] res = new int[scores.size()];
         for (int i = 0; i < scores.size(); i++) {
             res[i] = scores.get(i);
         }
         return res;
     }
 
+    /**
+     * Lit toutes les lignes du fichier de scores et les retourne sous forme de liste.
+     * 
+     * @return une liste de chaînes représentant chaque ligne du fichier de scores
+     */
     // Méthode auxiliaire pour lire toutes les lignes du fichier
     private static List<String> getAllScores() {
         String fileName = "scores.txt";
@@ -129,6 +201,12 @@ public class Score {
         return lines;
     }
 
+    /**
+     * Convertit une chaîne de scores en une liste d'entiers.
+     * 
+     * @param scoreString la chaîne de scores à convertir
+     * @return une liste d'entiers représentant les scores
+     */
     // Méthode auxiliaire pour convertir une chaîne de scores en liste d'entiers
     private static List<Integer> parseScores(String scoreString) {
         List<Integer> scoreList = new ArrayList<>();
