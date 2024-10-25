@@ -127,16 +127,16 @@ public class BreakOut extends Application {
             if (boutonJouer.estClique(clickX, clickY)) {
                 if (isGamePaused) {
                     resetGame(); // recommence le jeu
-                    isGamePaused = false; // 恢复未暂停模式
-                    gameStarted = true; // 开始新游戏
+                    isGamePaused = false; // mode continuer
+                    gameStarted = true; // nouveaux jeu
                     boutonJouer.setText("Jouer");
-                    boutonPause.setText("Pause"); // 重置暂停按钮文本为“Pause”
-                    boutonPause.setPaused(false); // 重置暂停按钮状态为未暂停
-                    Son.JouerMusique(); // 播放音乐
+                    boutonPause.setText("Pause"); 
+                    boutonPause.setPaused(false); 
+                    Son.JouerMusique(); 
                 } else if (!gameStarted || gameOver) {
                     resetGame(); // commence le jeu
-                    boutonPause.setText("Pause"); // 重置暂停按钮文本为“Pause”
-                    boutonPause.setPaused(false); // 重置暂停按钮状态为未暂停
+                    boutonPause.setText("Pause"); 
+                    boutonPause.setPaused(false); 
                 }
             }
 
@@ -177,11 +177,9 @@ public class BreakOut extends Application {
         
         Affichage.setGC(gc);
         boutonMusique.afficher(gc);// affichage le bouton
-        //boutonPause.afficher(gc); // affichage le bouton
-
-        /*ST */
-        if (isGamePaused) { // 检查是否处于暂停状态
-            boutonPause.afficher(gc); // 显示暂停按钮
+       
+        if (isGamePaused) { 
+            boutonPause.afficher(gc); 
         }    
 
         if(gameOver){
