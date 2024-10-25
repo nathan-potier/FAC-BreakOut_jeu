@@ -74,7 +74,7 @@ public class BreakOut extends Application {
             }
         }
         
-        Affichage.resetPseudoInput(); // Réactiver la saisie du pseudo après réinitialisation du jeu
+        
         Son.JouerMusique(); // Rejouer la musique
     }
     
