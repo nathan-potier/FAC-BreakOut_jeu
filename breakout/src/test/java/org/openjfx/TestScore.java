@@ -116,6 +116,17 @@ public class TestScore {
     }
 
     @Test
+    public void testGetScoresForPseudo(){
+        Score.saveScoreToFile("Eve", 150);
+        Score.saveScoreToFile("Eve", 200);
+        Score.saveScoreToFile("Eve", 100);
+
+        List<Integer> scores = Score.getScoresForPseudo("Eve");
+        assertEquals(3, scores.size());
+        assertEquals(200, scores.get(0));
+    }
+
+    @Test
     public void testGetBestScore() {
         Score.saveScoreToFile("Frank", 300);
         Score.saveScoreToFile("Frank", 400);
@@ -136,13 +147,17 @@ public class TestScore {
 
         int[] lastFiveScores = Score.getLastFiveScores("Grace");
         assertEquals(5, lastFiveScores.length);
-        assertArrayEquals(new int[]{20, 30, 40, 50, 60}, lastFiveScores);
+        assertArrayEquals(new int[]{60, 50, 40, 30, 20}, lastFiveScores);
     }
+
+
 
     @Test
     public void testFileNotFound() {
         List<Integer> scores = Score.getScoresForPseudo("Unknown");
         assertTrue(scores.isEmpty());
     }
+
+
 
 }
