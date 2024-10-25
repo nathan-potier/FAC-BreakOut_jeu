@@ -40,6 +40,11 @@ public class BreakOut extends Application {
     private double rectX = (width - rectWidth) / 2;
     private double rectY = (height - rectHeight) / 2;
 
+
+    private double rectRejouerY = (height - rectHeight)/2+50;
+    private double rectRetourY = rectRejouerY + rectHeight + 10;
+
+    private Bouton boutonRejouer;
     private Bouton boutonRetour;
     private Bouton boutonJouer;
 
@@ -88,7 +93,8 @@ public class BreakOut extends Application {
         
 
         // Initialiser les boutons
-        boutonRetour = new Bouton(width / 2 - 50, height / 2 + 60, 100, 40, "Retour");
+        boutonRejouer = new Bouton(rectX, rectRejouerY, rectWidth+20, rectHeight, "Rejouer");
+        boutonRetour = new Bouton(rectX, rectRetourY, rectWidth+20, rectHeight, "retour");
         boutonJouer = new Bouton(rectX, rectY, rectWidth, rectHeight, "Jouer");
 
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run(gc)));
@@ -99,7 +105,12 @@ public class BreakOut extends Application {
             double clickY = e.getY();
             
             if(gameOver){
-                if(boutonRetour.estClique(clickX, clickY)){
+                if(boutonRejouer.estClique(clickX, clickY)){
+                    resetGame();
+                    gameStarted = true; //Rejouer le jeu
+                    gameOver = false;   //sans retourner au menu principal
+                    Son.JouerMusique();
+                }else if(boutonRetour.estClique(clickX, clickY)){
                     resetGame(); //Réinitialise le jeu -> retour au menu
                     Son.JouerMusique(); // Rejour de la music
                 }
@@ -155,8 +166,7 @@ public class BreakOut extends Application {
 
         if(gameOver){
             Son.PauseMusique(); // stop music
-            Affichage.afficherFinDeJeu(gc, score, boutonRetour);
-            boutonRetour.afficher(gc); // Afficher le bouton "Retour"
+            Affichage.afficherFinDeJeu(gc, score, boutonRejouer, boutonRetour);
         }else 
         if (gameStarted) {
             if (!Son.MusiqueEnCours()) { // Rejouer la music pendant que le jeu en cours
