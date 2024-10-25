@@ -104,29 +104,6 @@ public class Affichage {
     }
 
 
-
-    /**
-     * Affiche l'écran de fin de jeu avec le score actuel et le meilleur score.
-     * 
-     * @param gc Le contexte graphique pour dessiner l'interface.
-     * @param score Le score actuel du joueur.
-     * @param boutonRetour Le bouton permettant de retourner au menu principal.
-     */
-    //Méthode pour afficher la fin du jeu
-    public static void afficherFinDeJeu(GraphicsContext gc, int score, Bouton boutonRetour) {
-        gc.setFill(Color.YELLOW);
-        gc.setFont(Font.font(25));
-        gc.setTextAlign(TextAlignment.CENTER);
-
-        // Message "Game Over" et score
-        gc.fillText("Game Over!", BreakOut.getWidth() / 2, BreakOut.getHeight() / 2 - 30);
-        gc.fillText("Score: " + score, BreakOut.getWidth() / 2, BreakOut.getHeight() / 2);
-        gc.fillText("Best Score: " + Score.getBestScore(Pseudo.getPseudo()), BreakOut.getWidth() / 2, BreakOut.getHeight() / 2 + 30);
-
-        // Afficher le bouton "Retour"
-        boutonRetour.afficher(gc);
-    }
-
     /**
      * Affiche le menu principal, incluant le champ de pseudo, le meilleur score,
      * et les derniers scores du joueur.
@@ -271,7 +248,77 @@ public class Affichage {
         isEnteringPseudo = true;  // Réactiver la saisie quand on retourne au menu
     }
 
+
     
+    /**
+     * Affiche l'écran de fin de jeu avec le score actuel, le meilleur score et les derniers scores du joueur.
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param score Le score actuel du joueur.
+     * @param boutonRejouer Le bouton permettant de rejouer le jeu sans retourner au menu principal
+     * @param boutonRetour Le bouton permettant de retourner au menu principal.
+     */
+    //Méthode pour afficher la fin du jeu
+    public static void afficherFinDeJeu(GraphicsContext gc, int score, Bouton boutonRejouer, Bouton boutonRetour) {
+
+        //Afficher le message perdant
+        afficherMessageFinDeJeu(gc);
+
+        //Afficher le score actuel
+        afficherScoreActuel(gc,score);
+
+        //Afficher le meilleur score
+        afficherMeilleurScoreFinDeJeu(gc);
+
+        //Afficher le bouton rejouer
+        afficherBoutonRejouer(gc, boutonRejouer);
+
+        //Afficher le bouton retour
+        afficherBoutonRetour(gc, boutonRetour);
+
+        //Réafficher les 5 derniers scores à droite
+        afficherDerniersScores(gc);
+    }
+
+    //Méthode pour afficher le message à la fin de jeu
+    private static void afficherMessageFinDeJeu(GraphicsContext gc) {
+        gc.setStroke(Color.YELLOW);
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 25));
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.strokeText("GAME OVER!", BreakOut.getWidth() / 2, BreakOut.getHeight() / 2 - 100);
+    }
+
+    //Méthode pour afficher le score actuel
+    private static void afficherScoreActuel(GraphicsContext gc, int score) {
+        gc.setFont(Font.font("Arial", FontWeight.NORMAL, 25));
+        gc.setStroke(Color.YELLOW);
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.strokeText("Score: " + score, BreakOut.getWidth() / 2, BreakOut.getHeight() / 2 - 50);
+    }
+
+    //Méthode pour le meilleur score à la fin de jeu
+    private static void afficherMeilleurScoreFinDeJeu(GraphicsContext gc) {
+        gc.setFont(Font.font("Arial", FontWeight.NORMAL, 25));
+        gc.setStroke(Color.YELLOW);
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.strokeText("Best Score: " + Score.getBestScore(Pseudo.getPseudo()), BreakOut.getWidth() / 2, BreakOut.getHeight() / 2);
+    }
+
+    //Méthode pour afficher le bouton "Rejouer"
+    private static void afficherBoutonRejouer(GraphicsContext gc, Bouton boutonRejouer) {
+        gc.setStroke(Color.YELLOW);
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 25));
+        gc.setTextAlign(TextAlignment.CENTER);
+        boutonRejouer.afficher(gc);
+    }
+
+    //Méthode pour afficher le bouton "Retour"
+    private static void afficherBoutonRetour(GraphicsContext gc, Bouton boutonRetour) {
+        gc.setStroke(Color.YELLOW);
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 25));
+        gc.setTextAlign(TextAlignment.CENTER);
+        boutonRetour.afficher(gc);
+    }
 
 
 }
