@@ -6,9 +6,16 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+
 
 
 public class Affichage {
+
+    // Coordonnées et taille du champ de texte pour le pseudo
+    private static String pseudoInput = "";  // Stocke l'entrée utilisateur temporairement
+    private static boolean isEnteringPseudo = true;
 
     //coordonnées d'affichage du bouton "Retour"
     private static double replayButtonX = BreakOut.getWidth() / 2-50;
@@ -64,6 +71,9 @@ public class Affichage {
 public static void afficherMenuPrincipal(GraphicsContext gc, Bouton boutonJouer) {
     // Affichage du titre du jeu
     afficherTitre(gc);
+
+    // Afficher le champ de texte pour le pseudo
+    afficherChampPseudo(gc);
 
     // Afficher le meilleur score
     afficherMeilleurScore(gc);
@@ -126,4 +136,61 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
             gc.fillText("" + lastFiveScores[i], scoresX + 10, scoresY + 50 + (i * 30));
         }
     }
+
+
+
+
+    // Méthode pour afficher le champ de texte pour le pseudo
+    private static void afficherChampPseudo(GraphicsContext gc) {
+        gc.setFont(Font.font("Arial", FontWeight.BOLD, 25));  // Texte "Entrer Pseudo:" plus épais et plus grand
+        gc.setFill(Color.WHITE);
+        gc.setTextAlign(TextAlignment.CENTER);
+        
+        // Remonter le texte et le champ de pseudo en modifiant les coordonnées Y
+        double champPseudoY = BreakOut.getHeight() / 2 - 70;  // Remonter le champ de pseudo
+        double textePseudoY = champPseudoY - 10;
+
+        // Afficher le texte "Entrer Pseudo :"
+        gc.fillText("Pseudo :", BreakOut.getWidth() / 2, textePseudoY);
+
+        // Ajouter un fond noir pour le champ de saisie
+        gc.setFill(Color.BLACK);
+        gc.fillRect(BreakOut.getWidth() / 2 - 100, champPseudoY, 200, 30);  // Fond noir du champ de texte
+
+        // Afficher le contour du champ de pseudo (couleur blanche)
+        gc.setStroke(Color.WHITE);
+        gc.strokeRect(BreakOut.getWidth() / 2 - 100, champPseudoY, 200, 30);
+
+        // Afficher l'entrée utilisateur
+        gc.setFill(Color.WHITE);
+        gc.fillText(pseudoInput, BreakOut.getWidth() / 2, champPseudoY + 20);
+    }
+
+    // Méthode pour gérer l'entrée utilisateur depuis le clavier
+    public static void handleKeyPress(KeyEvent e) {
+        if (isEnteringPseudo) {  // Vérifie si l'on est toujours en mode saisie du pseudo
+            if (e.getCode() == KeyCode.BACK_SPACE && pseudoInput.length() > 0) {
+                pseudoInput = pseudoInput.substring(0, pseudoInput.length() - 1);
+            } else if (e.getText().matches("[A-Za-z ]")) {  // Autoriser seulement les lettres et les espaces
+                if (pseudoInput.length() < 15) {  // Limiter la longueur à 15 caractères
+                    pseudoInput += e.getText();
+                }
+            }
+        }
+    }
+
+    // Méthode pour récupérer le pseudo quand le jeu commence
+    public static void enregistrerPseudo() {
+        Pseudo.setPseudo(pseudoInput);
+        isEnteringPseudo = false;  // Désactiver la saisie après le début du jeu
+    }
+
+    public static void resetPseudoInput() {
+        pseudoInput = "";
+        isEnteringPseudo = true;  // Réactiver la saisie quand on retourne au menu
+    }
+
+    
+
+
 }
