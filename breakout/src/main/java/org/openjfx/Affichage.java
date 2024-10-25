@@ -249,7 +249,7 @@ public class Affichage {
     }
 
 
-    
+
     /**
      * Affiche l'écran de fin de jeu avec le score actuel, le meilleur score et les derniers scores du joueur.
      * 
@@ -296,7 +296,7 @@ public class Affichage {
         gc.strokeText("Score: " + score, BreakOut.getWidth() / 2, BreakOut.getHeight() / 2 - 50);
     }
 
-    //Méthode pour le meilleur score à la fin de jeu
+    //Méthode pour afficher le meilleur score à la fin de jeu
     private static void afficherMeilleurScoreFinDeJeu(GraphicsContext gc) {
         gc.setFont(Font.font("Arial", FontWeight.NORMAL, 25));
         gc.setStroke(Color.YELLOW);
