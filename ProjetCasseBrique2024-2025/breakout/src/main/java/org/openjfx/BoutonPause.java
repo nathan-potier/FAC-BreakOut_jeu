@@ -24,4 +24,14 @@ package org.openjfx;
     public void afficher(GraphicsContext gc){
         super.afficher(gc);
     }
+
+    public void setPaused(boolean b) {
+        this.isPaused = b; // 直接设置暂停状态
+        if (b) {
+            setText("Continuer"); 
+        } else {
+            setText("Pause"); 
+        }
+    }
+    
 }

@@ -86,8 +86,8 @@ public class BreakOut extends Application {
         // Initialiser les boutons
         boutonRetour = new Bouton(width / 2 - 50, height / 2 + 60, 100, 40, "Retour");
         boutonJouer = new Bouton(rectX, rectY, rectWidth, rectHeight, "Jouer");
-        boutonMusique = new BoutonMusique(120, height - 50, 100, 40, "Son activé");
-        boutonPause = new BoutonPause(10, height - 50, 100, 40,"Pause"); 
+        boutonMusique = new BoutonMusique(10, height - 50, 100, 40, "Son activé");
+        boutonPause = new BoutonPause(120, height - 50, 100, 40,"Pause"); 
        
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run(gc)));
 		tl.setCycleCount(Timeline.INDEFINITE);
@@ -127,8 +127,16 @@ public class BreakOut extends Application {
             if (boutonJouer.estClique(clickX, clickY)) {
                 if (isGamePaused) {
                     resetGame(); // recommence le jeu
+                    isGamePaused = false; // 恢复未暂停模式
+                    gameStarted = true; // 开始新游戏
+                    boutonJouer.setText("Jouer");
+                    boutonPause.setText("Pause"); // 重置暂停按钮文本为“Pause”
+                    boutonPause.setPaused(false); // 重置暂停按钮状态为未暂停
+                    Son.JouerMusique(); // 播放音乐
                 } else if (!gameStarted || gameOver) {
                     resetGame(); // commence le jeu
+                    boutonPause.setText("Pause"); // 重置暂停按钮文本为“Pause”
+                    boutonPause.setPaused(false); // 重置暂停按钮状态为未暂停
                 }
             }
 
@@ -169,7 +177,12 @@ public class BreakOut extends Application {
         
         Affichage.setGC(gc);
         boutonMusique.afficher(gc);// affichage le bouton
-        boutonPause.afficher(gc); // affichage le bouton
+        //boutonPause.afficher(gc); // affichage le bouton
+
+        /*ST */
+        if (isGamePaused) { // 检查是否处于暂停状态
+            boutonPause.afficher(gc); // 显示暂停按钮
+        }    
 
         if(gameOver){
             Son.PauseMusique(); // stop music
