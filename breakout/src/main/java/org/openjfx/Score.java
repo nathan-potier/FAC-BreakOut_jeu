@@ -2,82 +2,73 @@ package org.openjfx;
 
 import java.io.*;
 import java.util.*;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 
-/**
- * La classe Score permet de gérer les scores des joueurs et de les sauvegarder
- * dans un fichier. Chaque pseudo de joueur est associé à une liste de scores,
- * et les 5 meilleurs scores sont conservés.
- * 
- * <p>
- * Cette classe offre des méthodes pour :
- * </p>
- * 
- * <ul>
- * <li>Sauvegarder un score pour un joueur avec {@link #saveScoreToFile(String, int)}.</li>
- * <li>Récupérer tous les pseudos enregistrés avec {@link #getAllPseudos()}.</li>
- * <li>Obtenir les scores associés à un pseudo avec {@link #getScoresForPseudo(String)}.</li>
- * <li>Obtenir le meilleur score d'un joueur avec {@link #getBestScore(String)}.</li>
- * <li>Obtenir les cinq derniers scores d'un joueur avec {@link #getLastFiveScores(String)}.</li>
- * </ul>
- * 
- * <p>
- * Le fichier de score est nommé <strong>scores.txt</strong>, et chaque ligne est
- * structurée sous la forme <code>pseudo:score1,score2,...</code>.
- * </p>
- * 
- * <p>
- * Les méthodes auxiliaires permettent également de lire et d'écrire dans le fichier,
- * et de convertir une chaîne de caractères représentant une liste de scores en une
- * liste d'entiers.
- * </p>
- * 
- * @author Nathan POTIER
- * @version 1.0
- */
 public class Score {
 
+    private static final int BIT_LENGTH = 2048;
+    private static BigInteger n, e, d;
 
-    /**
-     * Sauvegarde un score pour un joueur donné dans le fichier de scores. Si le pseudo
-     * existe déjà, le score est ajouté à sa liste et seuls les 5 meilleurs scores sont
-     * conservés.
-     *
-     * @param pseudo le pseudo du joueur
-     * @param score le score à ajouter pour ce joueur
-     */
-    // Méthode pour sauvegarder un score pour un pseudo
+    // Initialisation de la clé
+    static {
+        generateKeys();
+    }
+
+    private static void generateKeys() {
+        SecureRandom random = new SecureRandom();
+        BigInteger p = BigInteger.probablePrime(BIT_LENGTH / 2, random);
+        BigInteger q = BigInteger.probablePrime(BIT_LENGTH / 2, random);
+        n = p.multiply(q);
+
+        BigInteger phi = (p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE));
+        e = BigInteger.valueOf(65537);
+        d = e.modInverse(phi);
+    }
+
+    public static String encryptScore(String score) {
+        BigInteger message = new BigInteger(score.getBytes());
+        BigInteger encrypted = message.modPow(e, n);
+        return encrypted.toString();
+    }
+
+    public static String decryptScore(String encryptedScore) {
+        BigInteger encrypted = new BigInteger(encryptedScore);
+        BigInteger decrypted = encrypted.modPow(d, n);
+        return new String(decrypted.toByteArray());
+    }
+
     public static void saveScoreToFile(String pseudo, int score) {
         String fileName = "scores.txt";
-        List<String> lines = getAllScores(); // Récupérer toutes les lignes du fichier
+        List<String> lines = getAllScores();
         boolean pseudoFound = false;
 
-        // Parcourir les lignes pour trouver le pseudo
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
+
             if (line.startsWith(pseudo + ":")) {
                 pseudoFound = true;
                 String scoreString = line.substring(pseudo.length() + 1);
-                List<Integer> scoreList = parseScores(scoreString);
+                String decryptedScores = decryptScore(scoreString); // Déchiffrer les scores
+                List<Integer> scoreList = parseScores(decryptedScores);
                 scoreList.add(score);
-                Collections.sort(scoreList);
+                Collections.sort(scoreList, Collections.reverseOrder());
 
-                // Ne garder que les 5 meilleurs scores
                 if (scoreList.size() > 5) {
-                    scoreList = scoreList.subList(scoreList.size() - 5, scoreList.size());
+                    scoreList = scoreList.subList(0, 5);
                 }
 
-                // Mettre à jour la ligne avec les nouveaux scores
-                lines.set(i, pseudo + ":" + formatScores(scoreList));
+                String encryptedScores = encryptScore(formatScores(scoreList)); // Chiffrer les scores
+                lines.set(i, pseudo + ":" + encryptedScores);
                 break;
             }
         }
 
-        // Si le pseudo n'existe pas, on l'ajoute à la fin
         if (!pseudoFound) {
-            lines.add(pseudo + ":" + score);
+            String encryptedScore = encryptScore(String.valueOf(score));
+            lines.add(pseudo + ":" + encryptedScore);
         }
 
-        // Écriture dans le fichier
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (String line : lines) {
                 writer.write(line);
@@ -88,30 +79,17 @@ public class Score {
         }
     }
 
-    /**
-     * Formate une liste de scores en une chaîne de caractères, séparée par des virgules.
-     * 
-     * @param scoreList la liste de scores à formater
-     * @return une chaîne de caractères représentant les scores
-     */
-    // Méthode pour formater les scores en chaîne
     private static String formatScores(List<Integer> scoreList) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < scoreList.size(); i++) {
             sb.append(scoreList.get(i));
             if (i < scoreList.size() - 1) {
-                sb.append(","); // Ajoute une virgule entre les scores
+                sb.append(",");
             }
         }
-        return sb.toString(); // Retourne la chaîne formatée
+        return sb.toString();
     }
 
-    /**
-     * Lit toutes les lignes du fichier de scores et les retourne sous forme de liste.
-     * 
-     * @return une liste de chaînes représentant chaque ligne du fichier de scores
-     */
-    // Méthode pour récupérer tous les pseudos
     public static List<String> getAllPseudos() {
         List<String> lines = getAllScores();
         List<String> pseudos = new ArrayList<>();
@@ -122,70 +100,37 @@ public class Score {
                 pseudos.add(parts[0]);
             }
         }
-
         return pseudos;
     }
 
-    /**
-     * Récupère tous les scores associés à un pseudo donné.
-     * 
-     * @param pseudo le pseudo du joueur dont on veut les scores
-     * @return une liste des scores du joueur, ou une liste vide si le pseudo n'existe pas
-     */
-    // Méthode pour obtenir tous les scores d'un pseudo donné
     public static List<Integer> getScoresForPseudo(String pseudo) {
         List<String> lines = getAllScores();
 
         for (String line : lines) {
             if (line.startsWith(pseudo + ":")) {
-                String scoreString = line.substring(pseudo.length() + 1);
-                return parseScores(scoreString);
+                String encryptedScoreString = line.substring(pseudo.length() + 1);
+                String decryptedScores = decryptScore(encryptedScoreString); // Déchiffrer les scores
+                return parseScores(decryptedScores);
             }
         }
-
-        System.out.println("Aucun score trouvé pour le pseudo : " + pseudo);
         return new ArrayList<>();
     }
 
-    /**
-     * Récupère le meilleur score d'un pseudo donné.
-     * 
-     * @param pseudo le pseudo du joueur
-     * @return le meilleur score du joueur, ou 0 si le pseudo n'a aucun score
-     */
-    // Méthode pour obtenir le meilleur score d'un pseudo
     public static int getBestScore(String pseudo) {
         List<Integer> scores = getScoresForPseudo(pseudo);
-        if (!scores.isEmpty()) {
-            return Collections.max(scores);
-        } else {
-            return 0;
-        }
+        return scores.isEmpty() ? 0 : Collections.max(scores);
     }
 
-    /**
-     * Récupère les cinq derniers scores d'un pseudo donné.
-     * 
-     * @param pseudo le pseudo du joueur
-     * @return un tableau des cinq derniers scores du joueur
-     */
-    // Méthode pour obtenir les 5 derniers scores d'un pseudo
     public static int[] getLastFiveScores(String pseudo) {
         List<Integer> scores = getScoresForPseudo(pseudo);
-
-        int[] res = new int[scores.size()];
-        for (int i = 0; i < scores.size(); i++) {
-            res[i] = scores.get(i);
+        int size = Math.min(scores.size(), 5);
+        int[] lastFiveScores = new int[size];
+        for (int i = 0; i < size; i++) {
+            lastFiveScores[i] = scores.get(scores.size() - size + i);
         }
-        return res;
+        return lastFiveScores;
     }
 
-    /**
-     * Lit toutes les lignes du fichier de scores et les retourne sous forme de liste.
-     * 
-     * @return une liste de chaînes représentant chaque ligne du fichier de scores
-     */
-    // Méthode auxiliaire pour lire toutes les lignes du fichier
     private static List<String> getAllScores() {
         String fileName = "scores.txt";
         List<String> lines = new ArrayList<>();
@@ -197,23 +142,24 @@ public class Score {
         } catch (FileNotFoundException e) {
             System.out.println("Aucun fichier de scores trouvé.");
         }
-
         return lines;
     }
 
-    /**
-     * Convertit une chaîne de scores en une liste d'entiers.
-     * 
-     * @param scoreString la chaîne de scores à convertir
-     * @return une liste d'entiers représentant les scores
-     */
-    // Méthode auxiliaire pour convertir une chaîne de scores en liste d'entiers
     private static List<Integer> parseScores(String scoreString) {
         List<Integer> scoreList = new ArrayList<>();
         String[] scoreArray = scoreString.split(",");
+        
         for (String s : scoreArray) {
-            scoreList.add(Integer.parseInt(s.trim()));
+            try {
+                scoreList.add(Integer.parseInt(s.trim()));
+            } catch (NumberFormatException e) {
+                
+                // pour le signaler ou le supprimer.
+                System.out.println("Score invalide détecté et ignoré : " + s);
+            }
         }
+        
         return scoreList;
     }
+    
 }

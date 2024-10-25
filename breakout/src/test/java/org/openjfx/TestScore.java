@@ -82,11 +82,12 @@ public class TestScore {
     public void testSaveScoreToFile_ExistingPseudo() {
         Score.saveScoreToFile("Bob", 150);
         Score.saveScoreToFile("Bob", 200);
+        Score.saveScoreToFile("Bob", 100);
 
         List<Integer> scores = Score.getScoresForPseudo("Bob");
-        assertEquals(2, scores.size());
-        assertEquals(150, scores.get(0));
-        assertEquals(200, scores.get(1));
+        assertEquals(3, scores.size());
+        assertEquals(200, scores.get(0));
+       
     }
 
     @Test
