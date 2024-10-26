@@ -23,6 +23,8 @@ public class Niveau {
         return brickRows;
     }
     
+    //génère aléatoirement en fonction de la difficulté 
+    //une configuration de brique différente sous forme de tableau de brique
     public Brick[][] makeNiveau(){
         Random rd = new Random();
         Brick[][] tab = new Brick[brickRows][brickCols];
@@ -30,7 +32,7 @@ public class Niveau {
         // nb de ligne de brique incrémenté de 1 par niveau de difficulté -1 
         for(int i = 0; i < brickRows; i++){
             for (int j = 0; j < brickCols; j++) {
-                int val = rd.nextInt(100);
+                int val = rd.nextIn(100);
 
                 // probabilité d'avoir une brique incassable (augmente selon la diff)
                 if (val < diff*2){

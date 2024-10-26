@@ -30,7 +30,7 @@ public class NiveauInput extends Niveau{
                 valList.add(courant);
                 nbLine++;
             }
-            if (nbLine == 15) return null;
+            if (scanner.hasNextLine()) return null;
 
             //création du niveau
             Brick[][] niv = new Brick[nbLine][12];
@@ -60,7 +60,6 @@ public class NiveauInput extends Niveau{
             
 
         } catch (FileNotFoundException e) {
-            System.out.println("Aucun fichier trouvé");
             return null;
         }
 
