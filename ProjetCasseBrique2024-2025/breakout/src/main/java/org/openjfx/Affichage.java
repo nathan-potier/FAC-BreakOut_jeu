@@ -94,4 +94,27 @@ public class Affichage {
             gc.fillText("" + lastFiveScores[i], scoresX + 10, scoresY + 50 + (i * 30));
         }
     }
+
+
+    //menu selection mode classique ou personnalisé
+    public static void MenuSelection(GraphicsContext gc, double rectX, double rectY, double rectWidth, double rectHeight){
+        
+        gc.setStroke(Color.YELLOW);
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setFont(Font.font("Courier New",  FontWeight.LIGHT, 25));
+
+
+        //affichage bouton pour mode classique
+        gc.strokeText("Mode classique", BreakOut.getWidth() / 2, BreakOut.getHeight() / 2);
+        gc.strokeRect(rectX, rectY, rectWidth, rectHeight);
+
+        //affichage bouton pour mode personnalisé
+        gc.strokeText("Mode personnalisé", BreakOut.getWidth() / 2, (BreakOut.getHeight() / 2) + 80 );
+        gc.strokeRect(rectX, rectY, rectWidth, rectHeight);
+
+
+        afficherBoutonRetour(gc);
+
+
+    }
 }

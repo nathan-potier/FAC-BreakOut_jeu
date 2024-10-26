@@ -24,6 +24,7 @@ public class BreakOut extends Application {
     
  
 
+    private boolean modeSelection;
     private boolean gameStarted = false;
     private int diff = 1;
     private Niveau niv = new Niveau(5, diff);
@@ -93,9 +94,19 @@ public class BreakOut extends Application {
                     resetGame(); //Réinitialise le jeu -> retour au menu
                     Son.JouerMusique(); // Rejour de la music
                 }
-            }else if (clickX >= rectX && clickX <= rectX + rectWidth && clickY >= rectY && clickY <= rectY + rectHeight) {
-                gameStarted = true;
+            
+            //confirme un input sur le bouton jouer sur le menu principal
+            }else if ( !modeSelection && clickX >= rectX && clickX <= rectX + rectWidth && clickY >= rectY && clickY <= rectY + rectHeight) {
+                modeSelection = true;
                 Son.JouerMusique(); // Rejouer la musique
+            
+            //confirme un input sur le bouton "Mode classique"
+            }else if ( modeSelection && clickX >= rectX && clickX <= rectX + rectWidth && clickY >= rectY && clickY <= rectY + rectHeight){
+                gameStarted = true;
+
+            }
+
+            else if ( modeSelection && clickX >= rectX && clickX <= rectX + rectWidth && clickY >= (rectY + 80) && clickY <= (rectY + rectHeight - 80)){
             }
         });
 
@@ -136,6 +147,10 @@ public class BreakOut extends Application {
 
             Affichage.afficherBoutonRetour(gc); //Affiche le bouton "Retour"
         }else 
+        if (modeSelection){
+            Affichage.MenuSelection(gc, rectX, rectY, rectWidth, rectHeight);
+
+        }
         if (gameStarted) {
             if (!Son.MusiqueEnCours()) { // Rejouer la music pendant que le jeu en cours
                 Son.JouerMusique();
