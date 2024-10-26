@@ -21,10 +21,7 @@ public class BreakOut extends Application {
     private static final int height = 768;
 
 
-    
- 
 
-    private boolean modeSelection;
     private boolean gameStarted = false;
     private int diff = 1;
     private Niveau niv = new Niveau(5, diff);
@@ -40,6 +37,9 @@ public class BreakOut extends Application {
     private double rectHeight = 50;
     private double rectX = (width - rectWidth) / 2;
     private double rectY = (height - rectHeight) / 2;
+
+    private Bouton boutonRetour;
+    private Bouton boutonJouer;
 
  
 
@@ -74,13 +74,19 @@ public class BreakOut extends Application {
         
         Son.JouerMusique(); // Rejouer la musique
     }
-        
+    
+
 
     @Override
     public void start(Stage stage) throws Exception {
 
         Canvas canvas = new Canvas(width, height);
         GraphicsContext gc = canvas.getGraphicsContext2D();
+        
+
+        // Initialiser les boutons
+        boutonRetour = new Bouton(width / 2 - 50, height / 2 + 60, 100, 40, "Retour");
+        boutonJouer = new Bouton(rectX, rectY, rectWidth, rectHeight, "Jouer");
 
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run(gc)));
 		tl.setCycleCount(Timeline.INDEFINITE);
@@ -90,14 +96,12 @@ public class BreakOut extends Application {
             double clickY = e.getY();
             
             if(gameOver){
-                if( verifierCliqueRetour(clickX, clickY, Affichage.getBtnX(), Affichage.getBtnY(), Affichage.getBtnWidth(), Affichage.getBtnHeight())){
+                if(boutonRetour.estClique(clickX, clickY)){
                     resetGame(); //Réinitialise le jeu -> retour au menu
                     Son.JouerMusique(); // Rejour de la music
                 }
-            
-            //confirme un input sur le bouton jouer sur le menu principal
-            }else if ( !modeSelection && clickX >= rectX && clickX <= rectX + rectWidth && clickY >= rectY && clickY <= rectY + rectHeight) {
-                modeSelection = true;
+            }else if (boutonJouer.estClique(clickX, clickY)) {
+                gameStarted = true;
                 Son.JouerMusique(); // Rejouer la musique
             
             //confirme un input sur le bouton "Mode classique"
@@ -138,14 +142,14 @@ public class BreakOut extends Application {
     
     private void run(GraphicsContext gc) {
 
-
+        
         Affichage.setGC(gc);
+
 
         if(gameOver){
             Son.PauseMusique(); // stop music
-            Affichage.afficherFinDeJeu(gc, score); //Affiche la fin du jeu
-
-            Affichage.afficherBoutonRetour(gc); //Affiche le bouton "Retour"
+            Affichage.afficherFinDeJeu(gc, score, boutonRetour);
+            boutonRetour.afficher(gc); // Afficher le bouton "Retour"
         }else 
         if (modeSelection){
             Affichage.MenuSelection(gc, rectX, rectY, rectWidth, rectHeight);
@@ -244,19 +248,11 @@ public class BreakOut extends Application {
 
         } else {
 
-           Affichage.MenuPrincipal(gc, rectX, rectY, rectWidth, rectHeight);
-
+            Affichage.afficherMenuPrincipal(gc, boutonJouer);
             Balle.reset();
         }
         
     }
-
-    public static boolean verifierCliqueRetour(double mouseX, double mouseY, double replayButtonX, double replayButtonY, double replayButtonWidth, double replayButtonHeight){
-        boolean clicked = (mouseX >= replayButtonX && mouseX <= replayButtonX + replayButtonWidth && mouseY >= replayButtonY && mouseY <= replayButtonY + replayButtonHeight);
-        System.out.println("Clicked " + clicked); //juste pour vérifier si le joueur a bien cliqué sur le bouton
-        return clicked;
-    }
-
     
 
     public static void main(String[] args) {
