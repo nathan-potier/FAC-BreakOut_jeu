@@ -22,6 +22,7 @@ public class BreakOut extends Application {
 
 
 
+    private boolean modeSelection = false;
     private boolean gameStarted = false;
     private int diff = 1;
     private Niveau niv = new Niveau(5, diff);
@@ -40,6 +41,9 @@ public class BreakOut extends Application {
 
     private Bouton boutonRetour;
     private Bouton boutonJouer;
+    private Bouton boutonClassique;
+    private Bouton boutonPerso;
+    private Bouton boutonRetourSelec;
 
  
 
@@ -87,6 +91,10 @@ public class BreakOut extends Application {
         // Initialiser les boutons
         boutonRetour = new Bouton(width / 2 - 50, height / 2 + 60, 100, 40, "Retour");
         boutonJouer = new Bouton(rectX, rectY, rectWidth, rectHeight, "Jouer");
+        boutonClassique = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Mode classique");
+        boutonPerso = new Bouton(rectX - 100, rectY + 80, rectWidth + 200, rectHeight, "Mode personnalisé");
+        boutonRetourSelec = new Bouton(rectX, rectY + 250, 100, 40, "Retour");
+
 
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run(gc)));
 		tl.setCycleCount(Timeline.INDEFINITE);
@@ -98,19 +106,19 @@ public class BreakOut extends Application {
             if(gameOver){
                 if(boutonRetour.estClique(clickX, clickY)){
                     resetGame(); //Réinitialise le jeu -> retour au menu
-                    Son.JouerMusique(); // Rejour de la music
+                    Son.JouerMusique(); // Rejoue de la music
                 }
-            }else if (boutonJouer.estClique(clickX, clickY)) {
-                gameStarted = true;
-                Son.JouerMusique(); // Rejouer la musique
+            }else if (!modeSelection && boutonJouer.estClique(clickX, clickY)) {
+                //bascule sur la selection de mode
+                modeSelection = true;
             
             //confirme un input sur le bouton "Mode classique"
-            }else if ( modeSelection && clickX >= rectX && clickX <= rectX + rectWidth && clickY >= rectY && clickY <= rectY + rectHeight){
+            }else if(modeSelection && boutonClassique.estClique(clickX, clickY)){
                 gameStarted = true;
-
-            }
-
-            else if ( modeSelection && clickX >= rectX && clickX <= rectX + rectWidth && clickY >= (rectY + 80) && clickY <= (rectY + rectHeight - 80)){
+            }else if(modeSelection && boutonPerso.estClique(clickX, clickY)){
+                gameStarted = true;
+            }else if(modeSelection && boutonRetourSelec.estClique(clickX, clickY)){
+                modeSelection = false;
             }
         });
 
@@ -152,9 +160,8 @@ public class BreakOut extends Application {
             boutonRetour.afficher(gc); // Afficher le bouton "Retour"
         }else 
         if (modeSelection){
-            Affichage.MenuSelection(gc, rectX, rectY, rectWidth, rectHeight);
-
-        }
+            Affichage.affichageMenuSelection(gc, boutonClassique, boutonPerso, boutonRetourSelec);
+        }else
         if (gameStarted) {
             if (!Son.MusiqueEnCours()) { // Rejouer la music pendant que le jeu en cours
                 Son.JouerMusique();

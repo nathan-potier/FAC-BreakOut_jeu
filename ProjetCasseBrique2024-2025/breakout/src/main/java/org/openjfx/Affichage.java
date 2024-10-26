@@ -129,23 +129,13 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
 
 
     //menu selection mode classique ou personnalisé
-    public static void MenuSelection(GraphicsContext gc, double rectX, double rectY, double rectWidth, double rectHeight){
+    public static void affichageMenuSelection(GraphicsContext gc, Bouton classique, Bouton perso, Bouton retour){
         
-        gc.setStroke(Color.YELLOW);
-        gc.setTextAlign(TextAlignment.CENTER);
-        gc.setFont(Font.font("Courier New",  FontWeight.LIGHT, 25));
+        afficherBoutonJouer(gc, classique);
+        afficherBoutonJouer(gc, perso);
+        retour.afficher(gc);
 
 
-        //affichage bouton pour mode classique
-        gc.strokeText("Mode classique", BreakOut.getWidth() / 2, BreakOut.getHeight() / 2);
-        gc.strokeRect(rectX, rectY, rectWidth, rectHeight);
-
-        //affichage bouton pour mode personnalisé
-        gc.strokeText("Mode personnalisé", BreakOut.getWidth() / 2, (BreakOut.getHeight() / 2) + 80 );
-        gc.strokeRect(rectX, rectY, rectWidth, rectHeight);
-
-
-        afficherBoutonRetour(gc);
 
 
     }

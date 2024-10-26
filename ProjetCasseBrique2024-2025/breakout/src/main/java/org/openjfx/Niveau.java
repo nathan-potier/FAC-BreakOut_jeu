@@ -54,14 +54,4 @@ public class Niveau {
         }
         return tab;
     }
-
-    public void resetNiveau(){
-
-
-
-
-
-
-
-    }
 }
