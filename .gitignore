@@ -23,3 +23,6 @@ breakout/bin/main/org/openjfx/BreakOut.class
 
 # Local score
 scores.txt
+
+# Test niveau personalisé
+custom.txt
