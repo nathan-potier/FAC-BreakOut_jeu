@@ -25,9 +25,10 @@ public class BreakOut extends Application {
     private boolean modeSelection = false;
     private boolean gameStarted = false;
     private int diff = 1;
-    private Niveau niv = new Niveau(5, diff);
+    private Niveau niv; //niveau classique
+    private NiveauInput n = new NiveauInput(null); //niveau perso
 
-    private final int brickRows = niv.getBrickRows();
+    private int brickRows;
     private final int brickCols = 12;
     private Brick[][] bricks;
 
@@ -44,6 +45,9 @@ public class BreakOut extends Application {
     private Bouton boutonClassique;
     private Bouton boutonPerso;
     private Bouton boutonRetourSelec;
+    private Bouton invalide;
+
+    private Fenetre f;
 
  
 
@@ -51,6 +55,7 @@ public class BreakOut extends Application {
 
 
     private boolean gameOver = false;
+    private boolean ouvert = false;
 
 
 
@@ -96,6 +101,12 @@ public class BreakOut extends Application {
         boutonRetourSelec = new Bouton(rectX, rectY + 250, 100, 40, "Retour");
 
 
+
+        // Initialiser la fenetre personnalisé
+        
+        f = new Fenetre(n);
+
+
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run(gc)));
 		tl.setCycleCount(Timeline.INDEFINITE);
 		canvas.setOnMouseMoved(e ->  Racket.setXpos( e.getX() ) );
@@ -114,9 +125,17 @@ public class BreakOut extends Application {
             
             //confirme un input sur le bouton "Mode classique"
             }else if(modeSelection && boutonClassique.estClique(clickX, clickY)){
+                niv = new Niveau(diff);
+                bricks = niv.makeNiveau();
+                brickRows = niv.getBrickRows();
+                modeSelection = false;
                 gameStarted = true;
             }else if(modeSelection && boutonPerso.estClique(clickX, clickY)){
-                gameStarted = true;
+                niv = n;
+                n.setOuvert(true);
+                f.setVisible(true);
+
+
             }else if(modeSelection && boutonRetourSelec.estClique(clickX, clickY)){
                 modeSelection = false;
             }
@@ -133,7 +152,6 @@ public class BreakOut extends Application {
         stage.setScene(new Scene(new StackPane(canvas)));
 
         // Initialise les briques
-        bricks = niv.makeNiveau();
     
             
 
@@ -145,7 +163,7 @@ public class BreakOut extends Application {
         stage.show();
         tl.play();
     }
-
+    
 
     
     private void run(GraphicsContext gc) {
@@ -153,111 +171,131 @@ public class BreakOut extends Application {
         
         Affichage.setGC(gc);
 
+        if (f.isActive()){
 
-        if(gameOver){
-            Son.PauseMusique(); // stop music
-            Affichage.afficherFinDeJeu(gc, score, boutonRetour);
-            boutonRetour.afficher(gc); // Afficher le bouton "Retour"
-        }else 
-        if (modeSelection){
-            Affichage.affichageMenuSelection(gc, boutonClassique, boutonPerso, boutonRetourSelec);
-        }else
-        if (gameStarted) {
-            if (!Son.MusiqueEnCours()) { // Rejouer la music pendant que le jeu en cours
-                Son.JouerMusique();
-            }
-            gc.fillText("Score: " + score, width / 2, height / 2);
+        }
+        else{
+            if(gameOver){
+                Son.PauseMusique(); // stop music
+                Affichage.afficherFinDeJeu(gc, score, boutonRetour);
+                boutonRetour.afficher(gc); // Afficher le bouton "Retour"
+            }else 
+            if (modeSelection){
+                Affichage.affichageMenuSelection(gc, boutonClassique, boutonPerso, boutonRetourSelec);
+                if (n.getPath() != null && n.getOuvert()){
+                    bricks = niv.makeNiveau();
+                    if (bricks == null){
+                        Affichage.afficheTexte(gc, "format du ficher personnalisé invalide");
+                    }
+                    else{
+                        brickRows = niv.getBrickRows();
+                        modeSelection = false;
+                        gameStarted = true;
+                        n.setOuvert(false);
+                    }
 
-            Balle.MAJPosHorizontal();
-            Balle.MAJPosVertical();
-            
-            gc.fillOval(Balle.getXPos(), Balle.getYPos(), Balle.getSize(), Balle.getSize());
+                }
+            }else
+            if (gameStarted) {
+                if (!Son.MusiqueEnCours()) { // Rejouer la music pendant que le jeu en cours
+                    Son.JouerMusique();
+                }
+                gc.fillText("Score: " + score, width / 2, height / 2);
 
-            // Dessiner les briques
-            for (int i = 0; i < brickRows; i++) {
-                for (int j = 0; j < brickCols; j++) {
-                    if (bricks[i][j].isNotBreak) {
-                        double brickX = j * (bricks[i][j].getWidth() + 5);
-                        double brickY = i * (bricks[i][j].getHeight() + 5);
-                        gc.setFill(bricks[i][j].couleur());
-                        gc.fillRect(brickX, brickY, bricks[i][j].getWidth(), bricks[i][j].getHeight());
+                Balle.MAJPosHorizontal();
+                Balle.MAJPosVertical();
+                
+                 gc.fillOval(Balle.getXPos(), Balle.getYPos(), Balle.getSize(), Balle.getSize());
+
+                // Dessiner les briques
+                for (int i = 0; i < brickRows; i++) {
+                    for (int j = 0; j < brickCols; j++) {
+                        if (bricks[i][j].isNotBreak) {
+                            double brickX = j * (bricks[i][j].getWidth() + 5);
+                            double brickY = i * (bricks[i][j].getHeight() + 5);
+                            gc.setFill(bricks[i][j].couleur());
+                            gc.fillRect(brickX, brickY, bricks[i][j].getWidth(), bricks[i][j].getHeight());
+                        }
                     }
                 }
-            }
             
-            // Détection de collision avec les briques
-            for (int i = 0; i < brickRows; i++) {
-                for (int j = 0; j < brickCols; j++) {
+                // Détection de collision avec les briques
+                for (int i = 0; i < brickRows; i++) {
+                    for (int j = 0; j < brickCols; j++) {
 
-                    if (bricks[i][j].isNotBreak) {
-                        double brickX = j * (bricks[i][j].getWidth() + 5);
-                        double brickY = i * (bricks[i][j].getHeight() + 5);
+                        if (bricks[i][j].isNotBreak) {
+                            double brickX = j * (bricks[i][j].getWidth() + 5);
+                            double brickY = i * (bricks[i][j].getHeight() + 5);
             
-                        if (Balle.getXPos() + Balle.getSize() >= brickX &&
-                            Balle.getXPos() <= brickX + bricks[i][j].getWidth() &&
-                            Balle.getYPos() + Balle.getSize() >= brickY +5 &&
-                            Balle.getYPos() <= brickY + bricks[i][j].getHeight() + 5) {
+                            if (Balle.getXPos() + Balle.getSize() >= brickX &&
+                                Balle.getXPos() <= brickX + bricks[i][j].getWidth() &&
+                                Balle.getYPos() + Balle.getSize() >= brickY +5 &&
+                                Balle.getYPos() <= brickY + bricks[i][j].getHeight() + 5) {
             
-                            Balle.Rebond();
+                                Balle.Rebond();
 
-                            if(bricks[i][j].couleur() != Color.GRAY && bricks[i][j].getNbrVie() == 0){
-                                bricks[i][j].isNotBreak = false;
-                                score += bricks[i][j].getScore(); 
+                                if(bricks[i][j].couleur() != Color.GRAY && bricks[i][j].getNbrVie() == 0){
+                                    bricks[i][j].isNotBreak = false;
+                                    score += bricks[i][j].getScore(); 
 
-                                Son.StopSonBrique(); // le son des briques cassées
-                                Son.JouerSonBrique(); // 
+                                    Son.StopSonBrique(); // le son des briques cassées
+                                    Son.JouerSonBrique(); // 
 
-                            }else{
-                                bricks[i][j].setNbrVie(bricks[i][j].getNbrVie() - 1);
+                                }else{
+                                    bricks[i][j].setNbrVie(bricks[i][j].getNbrVie() - 1);
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            // Collision avec les murs
-            if (Balle.getXPos() <= 0 || Balle.getXPos() >= width - Balle.getSize()) {
-                Balle.rebondHorizontal();
-            }
-
-            if (Balle.getYPos() <= 0) {
-                Balle.rebondVertical();
-            }
-
-
-            // Collision avec la raquette
-            if (Balle.getYPos() + Balle.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
-                Balle.getXPos() + Balle.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
-                Balle.getXPos() <= Racket.getXPos() + Racket.getWidth() / 2 && Balle.getYSpeed() > 0){
-
-                Balle.Rebond();
-                 
-                // Jouer le son de rebond de balle
-                Son.StopSonRebond();
-                Son.JouerSonRebond();
-            }
-            if (Balle.getYPos() > Racket.getYPos()){
-                Score.saveScoreToFile(score);
-                bestScore = Score.getBestScore(); // Mettre à jour le meilleur score
-                gameStarted = false; // Fin de la partie
-                gameOver = true; 
-                for (int i = 0; i < brickRows; i++) {
-                    for (int j = 0; j < brickCols; j++) {
-                        bricks[i][j].isNotBreak = true; // Toutes les briques sont présentes au début
-                    }
+                // Collision avec les murs
+                if (Balle.getXPos() <= 0 || Balle.getXPos() >= width - Balle.getSize()) {
+                    Balle.rebondHorizontal();
                 }
+
+                if (Balle.getYPos() <= 0) {
+                    Balle.rebondVertical();
+                }
+
+
+                // Collision avec la raquette
+                if (Balle.getYPos() + Balle.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
+                    Balle.getXPos() + Balle.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
+                    Balle.getXPos() <= Racket.getXPos() + Racket.getWidth() / 2 && Balle.getYSpeed() > 0){
+
+                    Balle.Rebond();
+                 
+                    // Jouer le son de rebond de balle
+                    Son.StopSonRebond();
+                    Son.JouerSonRebond();
+                }
+                if (Balle.getYPos() > Racket.getYPos()){
+                    Score.saveScoreToFile(score);
+                    bestScore = Score.getBestScore(); // Mettre à jour le meilleur score
+                    gameStarted = false; // Fin de la partie
+                    gameOver = true; 
+                    for (int i = 0; i < brickRows; i++) {
+                        for (int j = 0; j < brickCols; j++) {
+                            bricks[i][j].isNotBreak = true; // Toutes les briques sont présentes au début
+                        }
+                    }
+
       
+                }
+                gc.setFill(Color.YELLOW);
+                gc.fillRect(Racket.getXPos() - Racket.getWidth() / 2,
+                Racket.getYPos() - Racket.getHeight() / 2,
+                Racket.getWidth(), Racket.getHeight());
+
+            } else {
+
+                Affichage.afficherMenuPrincipal(gc, boutonJouer);
+                Balle.reset();
             }
-            gc.setFill(Color.YELLOW);
-            gc.fillRect(Racket.getXPos() - Racket.getWidth() / 2,
-                         Racket.getYPos() - Racket.getHeight() / 2,
-                          Racket.getWidth(), Racket.getHeight());
-
-        } else {
-
-            Affichage.afficherMenuPrincipal(gc, boutonJouer);
-            Balle.reset();
         }
+    
+
         
     }
     

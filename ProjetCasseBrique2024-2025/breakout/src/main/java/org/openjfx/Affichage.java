@@ -139,4 +139,10 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
 
 
     }
+
+    public static void afficheTexte(GraphicsContext gc, String texte){
+        gc.setFill(Color.YELLOW);
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.fillText(texte, BreakOut.getWidth() / 2, (BreakOut.getHeight() / 2) + 150);
+    }
 }

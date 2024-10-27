@@ -4,23 +4,26 @@ import java.util.Random;
 
 public class Niveau {
 
-    private final int brickRows;
+    private int brickRows;
     private final int brickCols = 12;
     private final int diff; /* diff >=1 */
 
-    Niveau(int bRows, int diff){
-        brickRows = bRows + diff - 1;
+    Niveau(int diff){
+        brickRows = 5 + diff - 1;
         this.diff = diff;
     }
 
     Niveau(){
         diff = 0;
-        brickRows = 15;
     }
 
 
     public int getBrickRows(){
         return brickRows;
+    }
+
+    public void setBrickRows(int n){
+        brickRows = n;
     }
     
     //génère aléatoirement en fonction de la difficulté 
