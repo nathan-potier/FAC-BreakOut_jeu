@@ -8,13 +8,21 @@ public class Niveau {
     private final int brickCols = 12;
     private final int diff; /* diff >=1 */
 
+
+    // crée un niveau à partir d'une difficulté 
     Niveau(int diff){
-        brickRows = 5 + diff - 1;
-        this.diff = diff;
+        brickRows = (diff < 1)? 5: Math.min(5 + diff - 1, 15);
+        this.diff = (diff < 1)? 1 : Math.min(diff, 10);
     }
 
+
+    // constructeur pour niveau personnalisé
     Niveau(){
         diff = 0;
+    }
+
+    public int getDiff(){
+        return diff;
     }
 
 
