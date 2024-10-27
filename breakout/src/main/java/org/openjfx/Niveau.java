@@ -5,7 +5,7 @@ import java.util.Random;
 public class Niveau {
 
     private int brickRows;
-    private int brickCols;
+    private int brickCols = 12;
     private int diff; /* diff >=1 */
 
 
@@ -13,6 +13,7 @@ public class Niveau {
     Niveau(int diff){
         this.diff = (diff < 1)? 1 : Math.min(diff, 10);
         brickRows = Math.min(5 + this.diff - 1, 14);
+
     }
 
 
@@ -63,6 +64,7 @@ public class Niveau {
 
             }
         }
+        System.out.print(tab.length + "" + tab[0].length);
         return tab;
     }
 }

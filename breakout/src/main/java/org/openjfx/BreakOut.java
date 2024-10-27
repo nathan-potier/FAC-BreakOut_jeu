@@ -123,7 +123,7 @@ public class BreakOut extends Application {
             }else if (!modeSelection && boutonJouer.estClique(clickX, clickY)) {
                 //bascule sur la selection de mode
                 modeSelection = true;
-            
+                Affichage.enregistrerPseudo();  // Stocker le pseudo avant de commencer
             //confirme un input sur le bouton "Mode classique"
             }else if(modeSelection && boutonClassique.estClique(clickX, clickY)){
                 niv = new Niveau(diff);
@@ -131,7 +131,6 @@ public class BreakOut extends Application {
                 brickRows = niv.getBrickRows();
                 modeSelection = false;
                 gameStarted = true;
-                Affichage.enregistrerPseudo();  // Stocker le pseudo avant de commencer
             }else if(modeSelection && boutonPerso.estClique(clickX, clickY)){
                 niv = n;
                 n.setOuvert(true);
@@ -167,7 +166,7 @@ public class BreakOut extends Application {
             
 
         // Charger le meilleur score au début
-        bestScore = Score.getBestScore();
+        bestScore = Score.getBestScore(Pseudo.getPseudo());
 
        
 
@@ -233,7 +232,6 @@ public class BreakOut extends Application {
                 // Détection de collision avec les briques
                 for (int i = 0; i < brickRows; i++) {
                     for (int j = 0; j < brickCols; j++) {
-
                         if (bricks[i][j].isNotBreak) {
                             double brickX = j * (bricks[i][j].getWidth() + 5);
                             double brickY = i * (bricks[i][j].getHeight() + 5);
@@ -282,8 +280,8 @@ public class BreakOut extends Application {
                     Son.JouerSonRebond();
                 }
                 if (Balle.getYPos() > Racket.getYPos()){
-                    Score.saveScoreToFile(score);
-                    bestScore = Score.getBestScore(); // Mettre à jour le meilleur score
+                    Score.saveScoreToFile(Pseudo.getPseudo(), score);
+                    bestScore = Score.getBestScore(Pseudo.getPseudo()); // Mettre à jour le meilleur score
                     gameStarted = false; // Fin de la partie
                     gameOver = true; 
                     for (int i = 0; i < brickRows; i++) {
