@@ -26,7 +26,7 @@ public class BreakOut extends Application {
     private boolean gameStarted = false;
     private int diff = 1;
     private Niveau niv; //niveau classique
-    private NiveauInput n = new NiveauInput(null); //niveau perso
+    private NiveauInput n = new NiveauInput(); //niveau perso
 
     private int brickRows;
     private final int brickCols = 12;

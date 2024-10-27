@@ -14,10 +14,6 @@ public class NiveauInput extends Niveau{
 
     NiveauInput() {ouvert = false;}
 
-    NiveauInput(String path){
-        this.path = path;
-    }
-
 
     public void setPath(String path){
         this.path = path;
@@ -34,19 +30,25 @@ public class NiveauInput extends Niveau{
 
     public boolean getOuvert(){ return ouvert;}
 
+
+
+    // crée le niveau si respect des propriétés sinon renvoie un tableau vide
     @Override
     public Brick[][] makeNiveau(){
                 
         ArrayList<String[]> valList = new ArrayList<String[]>();
         int nbLine = 0;
+        String[] courant;
         //récupération des informations
         try(Scanner scanner = new Scanner(new File(path))){
+            if (!scanner.hasNextLine()) return null;
             while(scanner.hasNextLine() && nbLine < 15){
-                String[] courant = scanner.nextLine().split(",");
+                courant = scanner.nextLine().split(",");
                 if (courant.length != 12) return null;        
                 valList.add(courant);    
                 nbLine++;
             }        
+            
             if (scanner.hasNextLine()) return null;        
             super.setBrickRows(nbLine);
             
