@@ -99,7 +99,19 @@ public class BreakOut extends Application {
 
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run(gc)));
 		tl.setCycleCount(Timeline.INDEFINITE);
-		canvas.setOnMouseMoved(e ->  Racket.setXpos( e.getX() ) );
+        
+		canvas.setOnMouseMoved(e ->{
+            double mouseX = e.getX();
+            double mouseY = e.getY();
+
+            //États visuels des boutons au survol
+            boutonJouer.setHover(boutonJouer.isHover(mouseX, mouseY));
+            boutonRejouer.setHover(boutonRejouer.isHover(mouseX, mouseY));
+            boutonRetour.setHover(boutonRetour.isHover(mouseX, mouseY));
+
+            Racket.setXpos(mouseX);
+        });
+
 		canvas.setOnMouseClicked(e -> {
             double clickX = e.getX();
             double clickY = e.getY();
