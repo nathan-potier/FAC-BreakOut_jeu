@@ -125,6 +125,9 @@ public class BreakOut extends Application {
             boutonJouer.setHover(boutonJouer.isHover(mouseX, mouseY));
             boutonRejouer.setHover(boutonRejouer.isHover(mouseX, mouseY));
             boutonRetour.setHover(boutonRetour.isHover(mouseX, mouseY));
+            boutonClassique.setHover(boutonClassique.isHover(mouseX, mouseY));
+            boutonPerso.setHover(boutonPerso.isHover(mouseX, mouseY));
+            boutonRetourSelec.setHover(boutonRetourSelec.isHover(mouseX, mouseY));
 
             Racket.setXpos(mouseX);
         });
