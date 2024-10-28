@@ -5,7 +5,8 @@ public class PowerUp {
     private static int PUsize = 10; 
     private double PUx = BreakOut.getWidth() / 2;;
     private double PUy = BreakOut.getHeight() / 2;;
-    private boolean actif = false;
+    private boolean tombe = false;
+    private boolean actif;
     private static double PUyspeed = 1;
 
     public PowerUp(double PUx, double PUy){
@@ -13,12 +14,12 @@ public class PowerUp {
         this.PUy = PUy;
     }
     
-    public boolean getActif(){
-        return this.actif;
+    public boolean getTombe(){
+        return this.tombe;
     }
 
-    public void setActif(boolean actif){
-        this.actif = actif;
+    public void setTombe(boolean tombe){
+        this.tombe = tombe;
     }
 
     public  double getPux(){
@@ -40,4 +41,6 @@ public class PowerUp {
     public void applyEffect(){
 
     }
+
+    
 }

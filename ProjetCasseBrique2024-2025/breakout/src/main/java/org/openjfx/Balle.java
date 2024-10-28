@@ -8,6 +8,11 @@ public class Balle {
     private double ballXPos = BreakOut.getWidth() / 2; // ball at the center at game start
     private double ballYPos = BreakOut.getHeight() / 2;
 
+    public Balle(double ballXPos, double ballYPos){
+        this.ballXPos = ballXPos;
+        this.ballYPos = ballYPos;
+    }
+
 
     public int getYSpeed(){ return this.ballYSpeed; }
     public int getXSpeed(){ return this.ballXSpeed; }

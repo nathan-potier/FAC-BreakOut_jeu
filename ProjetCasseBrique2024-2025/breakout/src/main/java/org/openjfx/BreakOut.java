@@ -40,6 +40,8 @@ public class BreakOut extends Application {
     private double rectX = (width - rectWidth) / 2;
     private double rectY = (height - rectHeight) / 2;
     private static double timePU1 = 0;
+    private static double  timePU2 = 0;
+    private static int nbBalle = 1;
     
 
  
@@ -48,7 +50,7 @@ public class BreakOut extends Application {
 
 
     private boolean gameOver = false;
-    private final Balle balle1 = new Balle();
+    private final Balle balle1 = new Balle(BreakOut.getWidth() / 2,BreakOut.getHeight() / 2);
 
 
 
@@ -63,6 +65,7 @@ public class BreakOut extends Application {
         this.score = 0;
 
         balle1.reset();
+        Racket.resetSize();
   
         this.gameOver = false;
         this.gameStarted = false;
@@ -163,7 +166,7 @@ public class BreakOut extends Application {
                         double brickY = i * (bricks[i][j].getHeight() + 5);
                         //application des powerUp aux briques rouges
                         if (bricks[i][j].couleur() == Color.RED && !bricks[i][j].getHavePower()){
-                            bricks[i][j].setPowerUp(new MoreBallSize(brickX,brickY));
+                            bricks[i][j].setPowerUp(new MoreRacketSize(brickX,brickY));
                             bricks[i][j].setHavePower(true);
 
                         }
@@ -197,7 +200,7 @@ public class BreakOut extends Application {
                             if(bricks[i][j].couleur() == Color.RED){
                                 bricks[i][j].isNotBreak = false;
                                 score += bricks[i][j].getScore(); 
-                                bricks[i][j].getPowerUp().setActif(true);
+                                bricks[i][j].getPowerUp().setTombe(true);
 
                                 Son.StopSonBrique(); // le son des briques cassées
                                 Son.JouerSonBrique(); // 
@@ -223,7 +226,7 @@ public class BreakOut extends Application {
             for (int i = 0; i < brickRows; i++) {
                 for (int j = 0; j < brickCols; j++) {
                     if (bricks[i][j].couleur() == Color.RED){
-                        if (bricks[i][j].getPowerUp().getActif()){
+                        if (bricks[i][j].getPowerUp().getTombe()){
                             gc.setFill(Color.BLUE);
                             gc.fillOval(bricks[i][j].getPowerUp().getPux() + bricks[i][j].getWidth()/2, bricks[i][j].getPowerUp().getPuy(), PowerUp.getSize(), PowerUp.getSize());
                             bricks[i][j].getPowerUp().actuPUy();
@@ -231,10 +234,10 @@ public class BreakOut extends Application {
                             bricks[i][j].getPowerUp().getPux() + PowerUp.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
                             bricks[i][j].getPowerUp().getPux() <= Racket.getXPos() + Racket.getWidth() / 2){
                                 bricks[i][j].getPowerUp().applyEffect();
-                                bricks[i][j].getPowerUp().setActif(false);
+                                bricks[i][j].getPowerUp().setTombe(false);
                             }
                             if(bricks[i][j].getPowerUp().getPuy() > Racket.getYPos()){
-                                bricks[i][j].getPowerUp().setActif(false);
+                                bricks[i][j].getPowerUp().setTombe(false);
                             }
                         
     
@@ -252,6 +255,25 @@ public class BreakOut extends Application {
                 }
 
             }
+
+            //Verif powerUp RacketSize actif si oui augmente le temps passé
+            if (Racket.getWidth() > 50){
+                timePU2++;
+                if (timePU2 >= 700){
+                    Racket.resetSize();
+                    timePU2 = 0;
+                }
+
+            }
+            
+            //Verif powerUp actif par brique si oui actualise la position des balles sinon 
+            for (int i = 0; i < brickRows; i++) {
+                for (int j = 0; j < brickCols; j++) {
+
+                }
+            }
+
+
 
             // Collision avec les murs
             if (balle1.getXPos() <= 0 || balle1.getXPos() >= width - Balle.getSize()) {
