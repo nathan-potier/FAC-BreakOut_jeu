@@ -42,6 +42,10 @@ public class BreakOut extends Application {
 
     private Bouton boutonRetour;
     private Bouton boutonJouer;
+    private Bouton boutonSettings;
+
+    private boolean drawSettingsRectangle = false; // Ajoute cet attribut
+
 
  
 
@@ -90,6 +94,7 @@ public class BreakOut extends Application {
         // Initialiser les boutons
         boutonRetour = new Bouton(width / 2 - 50, height / 2 + 60, 100, 40, "Retour");
         boutonJouer = new Bouton(rectX, rectY, rectWidth, rectHeight, "Jouer");
+        boutonSettings = new Bouton(20, height - 80, 100, 40, "Settings");
 
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run(gc)));
 		tl.setCycleCount(Timeline.INDEFINITE);
@@ -101,12 +106,18 @@ public class BreakOut extends Application {
             if(gameOver){
                 if(boutonRetour.estClique(clickX, clickY)){
                     resetGame(); //Réinitialise le jeu -> retour au menu
-                    Son.JouerMusique(); // Rejour de la music
+                    Son.JouerMusique(); // Rejouer la music
                 }
             }else if (boutonJouer.estClique(clickX, clickY)) {
                 gameStarted = true;
                 Affichage.enregistrerPseudo();  // Stocker le pseudo avant de commencer
                 Son.JouerMusique(); // Rejouer la musique
+                drawSettingsRectangle = false; 
+
+            }
+            // Vérifier si le bouton Settings a été cliqué
+            if (!gameStarted && !gameOver && boutonSettings.estClique(clickX, clickY)) {
+                drawSettingsRectangle = !drawSettingsRectangle; // Pour ouvrir et fermer les parametres
             }
         });
 
@@ -252,8 +263,13 @@ public class BreakOut extends Application {
 
         } else {
 
-            Affichage.afficherMenuPrincipal(gc, boutonJouer);
+            Affichage.afficherMenuPrincipal(gc, boutonJouer, boutonSettings, drawSettingsRectangle);
             Balle.reset();
+        }
+
+        // Dessiner le rectangle au-dessus du bouton "Settings"
+        if (drawSettingsRectangle) {
+            Affichage.dessinerRectangle(gc, boutonSettings);
         }
         
     }

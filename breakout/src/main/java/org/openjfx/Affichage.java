@@ -127,6 +127,13 @@ public class Affichage {
         boutonRetour.afficher(gc);
     }
 
+
+
+
+
+
+
+
     /**
      * Affiche le menu principal, incluant le champ de pseudo, le meilleur score,
      * et les derniers scores du joueur.
@@ -135,25 +142,70 @@ public class Affichage {
      * @param boutonJouer Le bouton permettant de commencer une nouvelle partie.
      */
     // Méthode pour afficher le menu principal
-    public static void afficherMenuPrincipal(GraphicsContext gc, Bouton boutonJouer) {
+    public static void afficherMenuPrincipal(GraphicsContext gc, Bouton boutonJouer, Bouton boutonSettings, boolean drawSettingsRectangle) {
         // Affichage du titre du jeu
         afficherTitre(gc);
-
+    
         // Afficher le champ de texte pour le pseudo
-        if (!Pseudo.estDef()){
+        if (!Pseudo.estDef()) {
             afficherChampPseudo(gc);
         }
-        
+    
 
         // Afficher le meilleur score
         afficherMeilleurScore(gc);
-
+    
         // Afficher le bouton "Jouer"
         afficherBoutonJouer(gc, boutonJouer);
-
+    
+        // Afficher le bouton "Settings"
+        afficherBoutonSettings(gc, boutonSettings);  // Appelle la méthode pour afficher le bouton "Settings"
+    
         // Afficher les 5 derniers scores à droite
         afficherDerniersScores(gc);
     }
+
+    // Méthode pour afficher le bouton "Settings"
+    private static void afficherBoutonSettings(GraphicsContext gc, Bouton boutonSettings) {
+        // Configurer les styles du bouton
+        gc.setStroke(Color.YELLOW);
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 20));
+        gc.setTextAlign(TextAlignment.CENTER);
+        
+        // Afficher le bouton "Settings"
+        boutonSettings.afficher(gc);
+    }
+  
+
+    // Méthode pour dessiner un rectangle au-dessus du bouton "Settings"
+    public static void dessinerRectangle(GraphicsContext gc, Bouton boutonSettings) {
+        // Sauvegarder l'état actuel du contexte graphique
+        gc.save();
+
+        // Dessiner le rectangle noir
+        gc.setFill(Color.color(0, 0, 0, 0.7)); // 0.7 est l'alpha pour un noir légèrement transparent
+        gc.fillRect(boutonSettings.getX(), boutonSettings.getY() - 75, 300, 75); // Utiliser la taille souhaitée
+
+        // Dessiner la bordure jaune
+        gc.setStroke(Color.YELLOW);
+        gc.setLineWidth(1); // Ajustez la largeur de la bordure selon vos préférences
+        gc.strokeRect(boutonSettings.getX(), boutonSettings.getY() - 75, 300, 75);
+
+        // Rétablir l'état précédent du contexte graphique
+        gc.restore();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Méthode pour afficher le titre du jeu
     private static void afficherTitre(GraphicsContext gc) {
