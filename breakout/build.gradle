@@ -1,7 +1,21 @@
 plugins {
-  id 'application'
-  id 'org.openjfx.javafxplugin' version '0.0.13'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
 }
+
+dependencies {
+      testImplementation(platform('org.junit:junit-bom:5.11.1'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testRuntimeOnly('org.junit.platform:junit-platform-launcher')
+   }
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
 
 repositories {
     mavenCentral()
@@ -9,11 +23,9 @@ repositories {
 
 javafx {
     version = "21"
-    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.media']
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.media' ] // Ajout de javafx.media ici
 }
 
 application {
     mainClass = 'org.openjfx.BreakOut'
 }
-
-
