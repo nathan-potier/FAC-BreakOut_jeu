@@ -80,7 +80,7 @@ public class BreakOut extends Application {
         bricks = niv.makeNiveau();  // Créer les briques
         brickRows = niv.getBrickRows();  // Définir le nombre de rangées de briques
 
-        this.gameStarted = true;
+        this.gameStarted = false;
         this.isGamePaused = false; 
         boutonJouer.setText("Jouer"); // bouton de réinitialisation
         Son.StopMusique();  // La musique s'arrête
@@ -98,6 +98,8 @@ public class BreakOut extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+
+        modeSelection = false;  
 
         Canvas canvas = new Canvas(width, height);
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -158,6 +160,7 @@ public class BreakOut extends Application {
 
             // bouton de réinitialisation/rejouer
             if (boutonJouer.estClique(clickX, clickY)) {
+                modeSelection=true;
                 if (isGamePaused) {
                     resetGame(); // recommence le jeu
                     isGamePaused = false; // mode continuer
