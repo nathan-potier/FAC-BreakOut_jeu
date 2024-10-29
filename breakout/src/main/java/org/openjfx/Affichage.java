@@ -260,9 +260,9 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
      */
     //Méthode pour afficher la fin du jeu
     public static void afficherFinDeJeu(GraphicsContext gc, int score, Bouton boutonRejouer, Bouton boutonRetour) {
-
-        //Afficher le message perdant
-        afficherMessageFinDeJeu(gc);
+    
+        //Afficher un message à la fin de jeu
+        Message.afficherMessageFinDeJeu(gc, score);  
 
         //Afficher le score actuel
         afficherScoreActuel(gc,score);
@@ -278,14 +278,6 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
 
         //Réafficher les 5 derniers scores à droite
         afficherDerniersScores(gc);
-    }
-
-    //Méthode pour afficher le message à la fin de jeu
-    private static void afficherMessageFinDeJeu(GraphicsContext gc) {
-        gc.setStroke(Color.YELLOW);
-        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 25));
-        gc.setTextAlign(TextAlignment.CENTER);
-        gc.strokeText("GAME OVER!", BreakOut.getWidth() / 2, BreakOut.getHeight() / 2 - 100);
     }
 
     //Méthode pour afficher le score actuel
