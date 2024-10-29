@@ -23,8 +23,10 @@ public class BreakOut extends Application {
 
 
 
+
     private boolean modeSelection = false;
     private boolean gameStarted = false;
+
     private int diff = 1;
     private Niveau niv; //niveau classique
     private NiveauInput n = new NiveauInput(); //niveau perso
@@ -43,6 +45,8 @@ public class BreakOut extends Application {
 
     private Bouton boutonRetour;
     private Bouton boutonJouer;
+    private BoutonMusique boutonMusique;//bouton pour le mode muet et active
+    private BoutonPause boutonPause; 
     private Bouton boutonClassique;
     private Bouton boutonPerso;
     private Bouton boutonRetourSelec;
@@ -50,11 +54,9 @@ public class BreakOut extends Application {
 
     private Fenetre f;
 
- 
-
-    
 
 
+    private boolean isGamePaused = false;
     private boolean gameOver = false;
     private boolean ouvert = false;
 
@@ -73,7 +75,14 @@ public class BreakOut extends Application {
         Balle.reset();
   
         this.gameOver = false;
+    
+        niv = new Niveau(diff);  // Régénérer la disposition des briques
+        bricks = niv.makeNiveau();  // Créer les briques
+        brickRows = niv.getBrickRows();  // Définir le nombre de rangées de briques
+
         this.gameStarted = false;
+        this.isGamePaused = false; 
+        boutonJouer.setText("Jouer"); // bouton de réinitialisation
         Son.StopMusique();  // La musique s'arrête
         
         for(int i=0; i<brickRows; i++){
@@ -90,6 +99,8 @@ public class BreakOut extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
+        modeSelection = false;  
+
         Canvas canvas = new Canvas(width, height);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         
@@ -97,6 +108,8 @@ public class BreakOut extends Application {
         // Initialiser les boutons
         boutonRetour = new Bouton(width / 2 - 50, height / 2 + 60, 100, 40, "Retour");
         boutonJouer = new Bouton(rectX, rectY, rectWidth, rectHeight, "Jouer");
+        boutonMusique = new BoutonMusique(10, height - 50, 100, 40, "Son activé");
+        boutonPause = new BoutonPause(120, height - 50, 100, 40,"Pause");        
         boutonClassique = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Mode classique");
         boutonPerso = new Bouton(rectX - 100, rectY + 80, rectWidth + 200, rectHeight, "Mode personnalisé");
         boutonRetourSelec = new Bouton(rectX, rectY + 250, 100, 40, "Retour");
@@ -114,12 +127,62 @@ public class BreakOut extends Application {
 		canvas.setOnMouseClicked(e -> {
             double clickX = e.getX();
             double clickY = e.getY();
-            
-            if(gameOver){
-                if(boutonRetour.estClique(clickX, clickY)){
-                    resetGame(); //Réinitialise le jeu -> retour au menu
-                    Son.JouerMusique(); // Rejoue de la music
+
+            if (boutonMusique.estClique(clickX, clickY)) {
+                boutonMusique.toggleMuted(); // change le mode muet
+        
+                if (boutonMusique.isMuted()) {
+                    Son.StopMusique();  
+                    Son.muteAllSounds(); // arrete les sons
+                } else {
+                    Son.JouerMusique(); // rejouer
+                    Son.unmuteAllSounds(); // rejouer les sons
                 }
+
+            }
+
+            // parametre du bouton pause
+            if (boutonPause.estClique(clickX, clickY)) {
+                boutonPause.togglePaused(); // change le mode pause
+
+                if (boutonPause.isPaused()) {
+                    isGamePaused = true; // mode pause
+                    gameStarted = false; // arret le jeu
+                    boutonJouer.setText("ReJouer"); // bouton recommence le jeu
+                    Son.PauseMusique(); // stop les sons
+                } else {
+                    gameStarted = true; // rejouer le jeu
+                    isGamePaused = false; // mode en cours
+                    Son.JouerMusique(); // rejouer les sons
+                }
+            }
+
+            // bouton de réinitialisation/rejouer
+            if (boutonJouer.estClique(clickX, clickY)) {
+                modeSelection=true;
+                if (isGamePaused) {
+                    resetGame(); // recommence le jeu
+                    isGamePaused = false; // mode continuer
+                    gameStarted = true; // nouveaux jeu
+                    boutonJouer.setText("Jouer");
+                    boutonPause.setText("Pause"); 
+                    boutonPause.setPaused(false); 
+                    Son.JouerMusique(); 
+                } else if (!gameStarted || gameOver) {
+                    resetGame(); // commence le jeu
+                    boutonPause.setText("Pause"); 
+                    boutonPause.setPaused(false); 
+                }
+            }
+
+            
+            if(gameOver && boutonRetour.estClique(clickX, clickY)){
+                resetGame(); //Réinitialise le jeu -> retour au menu
+                //Son.JouerMusique(); // Rejoue de la music
+            }else if (boutonJouer.estClique(clickX, clickY)) {
+                gameStarted = true;
+                Affichage.enregistrerPseudo();  // Stocker le pseudo avant de commencer
+                Son.JouerMusique(); // Rejouer la musique
             }else if (!modeSelection && boutonJouer.estClique(clickX, clickY)) {
                 //bascule sur la selection de mode
                 modeSelection = true;
@@ -181,8 +244,13 @@ public class BreakOut extends Application {
         
         Affichage.setGC(gc);
 
-        if (f.isActive()){
+        boutonMusique.afficher(gc);// affichage le bouton
+       
+        if (isGamePaused) { 
+            boutonPause.afficher(gc); 
+        }    
 
+        if (f.isActive()){
         }
         else{
             if(gameOver){
@@ -267,6 +335,8 @@ public class BreakOut extends Application {
                     Balle.rebondVertical();
                 }
 
+                boutonMusique.afficher(gc);// affichage le bouton
+                boutonPause.afficher(gc); // affichage le bouton    
 
                 // Collision avec la raquette
                 if (Balle.getYPos() + Balle.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
@@ -289,8 +359,6 @@ public class BreakOut extends Application {
                             bricks[i][j].isNotBreak = true; // Toutes les briques sont présentes au début
                         }
                     }
-
-
                 }
                 gc.setFill(Color.YELLOW);
                 gc.fillRect(Racket.getXPos() - Racket.getWidth() / 2,

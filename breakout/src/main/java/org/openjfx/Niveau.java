@@ -13,7 +13,6 @@ public class Niveau {
     Niveau(int diff){
         this.diff = (diff < 1)? 1 : Math.min(diff, 10);
         brickRows = Math.min(5 + this.diff - 1, 14);
-
     }
 
 
