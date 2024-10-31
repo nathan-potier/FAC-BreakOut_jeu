@@ -47,7 +47,7 @@ public class Score {
      */
     // Méthode pour sauvegarder un score pour un pseudo
     public static void saveScoreToFile(String pseudo, int score) {
-        String fileName = "scores.txt";
+            String fileName = "scores.txt";
         List<String> lines = getAllScores(); // Récupérer toutes les lignes du fichier
         boolean pseudoFound = false;
 
@@ -78,14 +78,14 @@ public class Score {
         }
 
         // Écriture dans le fichier
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (String line : lines) {
                 writer.write(line);
                 writer.newLine();
+                }
+            } catch (IOException e) {
+                System.out.println("Erreur lors de la sauvegarde du score : " + e.getMessage());
             }
-        } catch (IOException e) {
-            System.out.println("Erreur lors de la sauvegarde du score : " + e.getMessage());
-        }
     }
 
     /**
@@ -143,7 +143,7 @@ public class Score {
             }
         }
 
-        //System.out.println("Aucun score trouvé pour le pseudo : " + pseudo);
+        System.out.println("Aucun score trouvé pour le pseudo : " + pseudo);
         return new ArrayList<>();
     }
 
@@ -176,7 +176,7 @@ public class Score {
         int[] res = new int[scores.size()];
         for (int i = 0; i < scores.size(); i++) {
             res[i] = scores.get(i);
-        }
+                    }
         return res;
     }
 
@@ -187,16 +187,16 @@ public class Score {
      */
     // Méthode auxiliaire pour lire toutes les lignes du fichier
     private static List<String> getAllScores() {
-        String fileName = "scores.txt";
+            String fileName = "scores.txt";
         List<String> lines = new ArrayList<>();
 
-        try (Scanner scanner = new Scanner(new File(fileName))) {
+            try (Scanner scanner = new Scanner(new File(fileName))) {
             while (scanner.hasNextLine()) {
                 lines.add(scanner.nextLine());
+                }
+            } catch (FileNotFoundException e) {
+                System.out.println("Aucun fichier de scores trouvé.");
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Aucun fichier de scores trouvé.");
-        }
 
         return lines;
     }
@@ -215,5 +215,5 @@ public class Score {
             scoreList.add(Integer.parseInt(s.trim()));
         }
         return scoreList;
-    }
+        }
 }
