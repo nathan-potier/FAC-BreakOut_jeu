@@ -41,12 +41,17 @@ public class BreakOut extends Application {
     private double rectX = (width - rectWidth) / 2;
     private double rectY = (height - rectHeight) / 2;
 
+    //Espace horizontal entre les boutons "Rejouer" et "Retour"
+    private double espaceEntreBoutons = 40;
 
-    private double rectRejouerY = (height - rectHeight)/2+50;
-    private double rectRetourY = rectRejouerY + rectHeight + 10;
+    private double rectRejouerX = (width - (2 * rectWidth + espaceEntreBoutons)) / 2;
+    private double rectRetourX = rectRejouerX + rectWidth + espaceEntreBoutons;
+    private double rectChangeModeJeuX = (width - rectWidth) / 2;
+    private double rectChangeModeJeuY = rectY + 50 + rectHeight + 15;
 
     private Bouton boutonRejouer;
     private Bouton boutonRetour;
+    private Bouton boutonChangerModeJeu;
     private Bouton boutonJouer;
     private Bouton boutonClassique;
     private Bouton boutonPerso;
@@ -100,8 +105,11 @@ public class BreakOut extends Application {
         
 
         // Initialiser les boutons
-        boutonRejouer = new Bouton(rectX, rectRejouerY, rectWidth+20, rectHeight, "Rejouer");
-        boutonRetour = new Bouton(rectX, rectRetourY, rectWidth+20, rectHeight, "retour");
+        /*MAKIYA */
+        boutonRejouer = new Bouton(rectRejouerX, rectY + 50, rectWidth + 20, rectHeight, "Rejouer");
+        boutonChangerModeJeu = new Bouton(rectChangeModeJeuX - 70, rectChangeModeJeuY, rectWidth + 160, rectHeight, "Changer de mode"); 
+        boutonRetour = new Bouton(rectRetourX, rectY + 50, rectWidth + 20, rectHeight, "retour");
+        /*MAKIYA */
         boutonJouer = new Bouton(rectX, rectY, rectWidth, rectHeight, "Jouer");
         boutonClassique = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Mode classique");
         boutonPerso = new Bouton(rectX - 100, rectY + 80, rectWidth + 200, rectHeight, "Mode personnalisé");
@@ -124,6 +132,7 @@ public class BreakOut extends Application {
             //États visuels des boutons au survol
             boutonJouer.setHover(boutonJouer.isHover(mouseX, mouseY));
             boutonRejouer.setHover(boutonRejouer.isHover(mouseX, mouseY));
+            boutonChangerModeJeu.setHover(boutonChangerModeJeu.isHover(mouseX, mouseY));
             boutonRetour.setHover(boutonRetour.isHover(mouseX, mouseY));
             boutonClassique.setHover(boutonClassique.isHover(mouseX, mouseY));
             boutonPerso.setHover(boutonPerso.isHover(mouseX, mouseY));
@@ -142,6 +151,9 @@ public class BreakOut extends Application {
                     gameStarted = true; //Rejouer le jeu
                     gameOver = false;   //sans retourner au menu principal
                     Son.JouerMusique();
+                }else if(boutonChangerModeJeu.estClique(clickX, clickY)){
+                    resetGame();
+                    modeSelection = true; //retourner sur la selection de mode
                 }else if(boutonRetour.estClique(clickX, clickY)){
                     resetGame(); //Réinitialise le jeu -> retour au menu
                     Son.JouerMusique(); // Rejoue de la music
@@ -213,7 +225,7 @@ public class BreakOut extends Application {
         else{
             if(gameOver){
                 Son.PauseMusique(); // stop music
-                Affichage.afficherFinDeJeu(gc, score, boutonRejouer, boutonRetour);
+                Affichage.afficherFinDeJeu(gc, score, boutonRejouer, boutonChangerModeJeu, boutonRetour);
             }else 
             if (modeSelection){
                 Affichage.affichageMenuSelection(gc, boutonClassique, boutonPerso, boutonRetourSelec);
