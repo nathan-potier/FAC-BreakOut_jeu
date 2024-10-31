@@ -50,7 +50,10 @@ public class BreakOut extends Application {
 
     private Fenetre f;
 
- 
+    private Bouton boutonSettings;
+    private boolean drawSettingsRectangle = false; // Ajoute cet attribut
+
+
 
     
 
@@ -101,6 +104,9 @@ public class BreakOut extends Application {
         boutonPerso = new Bouton(rectX - 100, rectY + 80, rectWidth + 200, rectHeight, "Mode personnalisé");
         boutonRetourSelec = new Bouton(rectX, rectY + 250, 100, 40, "Retour");
 
+        boutonSettings = new Bouton(20, height - 80, 100, 40, "Settings");
+
+
 
 
         // Initialiser la fenetre personnalisé
@@ -124,6 +130,8 @@ public class BreakOut extends Application {
                 //bascule sur la selection de mode
                 modeSelection = true;
                 Affichage.enregistrerPseudo();  // Stocker le pseudo avant de commencer
+                drawSettingsRectangle = false; 
+
             //confirme un input sur le bouton "Mode classique"
             }else if(!gameStarted && modeSelection && boutonClassique.estClique(clickX, clickY)){
                 niv = new Niveau(diff);
@@ -139,6 +147,10 @@ public class BreakOut extends Application {
 
             }else if(modeSelection && boutonRetourSelec.estClique(clickX, clickY)){
                 modeSelection = false;
+            }
+            // Vérifier si le bouton Settings a été cliqué
+            if (!gameStarted && !gameOver && boutonSettings.estClique(clickX, clickY)) {
+                drawSettingsRectangle = !drawSettingsRectangle; // Pour ouvrir et fermer les parametres
             }
         });
 
@@ -293,8 +305,12 @@ public class BreakOut extends Application {
 
             } else {
 
-                Affichage.afficherMenuPrincipal(gc, boutonJouer);
+                Affichage.afficherMenuPrincipal(gc, boutonJouer, boutonSettings, drawSettingsRectangle);
                 Balle.reset();
+            }
+
+            if (drawSettingsRectangle) {
+                Affichage.dessinerRectangle(gc, boutonSettings);
             }
         }        
     }
