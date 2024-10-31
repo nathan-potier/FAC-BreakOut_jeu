@@ -143,7 +143,7 @@ public class Score {
             }
         }
 
-        //System.out.println("Aucun score trouvé pour le pseudo : " + pseudo);
+        System.out.println("Aucun score trouvé pour le pseudo : " + pseudo);
         return new ArrayList<>();
     }
 
