@@ -9,22 +9,8 @@ public class Son {
     private static MediaPlayer mediaPlayer; // La music du jeu
     private static MediaPlayer paddleBoundPlayer; // Le son de rebond de balle
     private static  MediaPlayer brickBreakPlayer; // Le son des brick cassées
-    private static boolean isMuted = false; // mode Muet
+
     
-    //Methode pour arret tous les sons
-    public static void muteAllSounds() {
-        isMuted = true;
-        StopMusique(); 
-        StopSonRebond(); 
-        StopSonBrique();
-    }
-
-    // Methode pour rejouer les sons
-    public static void unmuteAllSounds() {
-        isMuted = false;
-        JouerMusique(); 
-    }
-
 
     //Methode pour initialiser la music de fond
     public static void initBackgroundMusic() {
@@ -51,49 +37,35 @@ public class Son {
     }
 
     public static void JouerMusique(){
-        if (!isMuted) {
-            mediaPlayer.play(); // Rejouer la musique
-        }
+        mediaPlayer.play(); // Rejouer la musique
     }
 
     public static void StopSonRebond(){
-        if (paddleBoundPlayer != null) {
-            paddleBoundPlayer.stop(); 
-        }
+        paddleBoundPlayer.stop(); 
     }
 
     public static void JouerSonRebond(){
-        if (!isMuted) {
-            paddleBoundPlayer.play(); 
-        }
+        paddleBoundPlayer.play(); 
     }
 
     public static void JouerSonBrique(){
-        if (!isMuted) {
-            brickBreakPlayer.play();
-        }
+        brickBreakPlayer.play();
     }
     
     public static void StopSonBrique(){
-        if (brickBreakPlayer != null) {
-            brickBreakPlayer.stop();
-        }
+        brickBreakPlayer.stop();
     }
 
     public static void StopMusique(){
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-        }
+        mediaPlayer.stop();
     }
 
     public static void PauseMusique(){
-        if (mediaPlayer != null) {
-            mediaPlayer.pause();
-        }
+        mediaPlayer.pause();
     }
 
     public static boolean MusiqueEnCours(){
-        return mediaPlayer != null && mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING);
+        return mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING);
     }
 
     
