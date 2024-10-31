@@ -11,6 +11,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -79,7 +82,7 @@ public class BreakOut extends Application {
     public static String getTitre(){ return GAME_TITLE; }
 
     //Réinitialise l'état du jeu pour recommencer une nouvelle partie
-    private void resetGame(){
+    private void resetGame(GraphicsContext gc){
 
         this.score = 0;
 
@@ -94,6 +97,11 @@ public class BreakOut extends Application {
                 bricks[i][j].isNotBreak = true;
             }
         }
+
+        gc.setFont(Font.font("Arial", FontWeight.NORMAL, 25));
+        gc.setFill(Color.YELLOW);
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.fillText("Score: " + score, width / 2, height / 2); //score remise à 0
         
         Son.JouerMusique(); // Rejouer la musique
     }
@@ -151,15 +159,15 @@ public class BreakOut extends Application {
             
             if(gameOver){
                 if(boutonRejouer.estClique(clickX, clickY)){
-                    resetGame();
+                    resetGame(gc);
                     gameStarted = true; //Rejouer le jeu
                     gameOver = false;   //sans retourner au menu principal
                     Son.JouerMusique();
                 }else if(boutonChangerModeJeu.estClique(clickX, clickY)){
-                    resetGame();
+                    resetGame(gc);
                     modeSelection = true; //retourner sur la selection de mode
                 }else if(boutonRetour.estClique(clickX, clickY)){
-                    resetGame(); //Réinitialise le jeu -> retour au menu
+                    resetGame(gc); //Réinitialise le jeu -> retour au menu
                     Son.JouerMusique(); // Rejoue de la music
                 }else if (boutonSettings.estClique(clickX, clickY)) { //bouton "Settings" à la fin de jeu 
                     drawSettingsRectangle = !drawSettingsRectangle; //l'affichage du rectangle
