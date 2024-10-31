@@ -43,6 +43,10 @@ public class BreakOut extends Application {
 
     private Bouton boutonRetour;
     private Bouton boutonJouer;
+    private Bouton boutonSettings;
+
+    private boolean drawSettingsRectangle = false; // Ajoute cet attribut
+
     private Bouton boutonClassique;
     private Bouton boutonPerso;
     private Bouton boutonRetourSelec;
@@ -97,6 +101,9 @@ public class BreakOut extends Application {
         // Initialiser les boutons
         boutonRetour = new Bouton(width / 2 - 50, height / 2 + 60, 100, 40, "Retour");
         boutonJouer = new Bouton(rectX, rectY, rectWidth, rectHeight, "Jouer");
+
+        boutonSettings = new Bouton(20, height - 80, 100, 40, "Settings");
+
         boutonClassique = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Mode classique");
         boutonPerso = new Bouton(rectX - 100, rectY + 80, rectWidth + 200, rectHeight, "Mode personnalisé");
         boutonRetourSelec = new Bouton(rectX, rectY + 250, 100, 40, "Retour");
@@ -106,6 +113,7 @@ public class BreakOut extends Application {
         // Initialiser la fenetre personnalisé
         
         f = new Fenetre(n);
+
 
 
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run(gc)));
@@ -118,12 +126,20 @@ public class BreakOut extends Application {
             if(gameOver){
                 if(boutonRetour.estClique(clickX, clickY)){
                     resetGame(); //Réinitialise le jeu -> retour au menu
-                    Son.JouerMusique(); // Rejoue de la music
+                    Son.JouerMusique(); // Rejouer la music
                 }
             }else if (!modeSelection && boutonJouer.estClique(clickX, clickY)) {
                 //bascule sur la selection de mode
                 modeSelection = true;
                 Affichage.enregistrerPseudo();  // Stocker le pseudo avant de commencer
+                Son.JouerMusique(); // Rejouer la musique
+                drawSettingsRectangle = false; 
+
+            }
+            // Vérifier si le bouton Settings a été cliqué
+            if (!gameStarted && !gameOver && boutonSettings.estClique(clickX, clickY)) {
+                drawSettingsRectangle = !drawSettingsRectangle; // Pour ouvrir et fermer les parametres
+
             //confirme un input sur le bouton "Mode classique"
             }else if(modeSelection && boutonClassique.estClique(clickX, clickY)){
                 niv = new Niveau(diff);
@@ -302,7 +318,26 @@ public class BreakOut extends Application {
                 Affichage.afficherMenuPrincipal(gc, boutonJouer);
                 Balle.reset();
             }
+
+            gc.setFill(Color.YELLOW);
+            gc.fillRect(Racket.getXPos() - Racket.getWidth() / 2,
+                         Racket.getYPos() - Racket.getHeight() / 2,
+                          Racket.getWidth(), Racket.getHeight());
+
+        } else {
+
+            Affichage.afficherMenuPrincipal(gc, boutonJouer, boutonSettings, drawSettingsRectangle);
+            Balle.reset();
+        }
+
+        // Dessiner le rectangle au-dessus du bouton "Settings"
+        if (drawSettingsRectangle) {
+            Affichage.dessinerRectangle(gc, boutonSettings);
+        }
+        
+
         }        
+
     }
     
 
