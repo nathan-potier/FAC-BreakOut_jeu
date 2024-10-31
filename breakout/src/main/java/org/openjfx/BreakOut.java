@@ -115,7 +115,6 @@ public class BreakOut extends Application {
         boutonClassique = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Mode classique");
         boutonPerso = new Bouton(rectX - 100, rectY + 80, rectWidth + 200, rectHeight, "Mode personnalisé");
         boutonRetourSelec = new Bouton(rectX, rectY + 250, 100, 40, "Retour");
-
         boutonSettings = new Bouton(20, height - 80, 100, 40, "Settings");
 
 
@@ -141,6 +140,7 @@ public class BreakOut extends Application {
             boutonClassique.setHover(boutonClassique.isHover(mouseX, mouseY));
             boutonPerso.setHover(boutonPerso.isHover(mouseX, mouseY));
             boutonRetourSelec.setHover(boutonRetourSelec.isHover(mouseX, mouseY));
+            boutonSettings.setHover(boutonSettings.isHover(mouseX,mouseY));
 
             Racket.setXpos(mouseX);
         });
@@ -161,6 +161,8 @@ public class BreakOut extends Application {
                 }else if(boutonRetour.estClique(clickX, clickY)){
                     resetGame(); //Réinitialise le jeu -> retour au menu
                     Son.JouerMusique(); // Rejoue de la music
+                }else if (boutonSettings.estClique(clickX, clickY)) { //bouton "Settings" à la fin de jeu 
+                    drawSettingsRectangle = !drawSettingsRectangle; //l'affichage du rectangle
                 }
             }else if (!gameStarted && !modeSelection && boutonJouer.estClique(clickX, clickY)) {
                 //bascule sur la selection de mode
@@ -235,7 +237,7 @@ public class BreakOut extends Application {
         else{
             if(gameOver){
                 Son.PauseMusique(); // stop music
-                Affichage.afficherFinDeJeu(gc, score, boutonRejouer, boutonChangerModeJeu, boutonRetour);
+                Affichage.afficherFinDeJeu(gc, score, boutonRejouer, boutonChangerModeJeu, boutonRetour, boutonSettings, drawSettingsRectangle);
             }else 
             if (modeSelection){
                 Affichage.affichageMenuSelection(gc, boutonClassique, boutonPerso, boutonRetourSelec);
