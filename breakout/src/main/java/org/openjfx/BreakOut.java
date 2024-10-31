@@ -145,7 +145,7 @@ public class BreakOut extends Application {
                 f.setVisible(true);
 
 
-            }else if(modeSelection && boutonRetourSelec.estClique(clickX, clickY)){
+            }else if(!gameStarted && modeSelection && boutonRetourSelec.estClique(clickX, clickY)){
                 modeSelection = false;
             }
             // Vérifier si le bouton Settings a été cliqué
