@@ -60,6 +60,15 @@ public class Niveau {
     }
 
     /**
+     * Renvoie le nombre de ligne du tableau.
+     * 
+     * @return Entier correspondant au nombre de ligne du tableau.
+     */
+    public int getBrickRows(){
+        return brickRows;
+    }
+
+    /**
      * Fixe le nombre de ligne à n, destinée au niveau personnalisé.
      * 
      * @param n Entier représentant le nombre de ligne du tableau à creer.
