@@ -46,8 +46,8 @@ public class BreakOut extends Application {
 
     private double rectRejouerX = (width - (2 * rectWidth + espaceEntreBoutons)) / 2;
     private double rectRetourX = rectRejouerX + rectWidth + espaceEntreBoutons;
-    private double rectChangeModeJeuX = (width - rectWidth) / 2;
-    private double rectChangeModeJeuY = rectY + 50 + rectHeight + 15;
+    private double rectChangerModeJeuX = (width - rectWidth) / 2;
+    private double rectChangerModeJeuY = rectY + 50 + rectHeight + 15;
 
     private Bouton boutonRejouer;
     private Bouton boutonRetour;
@@ -105,11 +105,9 @@ public class BreakOut extends Application {
         
 
         // Initialiser les boutons
-        /*MAKIYA */
         boutonRejouer = new Bouton(rectRejouerX, rectY + 50, rectWidth + 20, rectHeight, "Rejouer");
-        boutonChangerModeJeu = new Bouton(rectChangeModeJeuX - 70, rectChangeModeJeuY, rectWidth + 160, rectHeight, "Changer de mode"); 
+        boutonChangerModeJeu = new Bouton(rectChangerModeJeuX - 70, rectChangerModeJeuY, rectWidth + 160, rectHeight, "Changer de mode"); 
         boutonRetour = new Bouton(rectRetourX, rectY + 50, rectWidth + 20, rectHeight, "retour");
-        /*MAKIYA */
         boutonJouer = new Bouton(rectX, rectY, rectWidth, rectHeight, "Jouer");
         boutonClassique = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Mode classique");
         boutonPerso = new Bouton(rectX - 100, rectY + 80, rectWidth + 200, rectHeight, "Mode personnalisé");

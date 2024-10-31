@@ -307,7 +307,6 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
         boutonRejouer.afficher(gc);
     }
 
-    /*MAKIYA */
     //Méthode pour afficher le bouton "Changer de mode"
     private static void afficherBoutonChangeModeJeu(GraphicsContext gc, Bouton boutonChangerMode) {
         gc.setStroke(Color.YELLOW);
@@ -315,7 +314,6 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
         gc.setTextAlign(TextAlignment.CENTER);
         boutonChangerMode.afficher(gc);
     }
-    /*MAKIYA */
 
     //Méthode pour afficher le bouton "Retour"
     private static void afficherBoutonRetour(GraphicsContext gc, Bouton boutonRetour) {
