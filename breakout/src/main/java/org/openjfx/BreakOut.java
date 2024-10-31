@@ -22,12 +22,14 @@ public class BreakOut extends Application {
 
     private static final String GAME_TITLE = "BreakOut";
     private static final int width = 1024;
-    private static final int height = 768;
+    private static final int height = 700;
 
 
 
     private boolean modeSelection = false;
     private boolean gameStarted = false;
+    private boolean finDeJeu = false;
+    private boolean type = true;
     private int diff = 1;
     private Niveau niv; //niveau classique
     private NiveauInput n = new NiveauInput(); //niveau perso
@@ -59,7 +61,8 @@ public class BreakOut extends Application {
     private Bouton boutonClassique;
     private Bouton boutonPerso;
     private Bouton boutonRetourSelec;
-    private Bouton invalide;
+    private Bouton boutonProchainNiveau;
+    private Bouton boutonRecommencer;
 
     private Fenetre f;
 
@@ -123,6 +126,10 @@ public class BreakOut extends Application {
         boutonClassique = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Mode classique");
         boutonPerso = new Bouton(rectX - 100, rectY + 80, rectWidth + 200, rectHeight, "Mode personnalisé");
         boutonRetourSelec = new Bouton(rectX, rectY + 250, 100, 40, "Retour");
+        boutonProchainNiveau = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Prochain niveau");
+        boutonRecommencer = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Recommencer");
+
+
         boutonSettings = new Bouton(20, height - 80, 100, 40, "Settings");
 
 
@@ -172,32 +179,49 @@ public class BreakOut extends Application {
                 }else if (boutonSettings.estClique(clickX, clickY)) { //bouton "Settings" à la fin de jeu 
                     drawSettingsRectangle = !drawSettingsRectangle; //l'affichage du rectangle
                 }
-            }else if (!gameStarted && !modeSelection && boutonJouer.estClique(clickX, clickY)) {
+            }else if (!gameStarted && !modeSelection && !finDeJeu && boutonJouer.estClique(clickX, clickY)) {
                 //bascule sur la selection de mode
                 modeSelection = true;
                 Affichage.enregistrerPseudo();  // Stocker le pseudo avant de commencer
                 drawSettingsRectangle = false; 
 
-            //confirme un input sur le bouton "Mode classique"
-            }else if(!gameStarted && modeSelection && boutonClassique.estClique(clickX, clickY)){
+            //confirme un input sur le bouton "Mode classique" ou "Prochain niveau"
+            }else if(!gameStarted && type && ((modeSelection && boutonClassique.estClique(clickX, clickY))
+                    || (finDeJeu && boutonProchainNiveau.estClique(clickX, clickY)))){
                 niv = new Niveau(diff);
                 bricks = niv.makeNiveau();
                 brickRows = niv.getBrickRows();
                 modeSelection = false;
+                finDeJeu = false;
                 gameStarted = true;
+                type = true;
+
+            //confirme un input sur le bouton Personnalisé
             }else if(!gameStarted && modeSelection && boutonPerso.estClique(clickX, clickY)){
                 niv = n;
                 n.setOuvert(true);
                 f.setVisible(true);
 
 
-            }else if(!gameStarted && modeSelection && boutonRetourSelec.estClique(clickX, clickY)){
+            }else if(!gameStarted && 
+                    ((modeSelection && boutonRetourSelec.estClique(clickX, clickY))||
+                    finDeJeu && boutonRetourSelec.estClique(clickX, clickY))){
                 modeSelection = false;
+                finDeJeu = false;
+            }else if(!gameStarted && !type && boutonRecommencer.estClique(clickX, clickY)){
+                resetGame(gc);
+                gameStarted = true;
+                niv.resetBrick();
             }
+
+
+
+
             // Vérifier si le bouton Settings a été cliqué
             if (!gameStarted && !gameOver && boutonSettings.estClique(clickX, clickY)) {
                 drawSettingsRectangle = !drawSettingsRectangle; // Pour ouvrir et fermer les parametres
             }
+
         });
 
         Son.initBackgroundMusic();//Initialiser la music 
@@ -243,6 +267,23 @@ public class BreakOut extends Application {
 
         }
         else{
+            if (!gameStarted && finDeJeu){
+                if (type){
+                    Affichage.affichageMenuProchainNiveau(gc, boutonProchainNiveau, boutonRetourSelec);
+                }
+                else{
+                    Affichage.affichageMenuProchainNiveau(gc, boutonRecommencer, boutonRetourSelec);
+                }
+            }
+            else
+            if (gameStarted && niv.finDeJeu()){
+                gameStarted = false;
+                finDeJeu = niv.finDeJeu();
+                if (type){
+                    if (diff <10) diff++;
+                }
+            }
+            else
             if(gameOver){
                 Son.PauseMusique(); // stop music
                 Affichage.afficherFinDeJeu(gc, score, boutonRejouer, boutonChangerModeJeu, boutonRetour, boutonSettings, drawSettingsRectangle);
@@ -255,6 +296,7 @@ public class BreakOut extends Application {
                         Affichage.afficheTexte(gc, "format du ficher personnalisé invalide");
                     }
                     else{
+                        type = false;
                         brickRows = niv.getBrickRows();
                         modeSelection = false;
                         gameStarted = true;
@@ -262,7 +304,7 @@ public class BreakOut extends Application {
                     }
                 }
             }else
-            if (gameStarted) {
+            if (gameStarted && !niv.finDeJeu()) {
                 if (!Son.MusiqueEnCours()) { // Rejouer la music pendant que le jeu en cours
                     Son.JouerMusique();
                 }
@@ -301,7 +343,9 @@ public class BreakOut extends Application {
 
                                 if(bricks[i][j].couleur() != Color.GRAY && bricks[i][j].getNbrVie() == 0){
                                     bricks[i][j].isNotBreak = false;
+                                    niv.brickDetruite();
                                     score += bricks[i][j].getScore(); 
+
 
                                     Son.StopSonBrique(); // le son des briques cassées
                                     Son.JouerSonBrique(); // 

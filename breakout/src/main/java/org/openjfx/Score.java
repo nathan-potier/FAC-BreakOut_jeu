@@ -142,8 +142,6 @@ public class Score {
                 return parseScores(scoreString);
             }
         }
-
-        System.out.println("Aucun score trouvé pour le pseudo : " + pseudo);
         return new ArrayList<>();
     }
 

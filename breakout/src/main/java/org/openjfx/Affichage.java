@@ -370,10 +370,8 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
         
         afficherBoutonJouer(gc, classique);
         afficherBoutonJouer(gc, perso);
-        retour.afficher(gc);
 
-
-
+        retour.afficher(gc);    
     }
 
     public static void afficheTexte(GraphicsContext gc, String texte){
@@ -381,4 +379,12 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
         gc.setTextAlign(TextAlignment.CENTER);
         gc.fillText(texte, BreakOut.getWidth() / 2, (BreakOut.getHeight() / 2) + 150);
     }
+
+    //menu selection mode classique ou personnalisé
+    public static void affichageMenuProchainNiveau(GraphicsContext gc, Bouton prochainNiveau, Bouton retour){
+        
+        afficherBoutonJouer(gc, prochainNiveau);
+        retour.afficher(gc);    
+    }
+
 }
