@@ -30,7 +30,7 @@ import javafx.scene.input.KeyEvent;
  * </p>
  * 
  * @author Nathan Potier
- * @version 1.0
+ * @version 1.1
  */
 
 public class Affichage {
@@ -103,29 +103,6 @@ public class Affichage {
         gc.setFill(Color.WHITE);
     }
 
-
-
-    /**
-     * Affiche l'écran de fin de jeu avec le score actuel et le meilleur score.
-     * 
-     * @param gc Le contexte graphique pour dessiner l'interface.
-     * @param score Le score actuel du joueur.
-     * @param boutonRetour Le bouton permettant de retourner au menu principal.
-     */
-    //Méthode pour afficher la fin du jeu
-    public static void afficherFinDeJeu(GraphicsContext gc, int score, Bouton boutonRetour) {
-        gc.setFill(Color.YELLOW);
-        gc.setFont(Font.font(25));
-        gc.setTextAlign(TextAlignment.CENTER);
-
-        // Message "Game Over" et score
-        gc.fillText("Game Over!", BreakOut.getWidth() / 2, BreakOut.getHeight() / 2 - 30);
-        gc.fillText("Score: " + score, BreakOut.getWidth() / 2, BreakOut.getHeight() / 2);
-        gc.fillText("Best Score: " + Score.getBestScore(Pseudo.getPseudo()), BreakOut.getWidth() / 2, BreakOut.getHeight() / 2 + 30);
-
-        // Afficher le bouton "Retour"
-        boutonRetour.afficher(gc);
-    }
 
     /**
      * Affiche le menu principal, incluant le champ de pseudo, le meilleur score,
@@ -309,11 +286,91 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
     }
 
 
+
+    /**
+     * Affiche l'écran de fin de jeu avec le score actuel, le meilleur score et les derniers scores du joueur.
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param score Le score actuel du joueur.
+     * @param boutonRejouer Le bouton permettant de rejouer le jeu sans retourner au menu principal.
+     * @param boutonChangeModeJeu Le bouton permettant de rechoisir le mode de jeu.
+     * @param boutonRetour Le bouton permettant de retourner au menu principal.
+     * @param boutonSettings Le bouton permettant d'aller dans les paramètres.
+     */
+    //Méthode pour afficher la fin du jeu
+    public static void afficherFinDeJeu(GraphicsContext gc, int score, Bouton boutonRejouer, Bouton boutonChangeMode, Bouton boutonRetour, Bouton boutonSettings, boolean drawSettingsRectangle) {
+    
+        //Afficher un message à la fin de jeu
+        Message.afficherMessageFinDeJeu(gc, score);  
+
+        //Afficher le score actuel
+        afficherScoreActuel(gc,score);
+
+        //Afficher le meilleur score
+        afficherMeilleurScoreFinDeJeu(gc);
+
+        //Afficher le bouton rejouer
+        afficherBoutonRejouer(gc, boutonRejouer);
+
+        //Afficher le bouton change mode de jeu 
+        afficherBoutonChangeModeJeu(gc, boutonChangeMode);
+
+        //Afficher le bouton retour
+        afficherBoutonRetour(gc, boutonRetour);
+
+        // Afficher le bouton "Settings"
+        afficherBoutonSettings(gc, boutonSettings);
+
+        //Réafficher les 5 derniers scores à droite
+        afficherDerniersScores(gc);
+    }
+
+    //Méthode pour afficher le score actuel
+    private static void afficherScoreActuel(GraphicsContext gc, int score) {
+        gc.setFont(Font.font("Arial", FontWeight.NORMAL, 25));
+        gc.setStroke(Color.YELLOW);
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.strokeText("Score: " + score, BreakOut.getWidth() / 2, BreakOut.getHeight() / 2 - 50);
+    }
+
+    //Méthode pour afficher le meilleur score à la fin de jeu
+    private static void afficherMeilleurScoreFinDeJeu(GraphicsContext gc) {
+        gc.setFont(Font.font("Arial", FontWeight.NORMAL, 25));
+        gc.setStroke(Color.YELLOW);
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.strokeText("Best Score: " + Score.getBestScore(Pseudo.getPseudo()), BreakOut.getWidth() / 2, BreakOut.getHeight() / 2);
+    }
+
+    //Méthode pour afficher le bouton "Rejouer"
+    private static void afficherBoutonRejouer(GraphicsContext gc, Bouton boutonRejouer) {
+        gc.setStroke(Color.YELLOW);
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 25));
+        gc.setTextAlign(TextAlignment.CENTER);
+        boutonRejouer.afficher(gc);
+    }
+
+    //Méthode pour afficher le bouton "Changer de mode"
+    private static void afficherBoutonChangeModeJeu(GraphicsContext gc, Bouton boutonChangerMode) {
+        gc.setStroke(Color.YELLOW);
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 25));
+        gc.setTextAlign(TextAlignment.CENTER);
+        boutonChangerMode.afficher(gc);
+    }
+
+    //Méthode pour afficher le bouton "Retour"
+    private static void afficherBoutonRetour(GraphicsContext gc, Bouton boutonRetour) {
+        gc.setStroke(Color.YELLOW);
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 25));
+        gc.setTextAlign(TextAlignment.CENTER);
+        boutonRetour.afficher(gc);
+    }
+
     //menu selection mode classique ou personnalisé
     public static void affichageMenuSelection(GraphicsContext gc, Bouton classique, Bouton perso, Bouton retour){
         
         afficherBoutonJouer(gc, classique);
         afficherBoutonJouer(gc, perso);
+
         retour.afficher(gc);    
     }
 

@@ -25,12 +25,15 @@ import javafx.scene.text.TextAlignment;
  * Les boutons sont stylisés en jaune et affichent leur texte centré.
  * </p>
  * 
- * @version 1.0
+ * @version 1.1
  */
 public class Bouton {
 
     private double x, y, width, height;
     private String text;
+    private Color defaultColor = Color.YELLOW;
+    private Color hoverColor = Color.RED;
+    private boolean isHover = false;
 
     /**
      * Constructeur de la classe Bouton.
@@ -78,16 +81,29 @@ public class Bouton {
     public double getHeight() { return height; }
 
     /**
+     * Définit l'état de survol du bouton.
+     * 
+     * @param hover vrai si le bouton est survolé sinon faux
+     */
+    public void setHover(boolean hover){ this.isHover = hover; }
+
+    /**
      * Affiche le bouton sur l'écran.
      * 
      * <p>
      * Le bouton est dessiné en utilisant un rectangle jaune avec son texte centré.
+     * Si le bouton est survolé, sa couleur de contour change.
      * </p>
      * 
      * @param gc le contexte graphique dans lequel le bouton est dessiné
      */
     public void afficher(GraphicsContext gc) {
-        gc.setStroke(Color.YELLOW);
+        if(isHover){
+            gc.setStroke(hoverColor);
+        }else{
+            gc.setStroke(defaultColor);
+        }
+        
         gc.strokeRect(x, y, width, height);
         gc.setTextAlign(TextAlignment.CENTER);
         gc.strokeText(text, x + width / 2, y + height / 2 + 5);
@@ -103,4 +119,10 @@ public class Bouton {
     public boolean estClique(double mouseX, double mouseY) {
         return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
+
+    // Vérifier si la souris est au-dessus du bouton
+    public boolean isHover(double mouseX, double mouseY){
+        return estClique(mouseX, mouseY);
+    }
+    
 }
