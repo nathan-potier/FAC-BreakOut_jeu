@@ -259,7 +259,7 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
      * @param boutonRetour Le bouton permettant de retourner au menu principal.
      */
     //Méthode pour afficher la fin du jeu
-    public static void afficherFinDeJeu(GraphicsContext gc, int score, Bouton boutonRejouer, Bouton boutonRetour) {
+    public static void afficherFinDeJeu(GraphicsContext gc, int score, Bouton boutonRejouer, Bouton boutonChangeMode, Bouton boutonRetour) {
     
         //Afficher un message à la fin de jeu
         Message.afficherMessageFinDeJeu(gc, score);  
@@ -272,6 +272,9 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
 
         //Afficher le bouton rejouer
         afficherBoutonRejouer(gc, boutonRejouer);
+
+        //Afficher le bouton change mode de jeu 
+        afficherBoutonChangeModeJeu(gc, boutonChangeMode);
 
         //Afficher le bouton retour
         afficherBoutonRetour(gc, boutonRetour);
@@ -303,6 +306,16 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
         gc.setTextAlign(TextAlignment.CENTER);
         boutonRejouer.afficher(gc);
     }
+
+    /*MAKIYA */
+    //Méthode pour afficher le bouton "Changer de mode"
+    private static void afficherBoutonChangeModeJeu(GraphicsContext gc, Bouton boutonChangerMode) {
+        gc.setStroke(Color.YELLOW);
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 25));
+        gc.setTextAlign(TextAlignment.CENTER);
+        boutonChangerMode.afficher(gc);
+    }
+    /*MAKIYA */
 
     //Méthode pour afficher le bouton "Retour"
     private static void afficherBoutonRetour(GraphicsContext gc, Bouton boutonRetour) {
