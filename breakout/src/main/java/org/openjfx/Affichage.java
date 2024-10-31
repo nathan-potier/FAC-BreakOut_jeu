@@ -215,24 +215,24 @@ public class Affichage {
         gc.fillText(BreakOut.getTitre(), BreakOut.getWidth() / 2, 110);
     }
 
-    // Méthode pour afficher le meilleur score
-    private static void afficherMeilleurScore(GraphicsContext gc) {
-        gc.setFont(Font.font("Arial", FontWeight.NORMAL, 25));
-        gc.setStroke(Color.YELLOW);
-        gc.setTextAlign(TextAlignment.CENTER);
+// Méthode pour afficher le meilleur score
+private static void afficherMeilleurScore(GraphicsContext gc) {
+    gc.setFont(Font.font("Arial", FontWeight.NORMAL, 25));
+    gc.setStroke(Color.YELLOW);
+    gc.setTextAlign(TextAlignment.CENTER);
         gc.strokeText("Best Score: " + Score.getBestScore(Pseudo.getPseudo()), BreakOut.getWidth() / 2, BreakOut.getHeight() / 2 + 60);
-    }
+}
 
-    // Méthode pour afficher le bouton "Jouer"
-    private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) {
-        // Configurer les styles du bouton
-        gc.setStroke(Color.YELLOW);
-        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 25));
-        gc.setTextAlign(TextAlignment.CENTER);
-        
-        // Afficher le bouton "Jouer"
-        boutonJouer.afficher(gc);
-    }
+// Méthode pour afficher le bouton "Jouer"
+private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) {
+    // Configurer les styles du bouton
+    gc.setStroke(Color.YELLOW);
+    gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 25));
+    gc.setTextAlign(TextAlignment.CENTER);
+    
+    // Afficher le bouton "Jouer"
+    boutonJouer.afficher(gc);
+}
 
     // Méthode pour afficher les 5 derniers scores dans un rectangle à droite
     private static void afficherDerniersScores(GraphicsContext gc) {
@@ -323,7 +323,22 @@ public class Affichage {
         isEnteringPseudo = true;  // Réactiver la saisie quand on retourne au menu
     }
 
-    
+
+    //menu selection mode classique ou personnalisé
+    public static void affichageMenuSelection(GraphicsContext gc, Bouton classique, Bouton perso, Bouton retour){
+        
+        afficherBoutonJouer(gc, classique);
+        afficherBoutonJouer(gc, perso);
+        retour.afficher(gc);
 
 
+
+
+    }
+
+    public static void afficheTexte(GraphicsContext gc, String texte){
+        gc.setFill(Color.YELLOW);
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.fillText(texte, BreakOut.getWidth() / 2, (BreakOut.getHeight() / 2) + 150);
+    }
 }
