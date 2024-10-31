@@ -292,11 +292,13 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
      * 
      * @param gc Le contexte graphique pour dessiner l'interface.
      * @param score Le score actuel du joueur.
-     * @param boutonRejouer Le bouton permettant de rejouer le jeu sans retourner au menu principal
+     * @param boutonRejouer Le bouton permettant de rejouer le jeu sans retourner au menu principal.
+     * @param boutonChangeModeJeu Le bouton permettant de rechoisir le mode de jeu.
      * @param boutonRetour Le bouton permettant de retourner au menu principal.
+     * @param boutonSettings Le bouton permettant d'aller dans les paramètres.
      */
     //Méthode pour afficher la fin du jeu
-    public static void afficherFinDeJeu(GraphicsContext gc, int score, Bouton boutonRejouer, Bouton boutonChangeMode, Bouton boutonRetour) {
+    public static void afficherFinDeJeu(GraphicsContext gc, int score, Bouton boutonRejouer, Bouton boutonChangeMode, Bouton boutonRetour, Bouton boutonSettings, boolean drawSettingsRectangle) {
     
         //Afficher un message à la fin de jeu
         Message.afficherMessageFinDeJeu(gc, score);  
@@ -315,6 +317,9 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
 
         //Afficher le bouton retour
         afficherBoutonRetour(gc, boutonRetour);
+
+        // Afficher le bouton "Settings"
+        afficherBoutonSettings(gc, boutonSettings);
 
         //Réafficher les 5 derniers scores à droite
         afficherDerniersScores(gc);
