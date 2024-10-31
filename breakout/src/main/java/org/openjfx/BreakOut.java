@@ -120,18 +120,18 @@ public class BreakOut extends Application {
                     resetGame(); //Réinitialise le jeu -> retour au menu
                     Son.JouerMusique(); // Rejoue de la music
                 }
-            }else if (!modeSelection && boutonJouer.estClique(clickX, clickY)) {
+            }else if (!gameStarted && !modeSelection && boutonJouer.estClique(clickX, clickY)) {
                 //bascule sur la selection de mode
                 modeSelection = true;
                 Affichage.enregistrerPseudo();  // Stocker le pseudo avant de commencer
             //confirme un input sur le bouton "Mode classique"
-            }else if(modeSelection && boutonClassique.estClique(clickX, clickY)){
+            }else if(!gameStarted && modeSelection && boutonClassique.estClique(clickX, clickY)){
                 niv = new Niveau(diff);
                 bricks = niv.makeNiveau();
                 brickRows = niv.getBrickRows();
                 modeSelection = false;
                 gameStarted = true;
-            }else if(modeSelection && boutonPerso.estClique(clickX, clickY)){
+            }else if(!gameStarted && modeSelection && boutonPerso.estClique(clickX, clickY)){
                 niv = n;
                 n.setOuvert(true);
                 f.setVisible(true);
@@ -284,12 +284,6 @@ public class BreakOut extends Application {
                     bestScore = Score.getBestScore(Pseudo.getPseudo()); // Mettre à jour le meilleur score
                     gameStarted = false; // Fin de la partie
                     gameOver = true; 
-                    for (int i = 0; i < brickRows; i++) {
-                        for (int j = 0; j < brickCols; j++) {
-                            bricks[i][j].isNotBreak = true; // Toutes les briques sont présentes au début
-                        }
-                    }
-
 
                 }
                 gc.setFill(Color.YELLOW);
