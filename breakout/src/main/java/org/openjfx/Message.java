@@ -22,6 +22,7 @@ import javafx.scene.text.TextAlignment;
  * </ul>
  * 
  * @author Makiya NAKPLONG
+ * @version 1.0
  */
 
 public class Message {
