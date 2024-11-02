@@ -310,10 +310,11 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
 
 
     //menu selection mode classique ou personnalisé
-    public static void affichageMenuSelection(GraphicsContext gc, Bouton classique, Bouton perso, Bouton retour){
+    public static void affichageMenuSelection(GraphicsContext gc, Bouton classique, Bouton perso, Bouton création, Bouton retour){
         
         afficherBoutonJouer(gc, classique);
         afficherBoutonJouer(gc, perso);
+        afficherBoutonJouer(gc, création);
         retour.afficher(gc);    
     }
 

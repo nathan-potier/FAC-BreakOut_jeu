@@ -71,7 +71,6 @@ public class NiveauInput extends Niveau{
     public boolean getOuvert(){ return ouvert;}
 
 
-
     /**
      * Crée un niveau à partir du fichier stocké dans path.
      * 
@@ -83,10 +82,10 @@ public class NiveauInput extends Niveau{
         ArrayList<String[]> valList = new ArrayList<String[]>();
         int nbLine = 0;
         String[] courant;
-        //récupération des informations
+
         try(Scanner scanner = new Scanner(new File(path))){
             if (!scanner.hasNextLine()) return null;
-            while(scanner.hasNextLine() && nbLine < 15){
+            while(scanner.hasNextLine() && nbLine < 14){
                 courant = scanner.nextLine().split(",");
                 if (courant.length != 12) return null;        
                 valList.add(courant);    
@@ -107,9 +106,10 @@ public class NiveauInput extends Niveau{
                         intCourant = Integer.parseInt(ligneCourante[j]);
                         switch(intCourant){        
                             case 1: niv[i][j] = new BrickBleue(true, 80, 20); break;
-                            case 2: niv[i][j] = new BrickRouge(true, 80, 20); break;
-                            case 3: niv[i][j] = new BrickDouble(true, 80, 20); break;
+                            case 2: niv[i][j] = new BrickDouble(true, 80, 20); break;
+                            case 3: niv[i][j] = new BrickRouge(true, 80, 20); break;
                             case 4: niv[i][j] = new BrickUnbreakable(true, 80, 20); brickDetruite(); break;
+                            case 5: niv[i][j] = new BrickBleue(false, 80, 20); brickDetruite(); break;
                             default : return null;
                         }
                         brickAdd();
@@ -120,6 +120,7 @@ public class NiveauInput extends Niveau{
                 }
             }        
             setInitNbBrick();
+            setTabBrick(niv);
             return niv;      
         }catch(FileNotFoundException e){
             return null;

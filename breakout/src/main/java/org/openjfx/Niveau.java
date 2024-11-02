@@ -1,4 +1,7 @@
 package org.openjfx;
+
+
+import javafx.scene.canvas.GraphicsContext;
 import java.util.Random;
 
 
@@ -37,6 +40,7 @@ public class Niveau {
     private int diff; /* diff >=1 */
     private int nbBrickLeft = 0;
     private int initNbBrick;
+    private Brick[][] tabBrick;
 
 
     /**
@@ -51,12 +55,37 @@ public class Niveau {
 
     }
 
-
     /**
      * Constructeur d'un objet Niveau pour des niveaux personnalisé, avec une difficulté mise à 0.
     */
     Niveau(){
         diff = 0;
+    }
+
+    public void defBrick(){
+        tabBrick = new Brick[14][12];
+    }
+
+
+    /**
+     * Renvoie le tableau représentatif du niveau
+     * 
+     * @return tableau à deux dimensions de brick
+     */
+    public Brick[][] getAll(){
+        return tabBrick;
+    }
+
+
+    /**
+     * Renvoie l'élément à la place x,y.
+     * 
+     * @param x entier représentant la x-ème ligne du tableau.
+     * @param y entier représentant la y-ème colonne du tableau.
+     * @return Brick à l'emplacement [x][y] du tableau.
+     */
+    public Brick getBrick(int x, int y){
+        return tabBrick[x][y];
     }
 
     /**
@@ -66,6 +95,16 @@ public class Niveau {
      */
     public int getBrickRows(){
         return brickRows;
+    }
+
+    /**
+     * 
+     * @param x entier représentant la x-ème ligne du tableau.
+     * @param y entier représentant la y-ème colonne du tableau.
+     * @param b Brick remplaçant l'ancienne brick en x,y.
+     */
+    public void setBrick(int x, int y, Brick b){
+        if (tabBrick != null) tabBrick[x][y] = b;
     }
 
     /**
@@ -121,6 +160,34 @@ public class Niveau {
         nbBrickLeft = initNbBrick;
     }
 
+    /**
+     * fixe le tableau représentant le niveau au tableau entré.
+     * 
+     * @param tab tableau à deux dimensions de briques.
+     */
+    public void setTabBrick(Brick[][] tab){
+        tabBrick = tab;
+    }
+
+
+    /**
+     * affiche toutes les briques encore non cassé.
+     * 
+     * @param gc fenetre graphique
+     */
+    public void afficheNiveau(GraphicsContext gc){
+        for (int i = 0; i < brickRows; i++) {
+            for (int j = 0; j < brickCols; j++) {
+                if (tabBrick[i][j].isNotBreak) {
+                    double brickX = j * (tabBrick[i][j].getWidth() + 5);
+                    double brickY = i * (tabBrick[i][j].getHeight() + 5);
+                    gc.setFill(tabBrick[i][j].couleur());
+                    gc.fillRect(brickX, brickY + 20, tabBrick[i][j].getWidth(), tabBrick[i][j].getHeight());
+                }
+            }
+        }
+    }
+
 
 
     /**
@@ -158,6 +225,7 @@ public class Niveau {
             }
         }
         setInitNbBrick();
+        setTabBrick(tab);
         return tab;
     }
 }

@@ -8,7 +8,7 @@ import java.io.*;
 import java.awt.Component;
 
 
-public class Fenetre implements ActionListener{
+public class FenetrePerso implements ActionListener{
     
     private JTextField inputField;
     private JFrame cadre;
@@ -17,7 +17,7 @@ public class Fenetre implements ActionListener{
     private NiveauInput niv;
     private JPanel p;
 
-    Fenetre(NiveauInput n){
+    FenetrePerso(NiveauInput n){
         inputField = new JTextField(16);
         cadre = new JFrame("Niveau personnalisé");
         t1 = new JLabel("Entrez le chemin d'accès");

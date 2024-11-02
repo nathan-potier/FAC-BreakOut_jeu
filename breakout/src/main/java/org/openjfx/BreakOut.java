@@ -18,18 +18,20 @@ import javafx.util.Duration;
 public class BreakOut extends Application {
 
     private static final String GAME_TITLE = "BreakOut";
-    private static final int width = 1024;
+    private static final int width = 1016;
     private static final int height = 700;
 
 
 
     private boolean modeSelection = false;
+    private boolean modeCréation = false;
     private boolean gameStarted = false;
     private boolean finDeJeu = false;
     private boolean type = true;
     private int diff = 1;
     private Niveau niv; //niveau classique
     private NiveauInput n = new NiveauInput(); //niveau perso
+    private NiveauEditeur gen = new NiveauEditeur();
 
     private int brickRows;
     private final int brickCols = 12;
@@ -50,8 +52,11 @@ public class BreakOut extends Application {
     private Bouton boutonRetourSelec;
     private Bouton boutonProchainNiveau;
     private Bouton boutonRecommencer;
+    private Bouton boutonCréation;
+    private Bouton boutonEnregistrer;
 
-    private Fenetre f;
+    private FenetrePerso f1;
+    private FenetreEditeur f2;
 
     private Bouton boutonSettings;
     private boolean drawSettingsRectangle = false; // Ajoute cet attribut
@@ -108,6 +113,8 @@ public class BreakOut extends Application {
         boutonRetourSelec = new Bouton(rectX, rectY + 250, 100, 40, "Retour");
         boutonProchainNiveau = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Prochain niveau");
         boutonRecommencer = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Recommencer");
+        boutonCréation = new Bouton(rectX - 100, rectY + 160, rectWidth + 200, rectHeight, "Mode création");
+        boutonEnregistrer = new Bouton(rectX - 100, rectY + 80, rectWidth + 200, rectHeight, "Enregistrer");
 
         boutonSettings = new Bouton(20, height - 80, 100, 40, "Settings");
 
@@ -116,7 +123,8 @@ public class BreakOut extends Application {
 
         // Initialiser la fenetre personnalisé
         
-        f = new Fenetre(n);
+        f1 = new FenetrePerso(n);
+        f2 = new FenetreEditeur();
 
 
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run(gc)));
@@ -131,14 +139,14 @@ public class BreakOut extends Application {
                     resetGame(); //Réinitialise le jeu -> retour au menu
                     Son.JouerMusique(); // Rejoue de la music
                 }
-            }else if (!gameStarted && !modeSelection && !finDeJeu && boutonJouer.estClique(clickX, clickY)) {
+            }else if (!modeCréation && !gameStarted && !modeSelection && !finDeJeu && boutonJouer.estClique(clickX, clickY)) {
                 //bascule sur la selection de mode
                 modeSelection = true;
                 Affichage.enregistrerPseudo();  // Stocker le pseudo avant de commencer
                 drawSettingsRectangle = false; 
 
             //confirme un input sur le bouton "Mode classique" ou "Prochain niveau"
-            }else if(!gameStarted && type && ((modeSelection && boutonClassique.estClique(clickX, clickY))
+            }else if(!modeCréation && !gameStarted && type && ((modeSelection && boutonClassique.estClique(clickX, clickY))
                     || (finDeJeu && boutonProchainNiveau.estClique(clickX, clickY)))){
                 niv = new Niveau(diff);
                 bricks = niv.makeNiveau();
@@ -149,21 +157,43 @@ public class BreakOut extends Application {
                 type = true;
 
             //confirme un input sur le bouton Personnalisé
-            }else if(!gameStarted && modeSelection && boutonPerso.estClique(clickX, clickY)){
+            }else if(!modeCréation && !gameStarted && modeSelection && boutonPerso.estClique(clickX, clickY)){
                 niv = n;
                 n.setOuvert(true);
-                f.setVisible(true);
+                f1.setVisible(true);
+            }
+            else if( !modeCréation && !gameStarted && modeSelection && boutonCréation.estClique(clickX, clickY)){
+                modeSelection = false;
+                modeCréation = true;
+                brickRows = gen.getBrickRows();
+                gen.setOuvert(true);
+    
 
-
-            }else if(!gameStarted && 
+            }else if(!modeCréation && !gameStarted && 
                     ((modeSelection && boutonRetourSelec.estClique(clickX, clickY))||
                     finDeJeu && boutonRetourSelec.estClique(clickX, clickY))){
                 modeSelection = false;
                 finDeJeu = false;
-            }else if(!gameStarted && !type && boutonRecommencer.estClique(clickX, clickY)){
+            }else if(!modeCréation && !gameStarted && !type && boutonRecommencer.estClique(clickX, clickY)){
                 resetGame();
                 gameStarted = true;
                 niv.resetBrick();
+            }
+            else if(!gameStarted && modeCréation){
+
+                if (boutonEnregistrer.estClique(clickX, clickY)){
+                    f2.getNiv(gen);
+
+                    f2.setVisible(true);
+                    
+                } 
+                else if (boutonRetourSelec.estClique(clickX, clickY)){
+                    modeCréation = false;
+
+                }
+                else{
+                    gen.genNiveau(clickX, clickY);
+                }
             }
 
 
@@ -195,6 +225,8 @@ public class BreakOut extends Application {
         stage.setHeight(height);
         stage.setTitle("Breakout");
         stage.setScene(new Scene(new StackPane(canvas)));
+        stage.setResizable(false);
+
 
     
             
@@ -215,10 +247,19 @@ public class BreakOut extends Application {
         
         Affichage.setGC(gc);
 
-        if (f.isActive()){
+
+        if (f1.isActive() || (f2 != null && f2.isActive())){
 
         }
         else{
+            if (modeCréation){
+                gen.afficheNiveau(gc);
+                Affichage.affichageMenuProchainNiveau(gc, boutonEnregistrer, boutonRetourSelec);
+                if (!gen.getOuvert()){
+                    modeCréation = false;
+                }
+            }
+            else
             if (!gameStarted && finDeJeu){
                 if (type){
                     Affichage.affichageMenuProchainNiveau(gc, boutonProchainNiveau, boutonRetourSelec);
@@ -242,7 +283,7 @@ public class BreakOut extends Application {
                 boutonRetour.afficher(gc); // Afficher le bouton "Retour"
             }else 
             if (modeSelection){
-                Affichage.affichageMenuSelection(gc, boutonClassique, boutonPerso, boutonRetourSelec);
+                Affichage.affichageMenuSelection(gc, boutonClassique, boutonPerso, boutonCréation, boutonRetourSelec);
                 if (n.getPath() != null && n.getOuvert()){
                     bricks = niv.makeNiveau();
                     if (bricks == null){
@@ -270,16 +311,7 @@ public class BreakOut extends Application {
                  gc.fillOval(Balle.getXPos(), Balle.getYPos(), Balle.getSize(), Balle.getSize());
 
                 // Dessiner les briques
-                for (int i = 0; i < brickRows; i++) {
-                    for (int j = 0; j < brickCols; j++) {
-                        if (bricks[i][j].isNotBreak) {
-                            double brickX = j * (bricks[i][j].getWidth() + 5);
-                            double brickY = i * (bricks[i][j].getHeight() + 5);
-                            gc.setFill(bricks[i][j].couleur());
-                            gc.fillRect(brickX, brickY, bricks[i][j].getWidth(), bricks[i][j].getHeight());
-                        }
-                    }
-                }
+                niv.afficheNiveau(gc);
             
                 // Détection de collision avec les briques
                 for (int i = 0; i < brickRows; i++) {
