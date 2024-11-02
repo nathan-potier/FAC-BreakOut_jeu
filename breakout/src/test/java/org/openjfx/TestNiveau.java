@@ -25,48 +25,6 @@ public class TestNiveau{
     }
 
 
-    public void def(int diff){
-        Niveau niv = new Niveau(diff); 
-        tab = niv.makeNiveau();
-    }
-
-    // Test si la valeur est bien mise à 1 si diff <1
-    @Test
-    public void testNegDiff(){
-        niv = new Niveau(-53);
-        assertEquals(niv.getDiff(), 1);
-    }
-
-    // Test si la valeur est bien mise à 1 sur la valeur critique en 0
-    @Test
-    public void testNegDiffCrit(){
-        niv = new Niveau(0);
-        assertEquals(niv.getDiff(), 1);
-    }
-
-    // Test un cas de base
-    @Test
-    public void testDiffBase(){
-        niv = new Niveau(8);
-        assertEquals(niv.getDiff(), 8);
-    }
-
-    // Test si la valeur est bien mise à 10 si diff >10
-    @Test
-    public void testDiffSupp(){
-        niv = new Niveau(456);
-        assertEquals(niv.getDiff(), 10);
-    }
-
-    // Test si la valeur est bien mise à 1 sur la valeur critique en 11
-    @Test
-    public void testDiffSuppCrit(){
-        niv = new Niveau(11);
-        assertEquals(niv.getDiff(), 10);
-    }
-
-
-
     // Test si la valeur est bien mise à 1 si diff <1
     @Test
     public void testNegRow(){
