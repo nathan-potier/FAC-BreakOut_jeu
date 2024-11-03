@@ -214,7 +214,7 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
         gc.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
         gc.setFill(Color.YELLOW);
         gc.setTextAlign(TextAlignment.LEFT);
-        gc.fillText("Last scores:", scoresX + 10, scoresY + 20);
+        gc.fillText("Best scores:", scoresX + 10, scoresY + 20);
         
         for (int i = 0; i < lastFiveScores.length; i++) {
             gc.fillText("" + lastFiveScores[i], scoresX + 10, scoresY + 50 + (i * 30));

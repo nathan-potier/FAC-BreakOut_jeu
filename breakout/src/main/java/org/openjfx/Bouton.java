@@ -25,6 +25,7 @@ import javafx.scene.text.TextAlignment;
  * Les boutons sont stylisés en jaune et affichent leur texte centré.
  * </p>
  * 
+ * @author Jonas RAMANATHAN
  * @version 1.1
  */
 public class Bouton {
