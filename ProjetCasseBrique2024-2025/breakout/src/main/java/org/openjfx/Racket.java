@@ -14,4 +14,12 @@ public class Racket {
 
     public static double getXPos(){ return racketXPos ;}
     public static double getYPos(){ return racketYPos ;}
+
+    public static void setRacketWidth(int width){
+        racketWidth = width;
+    }
+
+    public static void resetSize(){
+        racketWidth = 50;
+    }
 }

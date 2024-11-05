@@ -33,9 +33,9 @@ public class Niveau {
                     tab[i][j] = new BrickUnbreakable(true, 80, 20);
                 // probabilité d'avoir une brique avec bonus  (diminue selon la diff)
                 }else if (r < 20){
-                    tab[i][j] = new BrickRouge(true, 80, 20); 
+                    tab[i][j] = new BrickBleue(true, 80, 20); 
                 }else{
-                    tab[i][j] = new BrickBleue(true, 80, 20);
+                    tab[i][j] = new BrickRouge(true, 80, 20);
                 }
 
             }

@@ -6,12 +6,13 @@ public class BrickRouge extends Brick{
 
 
     private final int score;
+    private PowerUp powerup;
 
     public BrickRouge(boolean isNotBreak, double brickWidth, double brickHeight){
         super(isNotBreak, brickWidth, brickHeight);
         this.score = 50;
         
-
+             
     }
     
 
@@ -23,10 +24,15 @@ public class BrickRouge extends Brick{
         return this.score;
     }
 
-
-    public void powerUp(){
-        
+    public void setPowerUp(PowerUp p){
+        this.powerup = p;
     }
+
+    public PowerUp getPowerUp(){
+        return this.powerup;
+    }
+
+
 
     
 
