@@ -2,36 +2,28 @@ package org.openjfx;
 
 public class TreeBall extends PowerUp{
 
-    private static Balle[] tab;
-    private boolean actif;
+    private Balle balle1;
+    private Balle balle2;
+    private Balle balle3;
 
     
 
-    public TreeBall(double PUx, double PUy, double ballXPos, double ballYPos) {
+    public TreeBall(double PUx, double PUy) {
         super(PUx, PUy);
-        tab = new Balle[3];
-        tab[0] = new Balle(ballXPos,ballYPos);
-        tab[1] = new Balle(ballXPos +10,ballYPos);
-        tab[2] = new Balle(ballXPos +20,ballYPos);
     }
 
 
     public void applyEffect(){
-        this.actif = true;
+        this.balle1 = new Balle(BreakOut.getWidth() / 2,BreakOut.getHeight() / 2);
+        this.balle2 = new Balle(BreakOut.getWidth() / 2 +10,BreakOut.getHeight() / 2);
+        this.balle3 = new Balle(BreakOut.getWidth() / 2 +20,BreakOut.getHeight() / 2);
+        balle1.rebondHorizontal();
+        balle2.rebondVertical();
+        BreakOut.balles.add(balle1);
+        BreakOut.balles.add(balle2);
+        BreakOut.balles.add(balle3);
+        BreakOut.nbBalle = BreakOut.nbBalle + 3;
     }
-
-    public boolean getActif(){
-        return this.actif;
-    }
-
-    public void setActif(boolean actif){
-        this.actif = actif;
-    }
-
-    
-    
-        
-
 
     
 }
