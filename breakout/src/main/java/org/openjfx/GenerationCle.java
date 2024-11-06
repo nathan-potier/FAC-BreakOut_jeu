@@ -6,7 +6,7 @@ import java.security.SecureRandom;
 
 public class GenerationCle {
 
-    private static final int BIT_LENGTH = 2048;
+    private static final int BIT_LENGTH = 512;
     private static BigInteger n, e, d;
 
     // Initialisation de la clé
@@ -21,7 +21,7 @@ public class GenerationCle {
         n = p.multiply(q);
 
         BigInteger phi = (p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE));
-        e = BigInteger.valueOf(65537);
+        e = BigInteger.valueOf(3);
         d = e.modInverse(phi);
     }
 

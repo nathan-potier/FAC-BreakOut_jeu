@@ -114,7 +114,13 @@ public class Score {
 
     public static int getBestScore(String pseudo) {
         List<Integer> scores = getScoresForPseudo(pseudo);
-        return scores.isEmpty() ? 0 : Collections.max(scores);
+        int max = 0;
+        for (int i = 0; i < scores.size(); i++) {
+            if(max < scores.get(i)){
+                max = scores.get(i);
+            }
+        }
+        return max;
     }
 
     public static int[] getLastFiveScores(String pseudo) {
