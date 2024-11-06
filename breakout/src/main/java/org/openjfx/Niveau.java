@@ -206,20 +206,24 @@ public class Niveau {
 
                 // probabilité d'avoir une brique incassable (augmente selon la diff)
                 if (val < diff*2){
-                    tab[i][j] = new BrickUnbreakable(true, 80, 20);
+                    tab[i][j] = new BrickUnbreakable(true, 80, 20, PowerUp.randomPU(j * 85,i * 25 ));
+                    
                 
                     // probabilité d'avoir une brique avec bonus  (diminue selon la diff)
                 }else 
                 nbBrickLeft++;
                 if (val < 20){
-                    tab[i][j] = new BrickRouge(true, 80, 20); 
+                    tab[i][j] = new BrickRouge(true, 80, 20, PowerUp.randomPU(j * 85,i * 25 )); 
+                    
 
                     //probabilité d'avoir une brique a 2 pv (augmente selon la diff)
                 }else if (val < 20 + (5 * diff)) {
-                    tab[i][j] = new BrickDouble(true, 80, 20);
+                    tab[i][j] = new BrickDouble(true, 80, 20,PowerUp.randomPU(j * 85,i * 25 ));
+                    
 
                 }else{
-                    tab[i][j] = new BrickBleue(true, 80, 20);
+                    tab[i][j] = new BrickBleue(true, 80, 20, PowerUp.randomPU(j * 85,i * 25 ));
+                  
                 }
 
             }

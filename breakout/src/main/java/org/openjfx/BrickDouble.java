@@ -7,10 +7,11 @@ public class BrickDouble extends Brick {
 
     private int nbrVie;
     private final int score;
-    public BrickDouble(boolean isNotBreak, double brickWidth, double brickHeight){
-        super(isNotBreak, brickWidth, brickHeight);
+    public BrickDouble(boolean isNotBreak, double brickWidth, double brickHeight, PowerUp powerup){
+        super(isNotBreak, brickWidth, brickHeight,powerup);
         this.score = 30;
         this.nbrVie = 1;
+        setHavePower(true);
 
     
     }

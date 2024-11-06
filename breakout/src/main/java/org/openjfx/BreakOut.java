@@ -2,6 +2,8 @@ package org.openjfx;
 
 
 
+
+import java.util.ArrayList;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -42,6 +44,11 @@ public class BreakOut extends Application {
 
     private int score = 0;
     private int bestScore = 0; // Meilleur score
+    public static ArrayList<Balle> balles = new ArrayList<>();
+    private static double timePU1 = 0;
+    private static double  timePU2 = 0;
+    public static int nbBalle = 1;
+    private final Balle balle1 = new Balle(BreakOut.getWidth() / 2,BreakOut.getHeight() / 2);
     
     private double rectWidth = 100;
     private double rectHeight = 50;
@@ -93,8 +100,12 @@ public class BreakOut extends Application {
     private void resetGame(GraphicsContext gc){
 
         this.score = 0;
+        balle1.reset();
+        balles = new ArrayList<>();
+        balles.add(balle1);
+        Racket.resetSize();
+        nbBalle = 1;
 
-        Balle.reset();
   
         this.gameOver = false;
         this.gameStarted = false;
@@ -256,6 +267,7 @@ public class BreakOut extends Application {
         Son.initBackgroundMusic();//Initialiser la music 
         Son.initPaddleBoundSound(); //Initialiser le son de rebond de balle
         Son.initBrickBreakSound(); // Initialiser le son des briques cassées
+        balles.add(balle1);// Ajout de la balle initiale a la liste
 
         // Gestion des touches clavier pour entrer le pseudo
         if (!Pseudo.estDef()){
@@ -350,10 +362,12 @@ public class BreakOut extends Application {
                 }
                 gc.fillText("Score: " + score, width / 2, height / 2);
 
-                Balle.MAJPosHorizontal();
-                Balle.MAJPosVertical();
-                
-                 gc.fillOval(Balle.getXPos(), Balle.getYPos(), Balle.getSize(), Balle.getSize());
+                for(int i = 0; i<balles.size(); i++){
+                    balles.get(i).MAJPosHorizontal();
+                    balles.get(i).MAJPosVertical();
+                    gc.fillOval(balles.get(i).getXPos(), balles.get(i).getYPos(), Balle.getSize(), Balle.getSize());
+                }
+    
 
                 // Dessiner les briques
                 niv.afficheNiveau(gc);
@@ -365,56 +379,127 @@ public class BreakOut extends Application {
                             double brickX = j * (bricks[i][j].getWidth() + 5);
                             double brickY = i * (bricks[i][j].getHeight() + 5);
             
-                            if (Balle.getXPos() + Balle.getSize() >= brickX &&
-                                Balle.getXPos() <= brickX + bricks[i][j].getWidth() &&
-                                Balle.getYPos() + Balle.getSize() >= brickY +5 &&
-                                Balle.getYPos() <= brickY + bricks[i][j].getHeight() + 5) {
-            
-                                Balle.Rebond();
+                            for(int k = 0; k<balles.size(); k++){
+                                if (balles.get(k).getXPos() + Balle.getSize() >= brickX &&
+                                    balles.get(k).getXPos() <= brickX + bricks[i][j].getWidth() &&
+                                    balles.get(k).getYPos() + Balle.getSize() >= brickY +5 &&
+                                    balles.get(k).getYPos() <= brickY + bricks[i][j].getHeight() + 5) {
+                    
+                                    balles.get(k).Rebond();
+        
+                                           
+                                    if(bricks[i][j].couleur() != Color.GRAY && bricks[i][j].getNbrVie() == 0){
+                                        bricks[i][j].isNotBreak = false;
+                                        niv.brickDetruite();
+                                        score += bricks[i][j].getScore(); 
+                                        bricks[i][j].getPowerUp().setTombe(true);
 
-                                if(bricks[i][j].couleur() != Color.GRAY && bricks[i][j].getNbrVie() == 0){
-                                    bricks[i][j].isNotBreak = false;
-                                    niv.brickDetruite();
-                                    score += bricks[i][j].getScore(); 
 
+                                        Son.StopSonBrique(); // le son des briques cassées
+                                        Son.JouerSonBrique(); // 
 
-                                    Son.StopSonBrique(); // le son des briques cassées
-                                    Son.JouerSonBrique(); // 
-
-                                }else{
-                                    bricks[i][j].setNbrVie(bricks[i][j].getNbrVie() - 1);
+                                    }else{
+                                        bricks[i][j].setNbrVie(bricks[i][j].getNbrVie() - 1);
+                                    }
                                 }
                             }
                         }
                     }
                 }
 
+                //actualisation powerUp
+            for (int i = 0; i < brickRows; i++) {
+                for (int j = 0; j < brickCols; j++) {
+                    if (bricks[i][j].couleur() == Color.RED){
+                        if (bricks[i][j].getPowerUp().getTombe()){
+                            gc.setFill(Color.BLUE);
+                            gc.fillOval(bricks[i][j].getPowerUp().getPux() + bricks[i][j].getWidth()/2, bricks[i][j].getPowerUp().getPuy(), PowerUp.getSize(), PowerUp.getSize());
+                            bricks[i][j].getPowerUp().actuPUy();
+                            if (bricks[i][j].getPowerUp().getPuy() + PowerUp.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
+                            bricks[i][j].getPowerUp().getPux() + PowerUp.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
+                            bricks[i][j].getPowerUp().getPux() <= Racket.getXPos() + Racket.getWidth() / 2){
+                                bricks[i][j].getPowerUp().applyEffect();
+                                bricks[i][j].getPowerUp().setTombe(false);
+                            }
+                            if(bricks[i][j].getPowerUp().getPuy() > Racket.getYPos() +10){
+                                bricks[i][j].getPowerUp().setTombe(false);
+                            }
+                        
+    
+                        }
+                    }
+                    
+                }
+            }
+            //verif powerUp BALLSIZE actif si oui augmente le temps passé
+            if (Balle.getBallSize() == 50){
+                timePU1++;
+                if (timePU1 >= 700){
+                    Balle.resetSize();
+                    timePU1 = 0;
+                }
+
+            }
+
+            //Verif powerUp RacketSize actif si oui augmente le temps passé
+            if (Racket.getWidth() > 50){
+                timePU2++;
+                if (timePU2 >= 700){
+                    Racket.resetSize();
+                    timePU2 = 0;
+                }
+
+            }
+
+
+            for (int i = 0; i < balles.size(); i++) {
+                
+            
                 // Collision avec les murs
-                if (Balle.getXPos() <= 0 || Balle.getXPos() >= width - Balle.getSize()) {
-                    Balle.rebondHorizontal();
+                if (balles.get(i).getXPos() <= 0 || balles.get(i).getXPos() >= width - Balle.getSize()) {
+                    balles.get(i).rebondHorizontal();
                 }
-
-                if (Balle.getYPos() <= 0) {
-                    Balle.rebondVertical();
+    
+                if (balles.get(i).getYPos() <= 0) {
+                    balles.get(i).rebondVertical();
                 }
-
-
+    
+    
                 // Collision avec la raquette
-                if (Balle.getYPos() + Balle.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
-                    Balle.getXPos() + Balle.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
-                    Balle.getXPos() <= Racket.getXPos() + Racket.getWidth() / 2 && Balle.getYSpeed() > 0){
-
-                    Balle.Rebond();
-                 
+                if (balles.get(i).getYPos() + Balle.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
+                    balles.get(i).getXPos() + Balle.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
+                    balles.get(i).getXPos() <= Racket.getXPos() + Racket.getWidth() / 2 && balles.get(i).getYSpeed() > 0){
+    
+                    balles.get(i).Rebond();
+                     
                     // Jouer le son de rebond de balle
                     Son.StopSonRebond();
                     Son.JouerSonRebond();
                 }
-                if (Balle.getYPos() > Racket.getYPos()){
+    
+                }
+
+                for (int i = 0; i < balles.size(); i++) {
+                    if (balles.get(i).getYPos() > Racket.getYPos()){
+                        nbBalle = nbBalle -1;
+                        balles.remove(i);
+                    
+                    }
+                }
+    
+    
+                if (nbBalle == 0){
                     Score.saveScoreToFile(Pseudo.getPseudo(), score);
                     bestScore = Score.getBestScore(Pseudo.getPseudo()); // Mettre à jour le meilleur score
                     gameStarted = false; // Fin de la partie
                     gameOver = true; 
+                    for (int k = 0; k < brickRows; k++) {
+                        for (int j = 0; j < brickCols; j++) {
+                            bricks[k][j].isNotBreak = true; 
+                            bricks[k][j].setHavePower(false);// Toutes les briques sont présentes au début
+                        }
+                    }
+    
 
                 }
                 gc.setFill(Color.YELLOW);
@@ -422,15 +507,16 @@ public class BreakOut extends Application {
                 Racket.getYPos() - Racket.getHeight() / 2,
                 Racket.getWidth(), Racket.getHeight());
 
-            } else {
+            }else {
 
                 Affichage.afficherMenuPrincipal(gc, boutonJouer, boutonSettings, drawSettingsRectangle);
-                Balle.reset();
+               
             }
 
             if (drawSettingsRectangle) {
                 Affichage.dessinerRectangle(gc, boutonSettings);
             }
+            
         }        
     }
     

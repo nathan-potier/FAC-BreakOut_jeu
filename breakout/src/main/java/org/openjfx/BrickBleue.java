@@ -6,9 +6,10 @@ public class BrickBleue extends Brick{
 
     private final int score;
 
-    public BrickBleue(boolean isNotBreak, double brickWidth, double brickHeight){
-        super(isNotBreak, brickWidth, brickHeight);
+    public BrickBleue(boolean isNotBreak, double brickWidth, double brickHeight, PowerUp powerup){
+        super(isNotBreak, brickWidth, brickHeight, powerup);
         this.score = 10;
+        setHavePower(false);
         
 
     }

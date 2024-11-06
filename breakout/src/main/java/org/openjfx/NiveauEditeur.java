@@ -28,7 +28,7 @@ public class NiveauEditeur extends NiveauInput{
         defBrick();
         for(int i = 0; i < 14; i++){
             for(int j = 0; j < 12; j++){
-                setBrick(i, j, new BrickBleue(true, 80, 20));
+                setBrick(i, j, new BrickBleue(true, 80, 20, new PowerUp(j * 85, i * 25)));
             }
         }
         setBrickRows(14);
@@ -61,19 +61,19 @@ public class NiveauEditeur extends NiveauInput{
         if (x != 25 && y != 25){    
             
             if (getBrick(x, y) instanceof BrickBleue && getBrick(x,y).isNotBreak){
-                setBrick(x, y, new BrickDouble(true, 80, 20));
+                setBrick(x, y, new BrickDouble(true, 80, 20, PowerUp.randomPU(y, x)));
             } 
             else if (getBrick(x, y) instanceof BrickDouble){
-                setBrick(x, y, new BrickRouge(true, 80, 20));
+                setBrick(x, y, new BrickRouge(true, 80, 20, PowerUp.randomPU(y, x)));
             }
             else if (getBrick(x, y) instanceof BrickRouge){
-                setBrick(x, y, new BrickUnbreakable(true, 80, 20));
+                setBrick(x, y, new BrickUnbreakable(true, 80, 20, PowerUp.randomPU(y, x)));
             }
             else if (getBrick(x, y) instanceof BrickUnbreakable){
-                setBrick(x, y, new BrickBleue(false, 80, 20));
+                setBrick(x, y, new BrickBleue(false, 80, 20, PowerUp.randomPU(y, x)));
             }
             else if (getBrick(x, y) instanceof BrickBleue && !getBrick(x,y).isNotBreak){
-                setBrick(x, y, new BrickBleue(true, 80, 20));
+                setBrick(x, y, new BrickBleue(true, 80, 20, PowerUp.randomPU(y, x)));
             }
             
         }
