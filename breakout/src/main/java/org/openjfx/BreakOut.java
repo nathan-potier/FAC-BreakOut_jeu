@@ -407,7 +407,7 @@ public class BreakOut extends Application {
                     }
                 }
 
-                //actualisation powerUp
+            //actualisation powerUp
             for (int i = 0; i < brickRows; i++) {
                 for (int j = 0; j < brickCols; j++) {
                     if (bricks[i][j].couleur() == Color.RED){
