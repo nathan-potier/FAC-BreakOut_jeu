@@ -112,7 +112,7 @@ public class Affichage {
      * @param boutonJouer Le bouton permettant de commencer une nouvelle partie.
      */
     // Méthode pour afficher le menu principal
-    public static void afficherMenuPrincipal(GraphicsContext gc, Bouton boutonJouer, Bouton boutonSettings, boolean drawSettingsRectangle) {
+    public static void afficherMenuPrincipal(GraphicsContext gc, Bouton boutonJouer, Bouton boutonSettings, Bouton boutonMute, Bouton boutonPause, boolean drawSettingsRectangle) {
         // Affichage du titre du jeu
         afficherTitre(gc);
     
@@ -130,7 +130,13 @@ public class Affichage {
     
         // Afficher le bouton "Settings"
         afficherBoutonSettings(gc, boutonSettings);  // Appelle la méthode pour afficher le bouton "Settings"
-    
+        
+        // Afficher le bouton "Mute"
+        afficherBoutonMute(gc, boutonMute); 
+
+        // Afficher le bouton "Pause"
+        afficherBoutonPause(gc, boutonPause); 
+
         // Afficher les 5 derniers scores à droite
         afficherDerniersScores(gc);
     }
@@ -196,6 +202,24 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
     boutonJouer.afficher(gc);
 }
 
+ //Méthode pour afficher le boutonMute
+ public static void afficherBoutonMute(GraphicsContext gc, Bouton boutonMute) {
+    gc.setFill(Color.YELLOW);
+    gc.setFont(Font.font(20));
+    gc.setTextAlign(TextAlignment.CENTER);
+
+    // Afficher le bouton "Muet"
+    boutonMute.afficher(gc);
+}
+
+// Méthode pour afficher le boutonPause
+public static void afficherBoutonPause(GraphicsContext gc, Bouton boutonPause) {
+    gc.setStroke(Color.YELLOW);
+    gc.setFont(Font.font(20));
+    gc.setTextAlign(TextAlignment.CENTER);
+    
+    boutonPause.afficher(gc);
+}
     // Méthode pour afficher les 5 derniers scores dans un rectangle à droite
     private static void afficherDerniersScores(GraphicsContext gc) {
         int[] lastFiveScores = Score.getLastFiveScores(Pseudo.getPseudo());
