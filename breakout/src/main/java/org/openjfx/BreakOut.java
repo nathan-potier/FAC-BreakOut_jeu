@@ -67,6 +67,9 @@ public class BreakOut extends Application {
     private Bouton boutonRecommencer;
     private Bouton boutonCréation;
     private Bouton boutonEnregistrer;
+    private Bouton boutonMute;
+    private Bouton boutonPause;
+
 
     private FenetrePerso f1;
     private FenetreEditeur f2;
@@ -137,7 +140,9 @@ public class BreakOut extends Application {
         boutonEnregistrer = new Bouton(rectX - 100, rectY + 80, rectWidth + 200, rectHeight, "Enregistrer");
 
         boutonSettings = new Bouton(20, height - 80, 100, 40, "Settings");
-
+        boutonMute = new Bouton(10, height - 50, 100, 40, "Muet");
+        boutonPause = new Bouton(100, height - 50, 100, 40,"Pause");
+      
 
 
 
@@ -170,7 +175,30 @@ public class BreakOut extends Application {
 		canvas.setOnMouseClicked(e -> {
             double clickX = e.getX();
             double clickY = e.getY();
+
+             //Paramètres de clic du bouton muet
+             if (boutonMute.estClique(clickX, clickY)) {
+                if(!Son.isMuted()){
+                    Son.toggleMute(); // Changer l'état muet
+                    boutonMute.setText("Son activé");
+                } else {
+                    Son.toggleMute(); // Changer l'état avec son
+                    boutonMute.setText("Muet");
+                }
+            }
+
+            //Paramètres de clic du bouton Pause
+            if (boutonPause.estClique(clickX, clickY)) {
+                if (gameStarted) {
+                    gameStarted = false; 
+                    boutonPause.setText("Continuer");
+                } else {
+                    gameStarted = true; 
+                    boutonPause.setText("Pause");
+                }
+            }
             
+
             if(gameOver){
                 if(boutonRejouer.estClique(clickX, clickY)){
                     resetGame(gc);
@@ -294,7 +322,7 @@ public class BreakOut extends Application {
         
         Affichage.setGC(gc);
 
-
+        
         if (f1.isActive() || (f2 != null && f2.isActive())){
 
         }
@@ -349,6 +377,9 @@ public class BreakOut extends Application {
                     Son.JouerMusique();
                 }
                 gc.fillText("Score: " + score, width / 2, height / 2);
+
+                 Affichage.afficherBoutonMute(gc, boutonMute); // afficher le bouton
+                 Affichage.afficherBoutonPause(gc, boutonPause);
 
                 Balle.MAJPosHorizontal();
                 Balle.MAJPosVertical();
@@ -424,7 +455,7 @@ public class BreakOut extends Application {
 
             } else {
 
-                Affichage.afficherMenuPrincipal(gc, boutonJouer, boutonSettings, drawSettingsRectangle);
+                Affichage.afficherMenuPrincipal(gc, boutonJouer, boutonSettings, boutonMute, boutonPause, drawSettingsRectangle);
                 Balle.reset();
             }
 
