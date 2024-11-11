@@ -81,6 +81,8 @@ public class Bouton {
      */
     public double getHeight() { return height; }
 
+    public void setText(String newText) { this.text=newText; }
+
     /**
      * Définit l'état de survol du bouton.
      * 
