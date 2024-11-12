@@ -35,10 +35,37 @@ public class Son {
     private static  MediaPlayer brickBreakPlayer; // Le son des brick cassées
     
     private static boolean isMuted = false; // État de silence
+    private static boolean backgroundMusicOn = true; // Musique de fond activée/désactivée
+    private static boolean collisionSoundOn = true; // Son de collision (briques cassées) activé/désactivé
+    private static boolean bounceSoundOn = true; // Son de rebond de balle activé/désactivé
+
+    /**
+     * Retourne l'état actuel de la musique de fond.
+     * @return <code>true</code> si la musique de fond est activée, <code>false</code> sinon
+     */
+    public static boolean isBackgroundMusicOn() {
+        return backgroundMusicOn;
+    }
+
+    /**
+     * Retourne l'état actuel du son des rebonds de balle.
+     * @return <code>true</code> si le son des rebonds est activé, <code>false</code> sinon
+     */
+    public static boolean isBounceSoundOn() {
+        return bounceSoundOn;
+    }
+
+    /**
+     * Retourne l'état actuel du son des collisions (briques cassées).
+     * @return <code>true</code> si le son des collisions est activé, <code>false</code> sinon
+     */
+    public static boolean isCollisionSoundOn() {
+        return collisionSoundOn;
+    }
+
 
      /**
      * Retourne l'état actuel du mode silencieux.
-     * 
      * @return <code>true</code> si le mode silencieux est activé, <code>false</code> sinon
      */
     public static boolean isMuted() { return isMuted;}
@@ -51,15 +78,46 @@ public class Son {
     public static void toggleMute() {
         isMuted = !isMuted; //Basculer l'état muet
         if (isMuted) {
-            StopMusique(); 
-            StopSonRebond();
-            StopSonBrique();
+            stopAllSounds();
         } else {
             JouerMusique(); 
         }
     }
 
-   
+    /**
+     * Active ou désactive la musique de fond.
+     * 
+     * @param enabled <code>true</code> pour activer la musique de fond, <code>false</code> pour la désactiver
+     */
+    //Méthode pour active ou désactive la musique de fond
+    public static void setBackgroundMusicOn(boolean enabled) {
+        backgroundMusicOn = enabled;
+        if (!isMuted) {
+            JouerMusique();
+        } else if(!enabled){
+            StopMusique();
+        }
+    }
+
+     /**
+     * Active ou désactive le son des rebonds de balle.
+     * 
+     * @param enabled <code>true</code> pour activer le son de rebond, <code>false</code> pour le désactiver
+     */
+    //Méthode pour active ou désactive le son de rebond de balle.
+    public static void setBounceSoundOn(boolean enabled) {
+        bounceSoundOn = enabled;
+    }
+
+    /**
+     * Active ou désactive le son des briques cassées.
+     * 
+     * @param enabled <code>true</code> pour activer le son des briques cassées, <code>false</code> pour le désactiver
+     */
+    //Méthode pour active ou désactive le son des briques cassées.
+    public static void setCollisionSoundOn(boolean enabled) {
+        collisionSoundOn = enabled;
+    }
 
     
     /**
@@ -68,12 +126,15 @@ public class Son {
      */
     //Methode pour initialiser la music de fond
     public static void initBackgroundMusic() {
-        String musicFile = "src/main/resources/sounds/music.mp3"; // L'endroit du fichier audio
-        Media sound = new Media(Paths.get(musicFile).toUri().toString());
-        mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // lecture en boucle
-        mediaPlayer.setVolume(0.5); // Le volume（entre 0.0-1.0）
-        //mediaPlayer.play();  
+        try {
+            String musicFile = "src/main/resources/sounds/music.mp3"; // L'endroit du fichier audio
+            Media sound = new Media(Paths.get(musicFile).toUri().toString());
+            mediaPlayer = new MediaPlayer(sound);
+            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // lecture en boucle
+            mediaPlayer.setVolume(0.5); // Le volume（entre 0.0-1.0）
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'initialisation de la musique de fond: " + e.getMessage());
+        }
     }
 
     /**
@@ -82,9 +143,13 @@ public class Son {
      */
     // Méthode pour initialiser le son de la balle qui rebondit
     public static void initPaddleBoundSound() {
-        String paddleBoundFile = "src/main/resources/sounds/bound.wav"; // 
-        Media paddleBoundSound = new Media(Paths.get(paddleBoundFile).toUri().toString());
-        paddleBoundPlayer = new MediaPlayer(paddleBoundSound);
+        try{
+            String paddleBoundFile = "src/main/resources/sounds/bound.wav"; // 
+            Media paddleBoundSound = new Media(Paths.get(paddleBoundFile).toUri().toString());
+            paddleBoundPlayer = new MediaPlayer(paddleBoundSound);
+        } catch(Exception e){
+            System.err.println("Erreur lors de l'initialisation du son de rebond: " + e.getMessage());
+        }
     }
     
     /**
@@ -93,9 +158,13 @@ public class Son {
      */
     // Méthode pour initialiser le son des briques cassées
     public static void initBrickBreakSound() {
-        String brickBreakFile = "src/main/resources/sounds/hit.wav"; 
-        Media brickBreakSound = new Media(Paths.get(brickBreakFile).toUri().toString());
-        brickBreakPlayer = new MediaPlayer(brickBreakSound);
+        try {
+            String brickBreakFile = "src/main/resources/sounds/hit.wav"; 
+            Media brickBreakSound = new Media(Paths.get(brickBreakFile).toUri().toString());
+            brickBreakPlayer = new MediaPlayer(brickBreakSound);
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'initialisation du son des briques cassées: " + e.getMessage());
+        }
     }
 
     /**
@@ -103,17 +172,20 @@ public class Son {
      */
     // Méthode pour jouer la musique de fond
     public static void JouerMusique(){
-        if (!isMuted) { //Si ce n'est pas en mode silencieux
+        if (!isMuted && backgroundMusicOn && mediaPlayer != null && mediaPlayer.getStatus() != MediaPlayer.Status.PLAYING) { //Si ce n'est pas en mode silencieux
             mediaPlayer.play(); //Rejouer la musique
         }
     }
 
+    
     /**
      * Arrête le son du rebond de la balle.
      */
     // Méthode pour arrêter le son de rebond de la balle
     public static void StopSonRebond(){
-        paddleBoundPlayer.stop(); 
+        if (paddleBoundPlayer != null) {
+            paddleBoundPlayer.stop(); 
+        }
     }
 
     /**
@@ -121,7 +193,8 @@ public class Son {
      */
     // Méthode pour jouer le son de rebond de la balle
     public static void JouerSonRebond(){
-        if (!isMuted) { //Si ce n'est pas en mode silencieux
+        if (!isMuted && bounceSoundOn && paddleBoundPlayer != null) { //Si ce n'est pas en mode silencieux
+            paddleBoundPlayer.stop();
             paddleBoundPlayer.play(); 
         }
     }
@@ -131,7 +204,8 @@ public class Son {
      */
     // Méthode pour jouer le son des briques cassées
     public static void JouerSonBrique(){
-        if (!isMuted) { //Si ce n'est pas en mode silencieux
+        if (!isMuted && collisionSoundOn && brickBreakPlayer != null) { //Si ce n'est pas en mode silencieux
+           brickBreakPlayer.stop();
             brickBreakPlayer.play();
         }
     }
@@ -141,7 +215,9 @@ public class Son {
      */
     // Méthode pour arrêter le son des briques cassées
     public static void StopSonBrique(){
-        brickBreakPlayer.stop();
+        if (brickBreakPlayer != null) {
+            brickBreakPlayer.stop();
+        }
     }
 
     /**
@@ -149,7 +225,18 @@ public class Son {
      */
     // Méthode pour arrêter la musique de fond
     public static void StopMusique(){
-        mediaPlayer.stop();
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
+    }
+
+    /**
+     * Arrête tous les sons et la music.
+     */
+    public static void stopAllSounds() {
+        StopMusique();
+        StopSonRebond();
+        StopSonBrique();
     }
 
     /**
@@ -157,7 +244,9 @@ public class Son {
      */
     // Méthode pour mettre la musique en pause
     public static void PauseMusique(){
-        mediaPlayer.pause();
+        if (mediaPlayer != null) {
+            mediaPlayer.pause();
+        }
     }
 
     /**

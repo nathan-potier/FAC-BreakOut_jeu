@@ -137,14 +137,57 @@ public class Affichage {
 
 
 
-        
+
 
         // Afficher les 5 derniers scores à droite
         afficherDerniersScores(gc);
     }
 
+    /**
+     * Affiche le bouton pour activer/désactiver la musique de fond.
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param boutonToggleBackgroundMusic Le bouton pour activer/désactiver la musique de fond.
+     */
+    public static void afficherBoutonToggleBackgroundMusic(GraphicsContext gc, Bouton boutonToggleBackgroundMusic) {
+        // Configurer les styles du bouton
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 10));
+        gc.setTextAlign(TextAlignment.CENTER);
+        
+        // Afficher le bouton "ToggleBackgroundMusic"
+        boutonToggleBackgroundMusic.afficher(gc);
+    }
 
-    
+    /**
+     * Affiche le bouton pour activer/désactiver les sons de collision.
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param boutonToggleCollisionSound Le bouton pour activer/désactiver les sons de collision.
+     */
+    public static void afficherBoutonToggleCollisionSound(GraphicsContext gc, Bouton boutonToggleCollisionSound) {
+        // Configurer les styles du bouton
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 10));
+        gc.setTextAlign(TextAlignment.CENTER);
+        
+        // Afficher le bouton "ToggleCollisionSound"
+        boutonToggleCollisionSound.afficher(gc);
+    }
+
+    /**
+     * Affiche le bouton pour activer/désactiver les sons de rebond.
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param boutonToggleBounceSound Le bouton pour activer/désactiver les sons de rebond.
+     */
+    public static void afficherBoutonToggleBounceSound(GraphicsContext gc, Bouton boutonToggleBounceSound) {
+        // Configurer les styles du bouton
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 10));
+        gc.setTextAlign(TextAlignment.CENTER);
+        
+        // Afficher le bouton "Settings"
+        boutonToggleBounceSound.afficher(gc);
+    }
+
 
     private static void afficherBoutonSettings(GraphicsContext gc, Bouton boutonSettings) {
         // Configurer les styles du bouton
@@ -224,6 +267,8 @@ public static void afficherBoutonPause(GraphicsContext gc, Bouton boutonPause) {
     }
     boutonPause.afficher(gc);
 }
+
+
 
     // Méthode pour afficher les 5 derniers scores dans un rectangle à droite
     private static void afficherDerniersScores(GraphicsContext gc) {
@@ -352,6 +397,8 @@ public static void afficherBoutonPause(GraphicsContext gc, Bouton boutonPause) {
 
         //Réafficher les 5 derniers scores à droite
         afficherDerniersScores(gc);
+
+        
     }
 
     //Méthode pour afficher le score actuel

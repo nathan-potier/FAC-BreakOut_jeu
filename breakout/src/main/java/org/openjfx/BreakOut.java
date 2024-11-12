@@ -69,6 +69,9 @@ public class BreakOut extends Application {
     private Bouton boutonEnregistrer;
     private Bouton boutonMute;
     private Bouton boutonPause;
+    private Bouton boutonToggleBackgroundMusic; 
+    private Bouton boutonToggleCollisionSound;
+    private Bouton boutonToggleBounceSound;
     
     
     private FenetrePerso f1;
@@ -142,6 +145,9 @@ public class BreakOut extends Application {
         boutonSettings = new Bouton(20, height - 80, 100, 40, "Settings");
         boutonMute = new Bouton(425, height - 80, 100, 40, "Muet");
         boutonPause = new Bouton(525, height - 80, 100, 40,"Pause");
+        boutonToggleBackgroundMusic = new Bouton(100, height - 150, 130, 20, "BackgroundMusic: on");
+        boutonToggleCollisionSound = new Bouton(100, height - 130, 130, 20, "BrickSound: on");
+        boutonToggleBounceSound = new Bouton(100, height - 110, 130, 20, "BounceSound: on");
 
 
  
@@ -175,7 +181,41 @@ public class BreakOut extends Application {
 		canvas.setOnMouseClicked(e -> {
             double clickX = e.getX();
             double clickY = e.getY();
-
+            if (drawSettingsRectangle) {  // Traiter les clics sur les boutons uniquement lorsque le menu des paramètres est ouvert
+                if (boutonToggleBackgroundMusic.estClique(clickX, clickY)) {
+                    // Basculer la musique de fond
+                    if (Son.isBackgroundMusicOn()) {
+                        Son.setBackgroundMusicOn(false);  // Arrêter la musique de fond
+                        boutonToggleBackgroundMusic.setText("BackgroundMusic: off");
+                    } else {
+                        Son.setBackgroundMusicOn(true); // Démarrer la musique de fond
+                        boutonToggleBackgroundMusic.setText("BackgroundMusic: on");
+                    }
+                }
+                
+                if (boutonToggleCollisionSound.estClique(clickX, clickY)) {
+                    // Basculer le son de collision
+                    if (Son.isCollisionSoundOn()) {
+                        Son.setCollisionSoundOn(false);  // Désactiver le son de collision
+                        boutonToggleCollisionSound.setText("BrickSound: off");
+                    } else {
+                        Son.setCollisionSoundOn(true);   // Activer le son de collision
+                        boutonToggleCollisionSound.setText("BrickSound: on");
+                    }
+                }
+    
+                if (boutonToggleBounceSound.estClique(clickX, clickY)) {
+                    // Basculer le son de rebond
+                    if (Son.isBounceSoundOn()) {
+                        Son.setBounceSoundOn(false); // Désactiver le son de rebond
+                        boutonToggleBounceSound.setText("BounceSound: off");
+                    } else {
+                        Son.setBounceSoundOn(true); // Activer le son de rebond
+                        boutonToggleBounceSound.setText("BounceSound: on");
+                    }
+                }
+            }
+        
              //Paramètres de clic du bouton muet
              if (boutonMute.estClique(clickX, clickY)) {
                 if(!Son.isMuted()){
@@ -269,7 +309,7 @@ public class BreakOut extends Application {
                     gen.genNiveau(clickX, clickY);
                 }
             }
-
+            
 
 
 
@@ -465,9 +505,13 @@ public class BreakOut extends Application {
 
             if (drawSettingsRectangle) {
                 Affichage.dessinerRectangle(gc, boutonSettings);
+                Affichage.afficherBoutonToggleBackgroundMusic(gc, boutonToggleBackgroundMusic);//Affiche dans le boutonSetting
+                Affichage.afficherBoutonToggleCollisionSound(gc, boutonToggleCollisionSound);//Affiche dans le boutonSetting
+                Affichage.afficherBoutonToggleBounceSound(gc, boutonToggleBounceSound);//Affiche dans le boutonSetting  
             }
         }        
     }
+
     
 
     public static void main(String[] args) {
