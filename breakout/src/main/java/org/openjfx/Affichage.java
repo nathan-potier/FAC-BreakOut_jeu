@@ -39,6 +39,8 @@ public class Affichage {
     private static String pseudoInput = "";  // Stocke l'entrée utilisateur temporairement
     private static boolean isEnteringPseudo = true;
 
+    private static boolean isPaused = false;  // Vérifier si le jeu est en pause.
+
     //coordonnées d'affichage du bouton "Retour"
     private static double replayButtonX = BreakOut.getWidth() / 2-50;
     private static double replayButtonY = BreakOut.getHeight() / 2+60; //position du bouton "Retour" sous le meilleur score
@@ -130,13 +132,62 @@ public class Affichage {
     
         // Afficher le bouton "Settings"
         afficherBoutonSettings(gc, boutonSettings);  // Appelle la méthode pour afficher le bouton "Settings"
-    
+        
+
+
+
+
+
+
         // Afficher les 5 derniers scores à droite
         afficherDerniersScores(gc);
     }
 
+    /**
+     * Affiche le bouton pour activer/désactiver la musique de fond.
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param boutonToggleBackgroundMusic Le bouton pour activer/désactiver la musique de fond.
+     */
+    public static void afficherBoutonToggleBackgroundMusic(GraphicsContext gc, Bouton boutonToggleBackgroundMusic) {
+        // Configurer les styles du bouton
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 10));
+        gc.setTextAlign(TextAlignment.CENTER);
+        
+        // Afficher le bouton "ToggleBackgroundMusic"
+        boutonToggleBackgroundMusic.afficher(gc);
+    }
 
-    
+    /**
+     * Affiche le bouton pour activer/désactiver les sons de collision.
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param boutonToggleCollisionSound Le bouton pour activer/désactiver les sons de collision.
+     */
+    public static void afficherBoutonToggleCollisionSound(GraphicsContext gc, Bouton boutonToggleCollisionSound) {
+        // Configurer les styles du bouton
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 10));
+        gc.setTextAlign(TextAlignment.CENTER);
+        
+        // Afficher le bouton "ToggleCollisionSound"
+        boutonToggleCollisionSound.afficher(gc);
+    }
+
+    /**
+     * Affiche le bouton pour activer/désactiver les sons de rebond.
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param boutonToggleBounceSound Le bouton pour activer/désactiver les sons de rebond.
+     */
+    public static void afficherBoutonToggleBounceSound(GraphicsContext gc, Bouton boutonToggleBounceSound) {
+        // Configurer les styles du bouton
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 10));
+        gc.setTextAlign(TextAlignment.CENTER);
+        
+        // Afficher le bouton "Settings"
+        boutonToggleBounceSound.afficher(gc);
+    }
+
 
     private static void afficherBoutonSettings(GraphicsContext gc, Bouton boutonSettings) {
         // Configurer les styles du bouton
@@ -195,6 +246,29 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
     // Afficher le bouton "Jouer"
     boutonJouer.afficher(gc);
 }
+
+ //Méthode pour afficher le boutonMute
+ public static void afficherBoutonMute(GraphicsContext gc, Bouton boutonMute) {
+    if (!isPaused) {  // En cours de jeu
+        gc.setFill(Color.YELLOW);
+        gc.setFont(Font.font(20));
+        gc.setTextAlign(TextAlignment.CENTER);
+    }
+    // Afficher le bouton "Muet"
+    boutonMute.afficher(gc);
+}
+
+// Méthode pour afficher le boutonPause
+public static void afficherBoutonPause(GraphicsContext gc, Bouton boutonPause) {
+    if (!isPaused) {  // En cours de jeu
+        gc.setStroke(Color.YELLOW);
+        gc.setFont(Font.font(20));
+        gc.setTextAlign(TextAlignment.CENTER);
+    }
+    boutonPause.afficher(gc);
+}
+
+
 
     // Méthode pour afficher les 5 derniers scores dans un rectangle à droite
     private static void afficherDerniersScores(GraphicsContext gc) {
@@ -323,6 +397,8 @@ private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) 
 
         //Réafficher les 5 derniers scores à droite
         afficherDerniersScores(gc);
+
+        
     }
 
     //Méthode pour afficher le score actuel
