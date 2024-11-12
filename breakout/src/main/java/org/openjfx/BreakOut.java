@@ -25,7 +25,7 @@ public class BreakOut extends Application {
     private static final int height = 700;
 
 
-
+    private boolean isPaused = false;
     private boolean modeSelection = false;
     private boolean modeCréation = false;
     private boolean gameStarted = false;
@@ -69,8 +69,8 @@ public class BreakOut extends Application {
     private Bouton boutonEnregistrer;
     private Bouton boutonMute;
     private Bouton boutonPause;
-
-
+    
+    
     private FenetrePerso f1;
     private FenetreEditeur f2;
 
@@ -140,11 +140,11 @@ public class BreakOut extends Application {
         boutonEnregistrer = new Bouton(rectX - 100, rectY + 80, rectWidth + 200, rectHeight, "Enregistrer");
 
         boutonSettings = new Bouton(20, height - 80, 100, 40, "Settings");
-        boutonMute = new Bouton(10, height - 50, 100, 40, "Muet");
-        boutonPause = new Bouton(100, height - 50, 100, 40,"Pause");
-      
+        boutonMute = new Bouton(425, height - 80, 100, 40, "Muet");
+        boutonPause = new Bouton(525, height - 80, 100, 40,"Pause");
 
 
+ 
 
         // Initialiser la fenetre personnalisé
         
@@ -189,11 +189,10 @@ public class BreakOut extends Application {
 
             //Paramètres de clic du bouton Pause
             if (boutonPause.estClique(clickX, clickY)) {
-                if (gameStarted) {
-                    gameStarted = false; 
-                    boutonPause.setText("Continuer");
+                if (isPaused) {
+                    isPaused = false;
                 } else {
-                    gameStarted = true; 
+                    isPaused = true; 
                     boutonPause.setText("Pause");
                 }
             }
@@ -319,7 +318,12 @@ public class BreakOut extends Application {
     
     private void run(GraphicsContext gc) {
 
-        
+        //Si en mode Pause,le jeu s'arrete mais pas revenir le page de menu principal
+        if (isPaused) {
+            Affichage.afficherBoutonPause(gc,boutonPause);  // S'arrete le jeu
+            return;  
+        }        
+
         Affichage.setGC(gc);
 
         
@@ -455,7 +459,7 @@ public class BreakOut extends Application {
 
             } else {
 
-                Affichage.afficherMenuPrincipal(gc, boutonJouer, boutonSettings, boutonMute, boutonPause, drawSettingsRectangle);
+                Affichage.afficherMenuPrincipal(gc, boutonJouer, boutonSettings, drawSettingsRectangle);
                 Balle.reset();
             }
 
