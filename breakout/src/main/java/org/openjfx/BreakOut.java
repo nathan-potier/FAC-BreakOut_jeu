@@ -385,7 +385,7 @@ public class BreakOut extends Application {
                                     balles.get(k).getYPos() + Balle.getSize() >= brickY +5 &&
                                     balles.get(k).getYPos() <= brickY + bricks[i][j].getHeight() + 5) {
                     
-                                    balles.get(k).Rebond();
+                                    balles.get(k).rebondVertical();
         
                                            
                                     if(bricks[i][j].couleur() != Color.GRAY && bricks[i][j].getNbrVie() == 0){
@@ -432,7 +432,7 @@ public class BreakOut extends Application {
                 }
             }
             //verif powerUp BALLSIZE actif si oui augmente le temps passé
-            if (Balle.getBallSize() == 50){
+            if (Balle.getSize() == 50){
                 timePU1++;
                 if (timePU1 >= 700){
                     Balle.resetSize();
@@ -470,7 +470,7 @@ public class BreakOut extends Application {
                     balles.get(i).getXPos() + Balle.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
                     balles.get(i).getXPos() <= Racket.getXPos() + Racket.getWidth() / 2 && balles.get(i).getYSpeed() > 0){
     
-                    balles.get(i).Rebond();
+                    balles.get(i).rebondVertical();
                      
                     // Jouer le son de rebond de balle
                     Son.StopSonRebond();

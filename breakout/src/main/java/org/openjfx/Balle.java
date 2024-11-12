@@ -17,12 +17,10 @@ package org.openjfx;
  * <li> Reinitialise a ses valeurs initiales les parametres de la balle {@link #reset()}.</li>
  * <li> Fait rebondir verticalement la balle {@link #rebondVertical()}.</li>
  * <li> Fait rebondir horizontalement la balle {@link #rebondHorizontal()}.</li>
- * <li> ?? {@link #Rebond()}.</li>
  * <li> Met a jour la position X de la balle {@link #MAJPosHorizontal()}.</li>
  * <li> Met a jour la postion Y de la balle {@link #MAJPosVertical()}.</li>
- * <li> ??  {@link #getBallSize()}.</li>
- * <li> Renvoie un PowerUp Aléatoire entre les PowerUp disponibles {@link #setBallSize(int)}.</li>
- * <li> Renvoie un PowerUp Aléatoire entre les PowerUp disponibles {@link #resetSize()}.</li>
+ * <li> Met la taille des balles au int donner {@link #setBallSize(int)}.</li>
+ * <li> Réinitialise la taille des balles {@link #resetSize()}.</li>
  * </ul>
  * 
  * @author Noa Gregoire-Mellier
@@ -37,20 +35,56 @@ public class Balle {
     private double ballXPos;
     private double ballYPos;
 
+    /**
+     * Constructeur d'une Balle définie par plusieurs paramètres.
+     *  
+     * @param ballXPos un double représentant la position X de la balle
+     * @param BallYPos un double représentant la position Y de la balle
+    */
+
     public Balle(double ballXPos, double ballYPos){
         this.ballXPos = ballXPos;
         this.ballYPos = ballYPos;
     }
 
-
+    /**
+     * Retourne la vitesse en Y de la balle.
+     * 
+     * @return la vitesse en Y de la balle.
+     */
     public int getYSpeed(){ return this.ballYSpeed; }
+    /**
+     * Retourne la vitesse en X de la balle.
+     * 
+     * @return la vitesse en X de la balle.
+     */
     public int getXSpeed(){ return this.ballXSpeed; }
 
+    /**
+     * Retourne la taille des balles.
+     * 
+     * @return la taille des balles.
+     */
     public static int getSize(){ return ballSize; }
 
+    /**
+     * Retourne la position en X de la balle.
+     * 
+     * @return la position en X de la balle.
+     */
     public double getXPos(){ return this.ballXPos; }
+
+    /**
+     * Retourne la position en Y de la balle.
+     * 
+     * @return la position en Y de la balle.
+     */
     public double getYPos(){ return this.ballYPos; }
 
+    /**
+     * 
+     *réinitialise les paramètres de base de la balle.
+     */
     public void reset(){
         ballXSpeed = 3;
         ballYSpeed = 3;
@@ -58,35 +92,52 @@ public class Balle {
         ballXPos   = BreakOut.getWidth() / 2;
     }
 
+    /**
+     * 
+     *fait rebondir la balle verticalement.
+     */
     public void rebondVertical(){
         this.ballYSpeed = -this.ballYSpeed; // Rebond vertical
     }
 
+    /**
+     * 
+     *fait rebondir la balle horizontalement.
+     */
     public void rebondHorizontal(){
         this.ballXSpeed = -this.ballXSpeed; // Rebond horizontal
 
     }
 
-    public void Rebond(){
-        this.ballYSpeed = -this.ballYSpeed; // Rebond de la balle
-    }
 
+    /**
+     * 
+     *actualise la position X de la balle.
+     */
     public void MAJPosHorizontal(){
         this.ballXPos += this.ballXSpeed;
     }
 
+    /**
+     * 
+     *actualise la position Y de la balle.
+     */
     public void MAJPosVertical(){
         this.ballYPos += this.ballYSpeed;
     }
 
-    public static int getBallSize(){
-        return ballSize;
-    }
-
+    /**
+     * 
+     *@param ballsize met la taille des balles a cette valeur.
+     */
     public static void setBallSize(int ballsize){
         ballSize = ballsize;
     }
 
+    /**
+     * 
+     *réinitialise la taille des balles.
+     */
     public static void resetSize(){
         ballSize = 10;
     }
