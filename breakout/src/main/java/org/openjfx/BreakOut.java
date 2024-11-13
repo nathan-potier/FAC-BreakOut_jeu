@@ -116,10 +116,11 @@ public class BreakOut extends Application {
         this.gameOver = false;
         this.gameStarted = false;
         Son.StopMusique();  // La musique s'arrête
-        
-        for(int i=0; i<brickRows; i++){
-            for(int j=0; j<brickCols; j++){
-                bricks[i][j].isNotBreak = true;
+        for (int k = 0; k < brickRows; k++) {
+            for (int j = 0; j < brickCols; j++) {
+                bricks[k][j].isNotBreak = true; 
+                bricks[k][j].setHavePower(false);// Toutes les briques sont présentes au début
+                bricks[k][j].getPowerUp().reset(j * 85,k * 25 );
             }
         }
 
@@ -564,17 +565,10 @@ public class BreakOut extends Application {
     
     
                 if (nbBalle == 0){
+                    gameOver = true; 
+                    gameStarted = false; // Fin de la partie
                     Score.saveScoreToFile(Pseudo.getPseudo(), score);
                     bestScore = Score.getBestScore(Pseudo.getPseudo()); // Mettre à jour le meilleur score
-                    gameStarted = false; // Fin de la partie
-                    gameOver = true; 
-                    for (int k = 0; k < brickRows; k++) {
-                        for (int j = 0; j < brickCols; j++) {
-                            bricks[k][j].isNotBreak = true; 
-                            bricks[k][j].setHavePower(false);// Toutes les briques sont présentes au début
-                            bricks[k][j].getPowerUp().reset(j * 85,k * 25 );
-                        }
-                    }
     
 
                 }
