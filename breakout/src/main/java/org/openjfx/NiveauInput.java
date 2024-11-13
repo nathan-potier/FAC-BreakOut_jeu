@@ -109,7 +109,7 @@ public class NiveauInput extends Niveau{
                             case 2: niv[i][j] = new BrickDouble(true, 80, 20,PowerUp.randomPU(j * 85, i * 25)); break;
                             case 3: niv[i][j] = new BrickRouge(true, 80, 20, PowerUp.randomPU(j * 85, i * 25)); break;
                             case 4: niv[i][j] = new BrickUnbreakable(true, 80, 20, PowerUp.randomPU(j * 85, i * 25)); brickDetruite(); break;
-                            case 5: niv[i][j] = new BrickBleue(false, 80, 20, PowerUp.randomPU(j * 85, i * 25)); brickDetruite(); break;
+                            case 5: niv[i][j] = new BrickVide(false, 80, 20, PowerUp.randomPU(j * 85, i * 25)); brickDetruite(); break;
                             default : return null;
                         }
                         brickAdd();
