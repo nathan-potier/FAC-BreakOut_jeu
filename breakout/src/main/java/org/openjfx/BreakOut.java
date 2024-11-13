@@ -85,7 +85,7 @@ public class BreakOut extends Application {
     private FenetreEditeur f2;
 
     private Bouton boutonSettings;
-    private boolean drawSettingsRectangle = false; // Ajoute cet attribut
+    private boolean drawSettingsRectangle = false;
 
 
 
