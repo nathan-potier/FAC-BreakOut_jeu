@@ -68,7 +68,7 @@ public class FenetreEditeur implements ActionListener{
                             else if (gen.getBrick(i,j) instanceof BrickUnbreakable){
                                 s += 4;
                             }
-                            else if (gen.getBrick(i,j) instanceof BrickBleue && !gen.getBrick(i,j).isNotBreak){
+                            else if (gen.getBrick(i,j) instanceof BrickVide){
                                 s += 5;
                             }
                             if (j!= 11) s += ",";

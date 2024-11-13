@@ -70,9 +70,9 @@ public class NiveauEditeur extends NiveauInput{
                 setBrick(x, y, new BrickUnbreakable(true, 80, 20, PowerUp.randomPU(y, x)));
             }
             else if (getBrick(x, y) instanceof BrickUnbreakable){
-                setBrick(x, y, new BrickBleue(false, 80, 20, PowerUp.randomPU(y, x)));
+                setBrick(x, y, new BrickVide(false, 80, 20, PowerUp.randomPU(y, x)));
             }
-            else if (getBrick(x, y) instanceof BrickBleue && !getBrick(x,y).isNotBreak){
+            else if (getBrick(x, y) instanceof BrickVide){
                 setBrick(x, y, new BrickBleue(true, 80, 20, PowerUp.randomPU(y, x)));
             }
             

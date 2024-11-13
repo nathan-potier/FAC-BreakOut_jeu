@@ -118,9 +118,11 @@ public class BreakOut extends Application {
         Son.StopMusique();  // La musique s'arrête
         for (int k = 0; k < brickRows; k++) {
             for (int j = 0; j < brickCols; j++) {
-                bricks[k][j].isNotBreak = true; 
-                bricks[k][j].setHavePower(false);// Toutes les briques sont présentes au début
-                bricks[k][j].getPowerUp().reset(j * 85,k * 25 );
+                if (bricks[k][j].getNbrVie() != -1){
+                    bricks[k][j].isNotBreak = true; 
+                    bricks[k][j].setHavePower(false);// Toutes les briques sont présentes au début
+                    bricks[k][j].getPowerUp().reset(j * 85,k * 25 );
+                }
             }
         }
 
