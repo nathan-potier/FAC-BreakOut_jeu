@@ -572,6 +572,7 @@ public class BreakOut extends Application {
                         for (int j = 0; j < brickCols; j++) {
                             bricks[k][j].isNotBreak = true; 
                             bricks[k][j].setHavePower(false);// Toutes les briques sont présentes au début
+                            bricks[k][j].getPowerUp().reset(j * 85,k * 25 );
                         }
                     }
     

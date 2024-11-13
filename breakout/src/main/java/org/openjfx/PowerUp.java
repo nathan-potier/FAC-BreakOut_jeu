@@ -30,8 +30,8 @@ import java.util.Random;
 public class PowerUp {
 
     private static int PUsize = 10; 
-    private double PUx = BreakOut.getWidth() / 2;;
-    private double PUy = BreakOut.getHeight() / 2;;
+    private double PUx;
+    private double PUy;
     private boolean tombe = false;
     private boolean actif;
     private static double PUyspeed = 1;
@@ -116,11 +116,18 @@ public class PowerUp {
         double z = r.nextInt(3);
         if(z == 0){
             return new MoreBall(x,y);
-        }else if( z == 1){
+        }else if(z == 1){
             return new MoreRacketSize(x,y);
         }else{
-            return new MoreBall(x,y);
+            return new MoreBallSize(x, y);
         }
+    }
+
+    public void reset(double PUx, double PUy){
+        this.PUx = PUx;
+        this.PUy = PUy;
+        this.actif = false;
+        this.tombe = false;
     }
 
     
