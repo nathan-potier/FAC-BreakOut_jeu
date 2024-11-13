@@ -4,13 +4,13 @@ package org.openjfx;
 
 
 import java.util.ArrayList;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -143,7 +143,7 @@ public class BreakOut extends Application {
         // Initialiser les boutons
         boutonRejouer = new Bouton(rectRejouerX, rectY + 50, rectWidth + 20, rectHeight, "Rejouer");
         boutonChangerModeJeu = new Bouton(rectChangerModeJeuX - 70, rectChangerModeJeuY, rectWidth + 160, rectHeight, "Changer de mode"); 
-        boutonRetour = new Bouton(rectRetourX, rectY + 50, rectWidth + 20, rectHeight, "retour");
+        boutonRetour = new Bouton(rectRetourX, rectY + 50, rectWidth + 20, rectHeight, "Retour");
         boutonJouer = new Bouton(rectX, rectY, rectWidth, rectHeight, "Jouer");
         boutonClassique = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Mode classique");
         boutonPerso = new Bouton(rectX - 100, rectY + 80, rectWidth + 200, rectHeight, "Mode personnalisé");
@@ -185,6 +185,7 @@ public class BreakOut extends Application {
             boutonPerso.setHover(boutonPerso.isHover(mouseX, mouseY));
             boutonRetourSelec.setHover(boutonRetourSelec.isHover(mouseX, mouseY));
             boutonSettings.setHover(boutonSettings.isHover(mouseX,mouseY));
+            boutonCréation.setHover(boutonCréation.isHover(mouseX,mouseY));
 
             Racket.setXpos(mouseX);
         });
