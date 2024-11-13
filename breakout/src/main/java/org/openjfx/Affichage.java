@@ -220,32 +220,32 @@ public class Affichage {
 
 
 
-// Méthode pour afficher le titre du jeu
-private static void afficherTitre(GraphicsContext gc) {
-    gc.setFill(Color.YELLOW);
-    gc.setFont(Font.font("Courier New", FontWeight.EXTRA_BOLD, 105));
-    gc.setTextAlign(TextAlignment.CENTER);
-    gc.fillText(BreakOut.getTitre(), BreakOut.getWidth() / 2, 110);
-}
+    // Méthode pour afficher le titre du jeu
+    private static void afficherTitre(GraphicsContext gc) {
+        gc.setFill(Color.YELLOW);
+        gc.setFont(Font.font("Courier New", FontWeight.EXTRA_BOLD, 105));
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.fillText(BreakOut.getTitre(), BreakOut.getWidth() / 2, 110);
+    }
 
-// Méthode pour afficher le meilleur score
-private static void afficherMeilleurScore(GraphicsContext gc) {
-    gc.setFont(Font.font("Arial", FontWeight.NORMAL, 25));
-    gc.setStroke(Color.YELLOW);
-    gc.setTextAlign(TextAlignment.CENTER);
-        gc.strokeText("Best Score: " + Score.getBestScore(Pseudo.getPseudo()), BreakOut.getWidth() / 2, BreakOut.getHeight() / 2 + 60);
-}
+    // Méthode pour afficher le meilleur score
+    private static void afficherMeilleurScore(GraphicsContext gc) {
+        gc.setFont(Font.font("Arial", FontWeight.NORMAL, 25));
+        gc.setStroke(Color.YELLOW);
+        gc.setTextAlign(TextAlignment.CENTER);
+            gc.strokeText("Best Score: " + Score.getBestScore(Pseudo.getPseudo()), BreakOut.getWidth() / 2, BreakOut.getHeight() / 2 + 60);
+    }
 
-// Méthode pour afficher le bouton "Jouer"
-private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) {
-    // Configurer les styles du bouton
-    gc.setStroke(Color.YELLOW);
-    gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 25));
-    gc.setTextAlign(TextAlignment.CENTER);
-    
-    // Afficher le bouton "Jouer"
-    boutonJouer.afficher(gc);
-}
+    // Méthode pour afficher le bouton "Jouer"
+    private static void afficherBoutonJouer(GraphicsContext gc, Bouton boutonJouer) {
+        // Configurer les styles du bouton
+        gc.setStroke(Color.YELLOW);
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 25));
+        gc.setTextAlign(TextAlignment.CENTER);
+        
+        // Afficher le bouton "Jouer"
+        boutonJouer.afficher(gc);
+    }
 
  //Méthode pour afficher le boutonMute
  public static void afficherBoutonMute(GraphicsContext gc, Bouton boutonMute) {
@@ -305,7 +305,7 @@ public static void afficherBoutonPause(GraphicsContext gc, Bouton boutonPause) {
         gc.setTextAlign(TextAlignment.CENTER);
         
         // Remonter le texte et le champ de pseudo en modifiant les coordonnées Y
-        double champPseudoY = BreakOut.getHeight() / 2 - 70;  // Remonter le champ de pseudo
+        double champPseudoY = BreakOut.getHeight() / 2 - 70;
         double textePseudoY = champPseudoY - 10;
 
         // Afficher le texte "Entrer Pseudo :"
@@ -313,7 +313,7 @@ public static void afficherBoutonPause(GraphicsContext gc, Bouton boutonPause) {
 
         // Ajouter un fond noir pour le champ de saisie
         gc.setFill(Color.BLACK);
-        gc.fillRect(BreakOut.getWidth() / 2 - 100, champPseudoY, 200, 30);  // Fond noir du champ de texte
+        gc.fillRect(BreakOut.getWidth() / 2 - 100, champPseudoY, 200, 30);
 
         // Afficher le contour du champ de pseudo (couleur blanche)
         gc.setStroke(Color.WHITE);

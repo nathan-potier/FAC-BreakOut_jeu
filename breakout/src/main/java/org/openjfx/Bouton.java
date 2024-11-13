@@ -19,10 +19,11 @@ import javafx.scene.text.TextAlignment;
  * <ul>
  * <li>Afficher le bouton sur l'écran avec {@link #afficher(GraphicsContext)}.</li>
  * <li>Vérifier si le bouton est cliqué avec {@link #estClique(double, double)}.</li>
+ * <li>Définir l'état de survol du bouton avec {@link #setHover(boolean)}.</li>
  * </ul>
  * 
  * <p>
- * Les boutons sont stylisés en jaune et affichent leur texte centré.
+ * Les boutons sont en jaune et affichent leur texte centré.
  * </p>
  * 
  * @author Jonas RAMANATHAN
@@ -82,6 +83,28 @@ public class Bouton {
     public double getHeight() { return height; }
 
     public void setText(String newText) { this.text=newText; }
+
+    /**
+     * Retourne le texte affiché sur le bouton.
+     * 
+     * @return le texte du bouton
+     */
+    public String getText() { return text; }
+
+    /**
+     * Retourne la couleur par défaut du bouton.
+     * 
+     * @return la couleur par défaut
+     */
+    public Color getDefaultColor() { return defaultColor; }
+
+    /**
+     * Retourne la couleur de survol du bouton.
+     * 
+     * @return la couleur de survol
+     */
+    public Color getHoverColor() { return hoverColor; }
+
 
     /**
      * Définit l'état de survol du bouton.
