@@ -375,7 +375,7 @@ public static void afficherBoutonPause(GraphicsContext gc, Bouton boutonPause) {
     public static void afficherFinDeJeu(GraphicsContext gc, int score, Bouton boutonRejouer, Bouton boutonChangeMode, Bouton boutonRetour, Bouton boutonSettings, boolean drawSettingsRectangle) {
     
         //Afficher un message à la fin de jeu
-        Message.afficherMessageFinDeJeu(gc, score);  
+        Message.afficherMessageFinDeJeu(gc, score, Score.getOldBestScoreForMessage(Pseudo.getPseudo(), score));  
 
         //Afficher le score actuel
         afficherScoreActuel(gc,score);
