@@ -188,7 +188,42 @@ public class Affichage {
         boutonToggleBounceSound.afficher(gc);
     }
 
+     /**
+     * Affiche le bouton pour activer/désactiver la souris.
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param boutonMouse Le bouton pour activer/désactiver la souris.
+     */
+    public static void afficherBoutonMouse(GraphicsContext gc, Bouton boutonMouse) {
+        // Configurer les styles du bouton
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 10));
+        gc.setTextAlign(TextAlignment.CENTER);
+        
+        // Afficher le bouton "Mouse"
+        boutonMouse.afficher(gc);
+    }
 
+    /**
+     * Affiche le bouton pour activer/désactiver le clavier.
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param boutonKeyboard Le bouton pour activer/désactiver le clavier.
+     */
+    public static void afficherBoutonKeyboard(GraphicsContext gc, Bouton boutonKeyboard) {
+        // Configurer les styles du bouton
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 10));
+        gc.setTextAlign(TextAlignment.CENTER);
+        
+        // Afficher le bouton "Keyboard"
+        boutonKeyboard.afficher(gc);
+    }
+
+    /**
+     * Affiche le bouton pour accéder aux paramètres.
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param boutonSettings Le bouton pour accéder aux paramètres.
+     */
     private static void afficherBoutonSettings(GraphicsContext gc, Bouton boutonSettings) {
         // Configurer les styles du bouton
         gc.setStroke(Color.YELLOW);
