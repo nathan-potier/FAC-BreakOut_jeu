@@ -11,6 +11,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -243,7 +244,7 @@ public class BreakOut extends Application {
             }
 
             //Paramètres de clic du bouton Pause
-            if (boutonPause.estClique(clickX, clickY)) {
+            if (gameStarted && boutonPause.estClique(clickX, clickY)) {
                 if (isPaused) {
                     isPaused = false;
                 } else {
@@ -349,7 +350,12 @@ public class BreakOut extends Application {
             canvas.setFocusTraversable(false);
         }
         
-
+        // Événement du clavier pour mettre le jeu en pause avec la touche ESC
+        canvas.setOnKeyPressed(e -> {
+        if (gameStarted && e.getCode() == KeyCode.ESCAPE) {
+            isPaused = !isPaused; // Bascule l'état de la pause
+        }
+        });
 
         stage.setWidth(width);
         stage.setHeight(height);
