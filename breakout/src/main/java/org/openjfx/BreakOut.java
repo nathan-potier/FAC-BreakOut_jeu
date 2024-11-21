@@ -352,9 +352,21 @@ public class BreakOut extends Application {
         
         // Événement du clavier pour mettre le jeu en pause avec la touche ESC
         canvas.setOnKeyPressed(e -> {
-        if (gameStarted && e.getCode() == KeyCode.ESCAPE) {
-            isPaused = !isPaused; // Bascule l'état de la pause
-        }
+            if (gameStarted && e.getCode() == KeyCode.ESCAPE) {
+                isPaused = !isPaused; // Bascule l'état de la pause
+            }
+            // Flèche droite (déplacer vers la droite)
+            if (e.getCode() == KeyCode.RIGHT) {
+                if (Racket.getXPos() + Racket.getWidth() < width) { // Empêcher la palette de dépasser la limite droite de l'écran
+                    Racket.setXpos(Racket.getXPos() + 50); // Déplacer vers la droite
+                }
+            }
+            // Flèche gauche (déplacer vers la gauche)
+            else if (e.getCode() == KeyCode.LEFT) {
+                if (Racket.getXPos() > 0) { // Empêcher la palette de dépasser la limite gauche de l'écran
+                    Racket.setXpos(Racket.getXPos() - 50); // Déplacer vers la gauche
+                }
+            }    
         });
 
         stage.setWidth(width);
