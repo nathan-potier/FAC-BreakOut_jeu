@@ -11,6 +11,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -25,7 +26,9 @@ public class BreakOut extends Application {
     private static final String GAME_TITLE = "BreakOut";
     private static final int width = 1016;
     private static final int height = 700;
-
+    
+    private boolean isMouseMode = true;
+    private boolean isKeyboardMode =true;
 
     private boolean isPaused = false;
     private boolean modeSelection = false;
@@ -79,7 +82,8 @@ public class BreakOut extends Application {
     private Bouton boutonToggleBackgroundMusic; 
     private Bouton boutonToggleCollisionSound;
     private Bouton boutonToggleBounceSound;
-    
+    private Bouton boutonKeyboard;
+    private Bouton boutonMouse;
     
     private FenetrePerso f1;
     private FenetreEditeur f2;
@@ -159,11 +163,13 @@ public class BreakOut extends Application {
         boutonSettings = new Bouton(20, height - 80, 100, 40, "Settings");
         boutonMute = new Bouton(425, height - 80, 100, 40, "Muet");
         boutonPause = new Bouton(525, height - 80, 100, 40,"Pause");
-        boutonToggleBackgroundMusic = new Bouton(100, height - 150, 130, 20, "BackgroundMusic: on");
-        boutonToggleCollisionSound = new Bouton(100, height - 130, 130, 20, "BrickSound: on");
-        boutonToggleBounceSound = new Bouton(100, height - 110, 130, 20, "BounceSound: on");
-
-
+        boutonToggleBackgroundMusic = new Bouton(30, height - 150, 130, 20, "BackgroundMusic: on");
+        boutonToggleCollisionSound = new Bouton(30, height - 130, 130, 20, "BrickSound: on");
+        boutonToggleBounceSound = new Bouton(30, height - 110, 130, 20, "BounceSound: on");
+       
+        boutonKeyboard = new Bouton(180, height - 150, 130, 20,"Clavier: on");
+        boutonMouse = new Bouton(180, height - 130, 130, 20,"Souris: on");
+    
  
 
         // Initialiser la fenetre personnalisé
@@ -189,14 +195,28 @@ public class BreakOut extends Application {
             boutonRetourSelec.setHover(boutonRetourSelec.isHover(mouseX, mouseY));
             boutonSettings.setHover(boutonSettings.isHover(mouseX,mouseY));
             boutonCréation.setHover(boutonCréation.isHover(mouseX,mouseY));
-
-            Racket.setXpos(mouseX);
+            
+            if (isMouseMode) {
+                Racket.setXpos(mouseX);
+            }
         });
 
 		canvas.setOnMouseClicked(e -> {
             double clickX = e.getX();
             double clickY = e.getY();
             if (drawSettingsRectangle) {  // Traiter les clics sur les boutons uniquement lorsque le menu des paramètres est ouvert
+                // Gérer le basculement entre le mode souris et le mode clavier
+                if (boutonMouse.estClique(clickX, clickY)) {
+                    // Basculer l'état du mode souris
+                    isMouseMode = !isMouseMode;// Inverser l'état du mode souris
+                    boutonMouse.setText(isMouseMode ? "Souris: on" : "Souris: off");// Définir le texte en fonction de l'état
+                }
+                if (boutonKeyboard.estClique(clickX, clickY)) {
+                    // Basculer l'état du mode clavier
+                    isKeyboardMode=!isKeyboardMode;// Inverser l'état du mode clavier
+                    boutonKeyboard.setText(isKeyboardMode ? "Clavier: on" : "Clavier: off");// Définir le texte en fonction de l'état
+                }                
+
                 if (boutonToggleBackgroundMusic.estClique(clickX, clickY)) {
                     // Basculer la musique de fond
                     if (Son.isBackgroundMusicOn()) {
@@ -243,12 +263,14 @@ public class BreakOut extends Application {
             }
 
             //Paramètres de clic du bouton Pause
-            if (boutonPause.estClique(clickX, clickY)) {
+            if (gameStarted && boutonPause.estClique(clickX, clickY)) {
                 if (isPaused) {
                     isPaused = false;
+                    //Son.toggleMute(); // Changer l'état avec son
                 } else {
                     isPaused = true; 
                     boutonPause.setText("Pause");
+                    //Son.toggleMute(); // Changer l'état muet
                 }
             }
             
@@ -349,7 +371,25 @@ public class BreakOut extends Application {
             canvas.setFocusTraversable(false);
         }
         
-
+        // Événement du clavier pour mettre le jeu en pause avec la touche ESC
+        canvas.setOnKeyPressed(e -> {
+            if (isKeyboardMode || (isMouseMode && isKeyboardMode)) { // mode clavier ou les deux mode qui sont ouvert
+                if (gameStarted && e.getCode() == KeyCode.ESCAPE) {
+                    isPaused = !isPaused; // Bascule l'état de la pause
+                }
+                // Flèche droite (déplacer vers la droite)
+                if (e.getCode() == KeyCode.RIGHT) {
+                    if (Racket.getXPos() + Racket.getWidth() < width) { // Empêcher la palette de dépasser la limite droite de l'écran
+                        Racket.setXpos(Racket.getXPos() + 50); // Déplacer vers la droite
+                    }
+                // Flèche gauche (déplacer vers la gauche)
+                }else if (e.getCode() == KeyCode.LEFT) {
+                    if (Racket.getXPos() > 0) { // Empêcher la palette de dépasser la limite gauche de l'écran
+                        Racket.setXpos(Racket.getXPos() - 50); // Déplacer vers la gauche
+                    }
+                }
+            }    
+        });
 
         stage.setWidth(width);
         stage.setHeight(height);
@@ -591,6 +631,8 @@ public class BreakOut extends Application {
                 Affichage.afficherBoutonToggleBackgroundMusic(gc, boutonToggleBackgroundMusic);//Affiche dans le boutonSetting
                 Affichage.afficherBoutonToggleCollisionSound(gc, boutonToggleCollisionSound);//Affiche dans le boutonSetting
                 Affichage.afficherBoutonToggleBounceSound(gc, boutonToggleBounceSound);//Affiche dans le boutonSetting  
+                Affichage.afficherBoutonKeyboard(gc, boutonKeyboard);//Affiche dans le boutonSetting
+                Affichage.afficherBoutonMouse(gc, boutonMouse);//Affiche dans le boutonSetting
             }
             
         }        
