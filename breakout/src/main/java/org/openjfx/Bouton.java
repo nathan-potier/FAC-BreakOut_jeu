@@ -20,6 +20,8 @@ import javafx.scene.text.TextAlignment;
  * <li>Afficher le bouton sur l'écran avec {@link #afficher(GraphicsContext)}.</li>
  * <li>Vérifier si le bouton est cliqué avec {@link #estClique(double, double)}.</li>
  * <li>Définir l'état de survol du bouton avec {@link #setHover(boolean)}.</li>
+ * <li>Vérifier si la souris est au-dessus du bouton avec {@link #isHover(double, double)}.</li>
+ * <li>Modifier le texte affiché sur le bouton avec {@link #setText(String)}.</li>
  * </ul>
  * 
  * <p>
@@ -82,7 +84,12 @@ public class Bouton {
      */
     public double getHeight() { return height; }
 
-    public void setText(String newText) { this.text=newText; }
+    /**
+     * Définit le texte affiché sur le bouton.
+     * 
+     * @param newText le nouveau texte à afficher
+     */
+    public void setText(String newText) { this.text = newText; }
 
     /**
      * Retourne le texte affiché sur le bouton.
@@ -105,13 +112,12 @@ public class Bouton {
      */
     public Color getHoverColor() { return hoverColor; }
 
-
     /**
      * Définit l'état de survol du bouton.
      * 
      * @param hover vrai si le bouton est survolé sinon faux
      */
-    public void setHover(boolean hover){ this.isHover = hover; }
+    public void setHover(boolean hover) { this.isHover = hover; }
 
     /**
      * Affiche le bouton sur l'écran.
@@ -124,12 +130,12 @@ public class Bouton {
      * @param gc le contexte graphique dans lequel le bouton est dessiné
      */
     public void afficher(GraphicsContext gc) {
-        if(isHover){
+        if (isHover) {
             gc.setStroke(hoverColor);
-        }else{
+        } else {
             gc.setStroke(defaultColor);
         }
-        
+
         gc.strokeRect(x, y, width, height);
         gc.setTextAlign(TextAlignment.CENTER);
         gc.strokeText(text, x + width / 2, y + height / 2 + 5);
@@ -146,9 +152,14 @@ public class Bouton {
         return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
 
-    // Vérifier si la souris est au-dessus du bouton
-    public boolean isHover(double mouseX, double mouseY){
+    /**
+     * Vérifie si la souris est au-dessus du bouton.
+     * 
+     * @param mouseX la coordonnée X de la souris
+     * @param mouseY la coordonnée Y de la souris
+     * @return {@code true} si la souris est au-dessus du bouton, sinon {@code false}
+     */
+    public boolean isHover(double mouseX, double mouseY) {
         return estClique(mouseX, mouseY);
     }
-    
 }
