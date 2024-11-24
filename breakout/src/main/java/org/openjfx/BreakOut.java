@@ -185,16 +185,9 @@ public class BreakOut extends Application {
             double mouseX = e.getX();
             double mouseY = e.getY();
 
-            //États visuels des boutons au survol
-            boutonJouer.setHover(boutonJouer.isHover(mouseX, mouseY));
-            boutonRejouer.setHover(boutonRejouer.isHover(mouseX, mouseY));
-            boutonChangerModeJeu.setHover(boutonChangerModeJeu.isHover(mouseX, mouseY));
-            boutonRetour.setHover(boutonRetour.isHover(mouseX, mouseY));
-            boutonClassique.setHover(boutonClassique.isHover(mouseX, mouseY));
-            boutonPerso.setHover(boutonPerso.isHover(mouseX, mouseY));
-            boutonRetourSelec.setHover(boutonRetourSelec.isHover(mouseX, mouseY));
-            boutonSettings.setHover(boutonSettings.isHover(mouseX,mouseY));
-            boutonCréation.setHover(boutonCréation.isHover(mouseX,mouseY));
+            for (Bouton bouton : Bouton.getAllButtons()) {
+                bouton.setHover(bouton.isHover(mouseX, mouseY));
+            }
             
             if (isMouseMode) {
                 Racket.setXpos(mouseX);
