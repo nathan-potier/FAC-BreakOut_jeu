@@ -46,7 +46,7 @@ public class Affichage {
     private static double replayButtonY = BreakOut.getHeight() / 2+60; //position du bouton "Retour" sous le meilleur score
     private static double replayButtonWidth = 100;
     private static double replayButtonHeight = 40;
-    private static Image backgroundImage = backgroundImage = new Image("file:src/main/resources/Background/Retro_neon.jpg");
+    private static Image backgroundImage = backgroundImage = new Image("file:src/main/resources/Background/mountain_illustration.jpg");
 
     
 
