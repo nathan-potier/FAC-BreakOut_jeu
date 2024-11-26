@@ -39,8 +39,8 @@ public class BreakOut extends Application {
     private boolean finDeJeu = false;
     private boolean type = true;
     private int diff = 1;
-    private Niveau niv; //niveau classique
-    private NiveauInput n = new NiveauInput(); //niveau perso
+    private Niveau niv; 
+    private NiveauInput n = new NiveauInput(); 
     private NiveauEditeur gen = new NiveauEditeur();
 
     private int brickRows;
@@ -116,29 +116,25 @@ public class BreakOut extends Application {
     public static int getHeight(){ return height; }
     public static String getTitre(){ return GAME_TITLE; }
 
+    private void resetBalles(){
+        balle1.reset();
+        balles = new ArrayList<>();
+        balles.add(balle1);
+        nbBalle = 1;
+    }
+
     //Réinitialise l'état du jeu pour recommencer une nouvelle partie
     private void resetGame(GraphicsContext gc){
 
         this.score = 0;
-        balle1.reset();
-        balles = new ArrayList<>();
-        balles.add(balle1);
+        resetBalles();
         Racket.resetSize();
-        nbBalle = 1;
-
+        Brick.resetBrickTab(bricks, brickRows, brickCols);
   
         this.gameOver = false;
         this.gameStarted = false;
         Son.StopMusique();  // La musique s'arrête
-        for (int k = 0; k < brickRows; k++) {
-            for (int j = 0; j < brickCols; j++) {
-                if (bricks[k][j].getNbrVie() != -1){
-                    bricks[k][j].isNotBreak = true; 
-                    bricks[k][j].setHavePower(false);// Toutes les briques sont présentes au début
-                    bricks[k][j].getPowerUp().reset(j * 85,k * 25 );
-                }
-            }
-        }
+        
 
         gc.setFont(Font.font("Arial", FontWeight.NORMAL, 25));
         gc.setFill(Color.YELLOW);
@@ -473,7 +469,7 @@ public class BreakOut extends Application {
                 gameStarted = false;
                 finDeJeu = niv.finDeJeu();
                 if (type){
-                    if (diff <10) diff++;
+                    if (diff < 8) diff++;
                 }
             }
             else

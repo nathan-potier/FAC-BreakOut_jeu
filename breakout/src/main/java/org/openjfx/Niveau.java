@@ -50,8 +50,8 @@ public class Niveau {
      * @param diff un entier représentant la difficulté
     */
     Niveau(int diff){
-        this.diff = (diff < 1)? 1 : Math.min(diff, 10);
-        brickRows = Math.min(5 + this.diff - 1, 14);
+        this.diff = (diff < 1)? 1 : Math.min(diff, 8);
+        brickRows = Math.min(5 + this.diff - 1, 12);
 
     }
 
