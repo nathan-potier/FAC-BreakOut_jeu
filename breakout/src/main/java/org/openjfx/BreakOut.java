@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 
+
 public class BreakOut extends Application {
 
     private static final String GAME_TITLE = "BreakOut";
@@ -333,8 +334,6 @@ public class BreakOut extends Application {
         stage.setScene(new Scene(new StackPane(canvas)));
         stage.setResizable(false);
 
-
-    
             
 
         // Charger le meilleur score au début
@@ -417,11 +416,7 @@ public class BreakOut extends Application {
                 Affichage.afficherBoutonMute(gc, BoutonListe.bMute); // afficher le bouton
                 Affichage.afficherBoutonPause(gc, BoutonListe.bPause);
 
-                for(int i = 0; i<balles.size(); i++){
-                    balles.get(i).MAJPosHorizontal();
-                    balles.get(i).MAJPosVertical();
-                    gc.fillOval(balles.get(i).getXPos(), balles.get(i).getYPos(), Balle.getSize(), Balle.getSize());
-                }
+                Affichage.afficheBalles(gc, balles);
     
 
                 // Dessiner les briques
@@ -455,14 +450,7 @@ public class BreakOut extends Application {
                 }
             }
             //verif powerUp BALLSIZE actif si oui augmente le temps passé
-            if (Balle.getSize() == 50){
-                timePU1++;
-                if (timePU1 >= 700){
-                    Balle.resetSize();
-                    timePU1 = 0;
-                }
-
-            }
+            timePU1 = balle1.updateTimer(timePU1);
 
             //Verif powerUp RacketSize actif si oui augmente le temps passé
             if (Racket.getWidth() > 50){
@@ -480,11 +468,11 @@ public class BreakOut extends Application {
             
                 // Collision avec les murs
                 if (balles.get(i).getXPos() <= 0 || balles.get(i).getXPos() >= width - Balle.getSize()) {
-                    balles.get(i).rebondHorizontal();
+                    balles.get(i).rebond();
                 }
     
                 if (balles.get(i).getYPos() <= 0) {
-                    balles.get(i).rebondVertical();
+                    balles.get(i).rebond();
                 }
     
     
@@ -493,7 +481,7 @@ public class BreakOut extends Application {
                     balles.get(i).getXPos() + Balle.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
                     balles.get(i).getXPos() <= Racket.getXPos() + Racket.getWidth() / 2 && balles.get(i).getYSpeed() > 0){
     
-                    balles.get(i).rebondVertical();
+                    balles.get(i).rebond();
                      
                     // Jouer le son de rebond de balle
                     Son.stopSonRebond();

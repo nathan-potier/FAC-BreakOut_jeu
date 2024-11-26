@@ -16,14 +16,16 @@ import java.util.ArrayList;
  * <li> Retourne la taille des Balles {@link #getSize()}.</li>
  * <li> Retourne la position X de la balle {@link #getXPos()}.</li>
  * <li> Renvoie la position Y de la balle {@link #getYPos()}.</li>
+ * <li> Retourne la présence ou non d'un power up actif {@link #isActive()}.<\li>
+ * <li> Retourne vrai tant que la timer n'a pas atteint un tant donnée {@link #isTimeUp(double)}.<\li>
  * <li> Reinitialise a ses valeurs initiales les parametres de la balle {@link #reset()}.</li>
  * <li> Reinitialise une balle et un array de balle à leur valeur initiales {@link #resetBalles(Balle, ArrayList)}.<\li>
- * <li> Fait rebondir verticalement la balle {@link #rebondVertical()}.</li>
- * <li> Fait rebondir horizontalement la balle {@link #rebondHorizontal()}.</li>
+ * <li> Fait rebondir la balle {@link #rebond()}.</li>
  * <li> Met a jour la position X de la balle {@link #MAJPosHorizontal()}.</li>
  * <li> Met a jour la postion Y de la balle {@link #MAJPosVertical()}.</li>
  * <li> Met la taille des balles au int donner {@link #setBallSize(int)}.</li>
  * <li> Réinitialise la taille des balles {@link #resetSize()}.</li>
+ * <li> regarde si la balle touche une brique donnée {@link #isTouching(Balle, Brick, int, int)}.<\li>
  * </ul>
  * 
  * @author Noa Gregoire-Mellier
@@ -31,7 +33,7 @@ import java.util.ArrayList;
  * 
  */
 
-public class Balle {
+public class Balle implements HavePowerUp{
     private int ballYSpeed = 3;
 	private int ballXSpeed = 3;
     private static int ballSize = 10;   
@@ -85,6 +87,16 @@ public class Balle {
     public double getYPos(){ return this.ballYPos; }
 
     /**
+     * Retourne si la balle a un power up appliqué ou non.    
+     * 
+     * @return la présence ou non d'un power up.
+     */
+    public boolean isActive(){return Balle.getSize() == 50;}
+
+
+    public boolean isTimeUp(double timer){return timer >= 700;}
+
+    /**
      * 
      *réinitialise les paramètres de base de la balle.
      */
@@ -109,20 +121,12 @@ public class Balle {
 
     /**
      * 
-     *fait rebondir la balle verticalement.
+     *fait rebondir la balle.
      */
-    public void rebondVertical(){
+    public void rebond(){
         this.ballYSpeed = -this.ballYSpeed; // Rebond vertical
     }
 
-    /**
-     * 
-     *fait rebondir la balle horizontalement.
-     */
-    public void rebondHorizontal(){
-        this.ballXSpeed = -this.ballXSpeed; // Rebond horizontal
-
-    }
 
 
     /**
@@ -149,6 +153,17 @@ public class Balle {
         ballSize = ballsize;
     }
 
+    public double updateTimer(double timer){
+        if (isActive()){
+            timer++;
+            if (isTimeUp(timer)){
+                Balle.resetSize();
+                return 0;
+            }
+        }
+        return timer;
+    }
+
     /**
      * 
      *réinitialise la taille des balles.
@@ -157,10 +172,19 @@ public class Balle {
         ballSize = 10;
     }
 
+    /**
+     *  regarde si la balle touche la brique courante.
+     * 
+     * @param balle  balle courante
+     * @param brick  brick courante
+     * @param brickX    coordonnée X du point en haut à gauche de la brique courante
+     * @param brickY    coordonnée Y du point en haut à gauche de la brique courante
+     * @return  booleen qui vérifie su une balle touche la brique courante
+     */
     public static boolean isTouching(Balle balle, Brick brick, double brickX, double brickY){
          return balle.getXPos() + Balle.getSize() >= brickX &&
                             balle.getXPos() <= brickX + brick.getWidth() &&
-                            balle.getYPos() + Balle.getSize() >= brickY +5 &&
+                            balle.getYPos() + Balle.getSize() >= brickY + 5 &&
                             balle.getYPos() <= brickY + brick.getHeight() + 5;
     }
 

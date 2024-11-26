@@ -1,5 +1,7 @@
 package org.openjfx;
 
+import java.util.ArrayList;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -503,6 +505,14 @@ public class Affichage {
         gc.setFill(Color.YELLOW);
         gc.setTextAlign(TextAlignment.CENTER);
         gc.fillText("Score: " + 0, 1016 / 2, 700 / 2); //score remise à 0
+    }
+
+    public static void afficheBalles(GraphicsContext gc, ArrayList<Balle> balles){
+        for(int i = 0; i<balles.size(); i++){
+            balles.get(i).MAJPosHorizontal();
+            balles.get(i).MAJPosVertical();
+            gc.fillOval(balles.get(i).getXPos(), balles.get(i).getYPos(), Balle.getSize(), Balle.getSize());
+        }
     }
 
 }
