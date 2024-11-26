@@ -1,5 +1,7 @@
 package org.openjfx;
 
+import java.util.ArrayList;
+
 /**
  * La classe Balle sert à générer des Balles utilisables dans un jeu de Breakout.
  * 
@@ -15,6 +17,7 @@ package org.openjfx;
  * <li> Retourne la position X de la balle {@link #getXPos()}.</li>
  * <li> Renvoie la position Y de la balle {@link #getYPos()}.</li>
  * <li> Reinitialise a ses valeurs initiales les parametres de la balle {@link #reset()}.</li>
+ * <li> Reinitialise une balle et un array de balle à leur valeur initiales {@link #resetBalles(Balle, ArrayList)}.<\li>
  * <li> Fait rebondir verticalement la balle {@link #rebondVertical()}.</li>
  * <li> Fait rebondir horizontalement la balle {@link #rebondHorizontal()}.</li>
  * <li> Met a jour la position X de la balle {@link #MAJPosHorizontal()}.</li>
@@ -90,6 +93,18 @@ public class Balle {
         ballYSpeed = 3;
         ballYPos   = BreakOut.getHeight() / 2;
         ballXPos   = BreakOut.getWidth() / 2;
+    }
+
+    /**
+     * réinitialise les paramètres de la balle et la liste des balles pour ne contenir qu'une balle
+     * 
+     * @param balle     balle initial 
+     * @param balleArray    liste des balles
+     */
+    public static void resetBalles(Balle balle, ArrayList<Balle> balleArray){
+        balle.reset();
+        balleArray = new ArrayList<>();
+        balleArray.add(balle);
     }
 
     /**

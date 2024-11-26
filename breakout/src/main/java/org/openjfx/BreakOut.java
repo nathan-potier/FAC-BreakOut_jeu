@@ -84,32 +84,19 @@ public class BreakOut extends Application {
     public static int getHeight(){ return height; }
     public static String getTitre(){ return GAME_TITLE; }
 
-    private void resetBalles(){
-        balle1.reset();
-        balles = new ArrayList<>();
-        balles.add(balle1);
-        nbBalle = 1;
-    }
 
     //Réinitialise l'état du jeu pour recommencer une nouvelle partie
     private void resetGame(GraphicsContext gc){
 
-        this.score = 0;
-        resetBalles();
-        Racket.resetSize();
-        Brick.resetBrickTab(bricks, brickRows, brickCols);
-  
         this.gameOver = false;
         this.gameStarted = false;
-        Son.StopMusique();  // La musique s'arrête
-        
-
-        gc.setFont(Font.font("Arial", FontWeight.NORMAL, 25));
-        gc.setFill(Color.YELLOW);
-        gc.setTextAlign(TextAlignment.CENTER);
-        gc.fillText("Score: " + score, width / 2, height / 2); //score remise à 0
-        
-        Son.JouerMusique(); // Rejouer la musique
+        this.score = 0;
+        nbBalle = 1;
+        Balle.resetBalles(balle1, balles);
+        Racket.resetSize();
+        Brick.resetBrickTab(bricks, brickRows, brickCols);
+        Son.rejouerMusique();
+        Affichage.afficherDefFont(gc);
     }
     
 
@@ -228,13 +215,13 @@ public class BreakOut extends Application {
                     resetGame(gc);
                     gameStarted = true; //Rejouer le jeu
                     gameOver = false;   //sans retourner au menu principal
-                    Son.JouerMusique();
+                    Son.jouerMusique();
                 }else if(BoutonListe.bChangerModeJeu.estClique(clickX, clickY)){
                     resetGame(gc);
                     modeSelection = true; //retourner sur la selection de mode
                 }else if(BoutonListe.bRetour.estClique(clickX, clickY)){
                     resetGame(gc); //Réinitialise le jeu -> retour au menu
-                    Son.JouerMusique(); // Rejoue de la music
+                    Son.jouerMusique(); // Rejoue de la music
                 }else if (BoutonListe.bSetting.estClique(clickX, clickY)) { //bouton "Settings" à la fin de jeu 
                     drawSettingsRectangle = !drawSettingsRectangle; //l'affichage du rectangle
                 }
@@ -250,7 +237,7 @@ public class BreakOut extends Application {
                 niv = new Niveau(diff);
                 bricks = niv.makeNiveau();
                 brickRows = niv.getBrickRows();
-                resetBalles();
+                Balle.resetBalles(balle1, balles);
                 modeSelection = false;
                 finDeJeu = false;
                 gameStarted = true;
@@ -402,7 +389,7 @@ public class BreakOut extends Application {
             }
             else
             if(gameOver){
-                Son.PauseMusique(); // stop music
+                Son.pauseMusique(); // stop music
                 Affichage.afficherFinDeJeu(gc, score, BoutonListe.bRejouer, BoutonListe.bChangerModeJeu, BoutonListe.bRetour, BoutonListe.bSetting, drawSettingsRectangle);
             }else 
             if (modeSelection){
@@ -422,8 +409,8 @@ public class BreakOut extends Application {
                 }
             }else
             if (gameStarted && !niv.finDeJeu()) {
-                if (!Son.MusiqueEnCours()) { // Rejouer la music pendant que le jeu en cours
-                    Son.JouerMusique();
+                if (!Son.musiqueEnCours()) { // Rejouer la music pendant que le jeu en cours
+                    Son.jouerMusique();
                 }
                 gc.fillText("Score: " + score, width / 2, height / 2);
 
@@ -463,8 +450,8 @@ public class BreakOut extends Application {
                                         bricks[i][j].getPowerUp().setTombe(true);
 
 
-                                        Son.StopSonBrique(); // le son des briques cassées
-                                        Son.JouerSonBrique(); // 
+                                        Son.stopSonBrique(); // le son des briques cassées
+                                        Son.jouerSonBrique(); // 
 
                                     }else{
                                         bricks[i][j].setNbrVie(bricks[i][j].getNbrVie() - 1);
@@ -541,8 +528,8 @@ public class BreakOut extends Application {
                     balles.get(i).rebondVertical();
                      
                     // Jouer le son de rebond de balle
-                    Son.StopSonRebond();
-                    Son.JouerSonRebond();
+                    Son.stopSonRebond();
+                    Son.jouerSonRebond();
                 }
     
                 }

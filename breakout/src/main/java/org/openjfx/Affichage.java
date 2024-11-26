@@ -498,4 +498,11 @@ public class Affichage {
         retour.afficher(gc);    
     }
 
+    public static void afficherDefFont(GraphicsContext gc){
+        gc.setFont(Font.font("Arial", FontWeight.NORMAL, 25));
+        gc.setFill(Color.YELLOW);
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.fillText("Score: " + 0, 1016 / 2, 700 / 2); //score remise à 0
+    }
+
 }
