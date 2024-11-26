@@ -29,8 +29,8 @@ package org.openjfx;
  */
 
 public class Balle {
-    private static int ballYSpeed = 3;
-	private static int ballXSpeed = 3;
+    private int ballYSpeed = 3;
+	private int ballXSpeed = 3;
     private static int ballSize = 10;   
     private double ballXPos;
     private double ballYPos;
@@ -52,9 +52,9 @@ public class Balle {
      * 
      * @return la vitesse en Y de la balle.
      */
-    public static int getYSpeed(){ return ballYSpeed; }
+    public int getYSpeed(){ return this.ballYSpeed; }
 
-    public static void setYSpeed(int YSpeed){
+    public void setYSpeed(int YSpeed){
         ballYSpeed = YSpeed;
     }
     /**
@@ -62,9 +62,9 @@ public class Balle {
      * 
      * @return la vitesse en X de la balle.
      */
-    public static int getXSpeed(){ return ballXSpeed; }
+    public int getXSpeed(){ return this.ballXSpeed; }
 
-    public static void setXSpeed(int XSpeed){
+    public void setXSpeed(int XSpeed){
         ballXSpeed = XSpeed;
     }
     /**
@@ -150,8 +150,10 @@ public class Balle {
     }
 
     public static void resetSpeed(){
-        ballXSpeed = 3;
-        ballYSpeed = 3;
+        for(int i = 0; BreakOut.balles.size() > i; i++){
+            BreakOut.balles.get(i).setXSpeed(BreakOut.balles.get(i).getXSpeed()/2);
+            BreakOut.balles.get(i).setYSpeed(BreakOut.balles.get(i).getYSpeed()/2);
+        }
     }
 
 }

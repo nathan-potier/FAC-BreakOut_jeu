@@ -610,13 +610,15 @@ public class BreakOut extends Application {
 
             }
             //verif Malus BALLSPEED actif si oui augmente le temps passé
-            if (Balle.getXSpeed() > 3){
+            for (int i = 0; i < balles.size(); i++) {
+            if (balles.get(i).getXSpeed() > 3){
                 timeMU2++;
                 if (timeMU2 >= 700){
                     Balle.resetSpeed();
                     timeMU2 = 0;
                 }
             }
+        }
 
 
             for (int i = 0; i < balles.size(); i++) {

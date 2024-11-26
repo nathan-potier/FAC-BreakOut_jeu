@@ -8,8 +8,11 @@ public class MalusBallSpeed extends PowerUp{
 
     @Override
     public void applyEffect(){
-        Balle.setYSpeed(Balle.getYSpeed()*2);
-        Balle.setXSpeed(Balle.getXSpeed()*2);
+        for(int i = 0; BreakOut.balles.size() > i; i++){
+            BreakOut.balles.get(i).setXSpeed(BreakOut.balles.get(i).getXSpeed()*2);
+            BreakOut.balles.get(i).setYSpeed(BreakOut.balles.get(i).getYSpeed()*2);
+        }
+
     }
     
 }
