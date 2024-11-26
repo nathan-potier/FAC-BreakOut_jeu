@@ -184,11 +184,46 @@ public class Affichage {
         gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 10));
         gc.setTextAlign(TextAlignment.CENTER);
         
-        // Afficher le bouton "Settings"
+        // Afficher le bouton "ToggleBounceSound"
         boutonToggleBounceSound.afficher(gc);
     }
 
+     /**
+     * Affiche le bouton pour activer/désactiver la souris.
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param boutonMouse Le bouton pour activer/désactiver la souris.
+     */
+    public static void afficherBoutonMouse(GraphicsContext gc, Bouton boutonMouse) {
+        // Configurer les styles du bouton
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 10));
+        gc.setTextAlign(TextAlignment.CENTER);
+        
+        // Afficher le bouton "Mouse"
+        boutonMouse.afficher(gc);
+    }
 
+    /**
+     * Affiche le bouton pour activer/désactiver le clavier.
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param boutonKeyboard Le bouton pour activer/désactiver le clavier.
+     */
+    public static void afficherBoutonKeyboard(GraphicsContext gc, Bouton boutonKeyboard) {
+        // Configurer les styles du bouton
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 10));
+        gc.setTextAlign(TextAlignment.CENTER);
+        
+        // Afficher le bouton "Keyboard"
+        boutonKeyboard.afficher(gc);
+    }
+
+    /**
+     * Affiche le bouton pour accéder aux paramètres.
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param boutonSettings Le bouton pour accéder aux paramètres.
+     */
     private static void afficherBoutonSettings(GraphicsContext gc, Bouton boutonSettings) {
         // Configurer les styles du bouton
         gc.setStroke(Color.YELLOW);
@@ -247,26 +282,26 @@ public class Affichage {
         boutonJouer.afficher(gc);
     }
 
- //Méthode pour afficher le boutonMute
- public static void afficherBoutonMute(GraphicsContext gc, Bouton boutonMute) {
-    if (!isPaused) {  // En cours de jeu
-        gc.setFill(Color.YELLOW);
-        gc.setFont(Font.font(20));
-        gc.setTextAlign(TextAlignment.CENTER);
+    //Méthode pour afficher le boutonMute
+    public static void afficherBoutonMute(GraphicsContext gc, Bouton boutonMute) {
+        if (!isPaused) {  // En cours de jeu
+            gc.setFill(Color.YELLOW);
+            gc.setFont(Font.font(20));
+            gc.setTextAlign(TextAlignment.CENTER);
+        }
+        // Afficher le bouton "Muet"
+        boutonMute.afficher(gc);
     }
-    // Afficher le bouton "Muet"
-    boutonMute.afficher(gc);
-}
 
-// Méthode pour afficher le boutonPause
-public static void afficherBoutonPause(GraphicsContext gc, Bouton boutonPause) {
-    if (!isPaused) {  // En cours de jeu
-        gc.setStroke(Color.YELLOW);
-        gc.setFont(Font.font(20));
-        gc.setTextAlign(TextAlignment.CENTER);
+    // Méthode pour afficher le boutonPause
+    public static void afficherBoutonPause(GraphicsContext gc, Bouton boutonPause) {
+        if (!isPaused) {  // En cours de jeu
+            gc.setStroke(Color.YELLOW);
+            gc.setFont(Font.font(20));
+            gc.setTextAlign(TextAlignment.CENTER);
+        }
+        boutonPause.afficher(gc);
     }
-    boutonPause.afficher(gc);
-}
 
 
 
@@ -375,7 +410,7 @@ public static void afficherBoutonPause(GraphicsContext gc, Bouton boutonPause) {
     public static void afficherFinDeJeu(GraphicsContext gc, int score, Bouton boutonRejouer, Bouton boutonChangeMode, Bouton boutonRetour, Bouton boutonSettings, boolean drawSettingsRectangle) {
     
         //Afficher un message à la fin de jeu
-        Message.afficherMessageFinDeJeu(gc, score);  
+        Message.afficherMessageFinDeJeu(gc, score, Score.getOldBestScoreForMessage(Pseudo.getPseudo(), score));  
 
         //Afficher le score actuel
         afficherScoreActuel(gc,score);
