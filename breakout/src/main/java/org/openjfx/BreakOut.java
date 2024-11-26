@@ -34,8 +34,8 @@ public class BreakOut extends Application {
     private boolean finDeJeu = false;
     private boolean type = true;
     private int diff = 1;
-    private Niveau niv; //niveau classique
-    private NiveauInput n = new NiveauInput(); //niveau perso
+    private Niveau niv; 
+    private NiveauInput n = new NiveauInput(); 
     private NiveauEditeur gen = new NiveauEditeur();
 
     private int brickRows;
@@ -405,7 +405,7 @@ public class BreakOut extends Application {
                 gameStarted = false;
                 finDeJeu = niv.finDeJeu();
                 if (type){
-                    if (diff <10) diff++;
+                    if (diff < 8) diff++;
                 }
             }
             else

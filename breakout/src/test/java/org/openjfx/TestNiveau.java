@@ -50,14 +50,14 @@ public class TestNiveau{
     @Test
     public void testRowSupp(){
         niv = new Niveau(456);
-        assertEquals(niv.getBrickRows(), 14);
+        assertEquals(niv.getBrickRows(), 12);
     }
 
     // Test si la valeur est bien mise à 1 sur la valeur critique en 11
     @Test
     public void testRowSuppCrit(){
         niv = new Niveau(11);
-        assertEquals(niv.getBrickRows(), 14);
+        assertEquals(niv.getBrickRows(), 12);
     }
 
 
@@ -84,7 +84,7 @@ public class TestNiveau{
     public void testTailleSupp(){
         niv = new Niveau(1526);
         tab = niv.makeNiveau();
-        assertEquals(tab.length, 14);
+        assertEquals(tab.length, 12);
     }
 
 
@@ -123,7 +123,7 @@ public class TestNiveau{
         niv = new Niveau(451);
         tab = niv.makeNiveau();
         boolean flag = true;
-        for(int i=0; i< 14; i++){
+        for(int i=0; i< 12; i++){
             for(Brick b : tab[i]){
                 flag &= (b != null); 
             }

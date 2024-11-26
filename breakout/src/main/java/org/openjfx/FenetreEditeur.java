@@ -53,7 +53,7 @@ public class FenetreEditeur implements ActionListener{
             else{
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(path))){
                     String s;
-                    for(int i = 0; i < 14; i++){
+                    for(int i = 0; i < 12; i++){
                         s = "";
                         for(int j = 0; j < 12; j++ ){
                             if (gen.getBrick(i,j) instanceof BrickBleue && gen.getBrick(i,j).isNotBreak){

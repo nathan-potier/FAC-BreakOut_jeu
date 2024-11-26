@@ -85,7 +85,7 @@ public class NiveauInput extends Niveau{
 
         try(Scanner scanner = new Scanner(new File(path))){
             if (!scanner.hasNextLine()) return null;
-            while(scanner.hasNextLine() && nbLine < 14){
+            while(scanner.hasNextLine() && nbLine < 12){
                 courant = scanner.nextLine().split(",");
                 if (courant.length != 12) return null;        
                 valList.add(courant);    
