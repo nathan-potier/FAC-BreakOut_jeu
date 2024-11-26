@@ -4,6 +4,7 @@ package org.openjfx;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -33,6 +34,7 @@ public class BreakOut extends Application {
     private boolean isPaused = false;
     private boolean modeSelection = false;
     private boolean modeCréation = false;
+    private boolean selectionNiveaux = false;
     private boolean gameStarted = false;
     private boolean finDeJeu = false;
     private boolean type = true;
@@ -57,6 +59,12 @@ public class BreakOut extends Application {
     private double rectHeight = 50;
     private double rectX = (width - rectWidth) / 2;
     private double rectY = (height - rectHeight) / 2;
+
+    private double espacementHorizontalSelectNiv = 60; 
+    private double espacementVerticalSelectNiv = 90;
+    double totalWidthNiv = rectWidth * 5 + espacementHorizontalSelectNiv * 4;
+    double rectXniveau = (width - totalWidthNiv) / 2;
+    double rectYniveau = (height - rectHeight * 2 - espacementVerticalSelectNiv) / 2;
 
     //Espace horizontal entre les boutons "Rejouer" et "Retour"
     private double espaceEntreBoutons = 40;
@@ -84,6 +92,8 @@ public class BreakOut extends Application {
     private Bouton boutonToggleBounceSound;
     private Bouton boutonKeyboard;
     private Bouton boutonMouse;
+    private Bouton boutonRetourAuMode;
+    private List<Bouton> boutonsNiveaux;
     
     private FenetrePerso f1;
     private FenetreEditeur f2;
@@ -170,6 +180,20 @@ public class BreakOut extends Application {
         boutonKeyboard = new Bouton(180, height - 150, 130, 20,"Clavier: on");
         boutonMouse = new Bouton(180, height - 130, 130, 20,"Souris: on");
     
+        //Initialiser les boutons de niveaux
+        boutonRetourAuMode = new Bouton(rectX, rectY + 250, 100, 40, "Retour");
+        boutonsNiveaux = new ArrayList<>();
+        for (int i = 1; i <= 5; i++) {
+            double x = rectXniveau + (i - 1) * (rectWidth + espacementHorizontalSelectNiv); // Position horizontale
+            Bouton bouton = new Bouton(x, rectY, rectWidth+40, rectHeight, "Niveau " + i);
+            boutonsNiveaux.add(bouton);
+        }
+        for (int i = 6; i <= 10; i++) {
+            double x = rectXniveau + (i - 6) * (rectWidth + espacementHorizontalSelectNiv); // Position horizontale
+            double y = rectYniveau + rectHeight + espacementVerticalSelectNiv; // Position verticale (sous la première ligne)
+            Bouton bouton = new Bouton(x, y, rectWidth+40, rectHeight, "Niveau " + i);
+            boutonsNiveaux.add(bouton);
+        }
  
 
         // Initialiser la fenetre personnalisé
@@ -289,16 +313,24 @@ public class BreakOut extends Application {
                 Affichage.enregistrerPseudo();  // Stocker le pseudo avant de commencer
                 drawSettingsRectangle = false; 
 
-            //confirme un input sur le bouton "Mode classique" ou "Prochain niveau"
-            }else if(!modeCréation && !gameStarted && type && ((modeSelection && boutonClassique.estClique(clickX, clickY))
-                    || (finDeJeu && boutonProchainNiveau.estClique(clickX, clickY)))){
-                niv = new Niveau(diff);
-                bricks = niv.makeNiveau();
-                brickRows = niv.getBrickRows();
+            }else if(modeSelection && boutonClassique.estClique(clickX, clickY)){
                 modeSelection = false;
-                finDeJeu = false;
-                gameStarted = true;
-                type = true;
+                selectionNiveaux = true;
+            }else if(selectionNiveaux && !boutonRetourAuMode.estClique(clickX, clickY)){
+                for (int i = 0; i < boutonsNiveaux.size(); i++) {
+                    Bouton bouton = boutonsNiveaux.get(i);
+                    if (bouton.estClique(clickX, clickY)) {
+                        niv = new Niveau(i + 1); //Charge le niveau sélectionné
+                        bricks = niv.makeNiveau();
+                        brickRows = niv.getBrickRows();
+                        gameStarted = true; 
+                        selectionNiveaux = false; 
+                    }
+                }
+            //Permet de retourner au sélection de mode lorsqu'on se trouve dans le menu des niveaux
+            }else if(selectionNiveaux && boutonRetourAuMode.estClique(clickX, clickY)){
+                modeSelection = true;
+                selectionNiveaux = false;
 
             //confirme un input sur le bouton Personnalisé
             }else if(!modeCréation && !gameStarted && modeSelection && boutonPerso.estClique(clickX, clickY)){
@@ -464,6 +496,8 @@ public class BreakOut extends Application {
                         n.setOuvert(false);
                     }
                 }
+            }else if(selectionNiveaux){
+                Affichage.affichageSelectionNiveaux(gc, boutonsNiveaux, boutonRetourAuMode);
             }else
             if (gameStarted && !niv.finDeJeu()) {
                 if (!Son.MusiqueEnCours()) { // Rejouer la music pendant que le jeu en cours
