@@ -28,7 +28,7 @@ public class NiveauEditeur extends NiveauInput{
         defBrick();
         for(int i = 0; i < 14; i++){
             for(int j = 0; j < 12; j++){
-                setBrick(i, j, new BrickBleue(true, 80, 20, new PowerUp(j * 85, i * 25)));
+                setBrick(i, j, new BrickBleue(true, 80, 20, new PowerUp(j * 85, i * 25, false)));
             }
         }
         setBrickRows(14);

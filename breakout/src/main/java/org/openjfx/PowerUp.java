@@ -35,6 +35,7 @@ public class PowerUp {
     private boolean tombe = false;
     private boolean actif;
     private static double PUyspeed = 1;
+    private boolean malus;
 
     /**
      * Constructeur d'un PowerUp défini par plusieurs paramètres.
@@ -42,9 +43,10 @@ public class PowerUp {
      * @param PUx un double représentant la position X initiale du PowerUp
      * @param PUy un double représentant la position Y initiale du PowerUp
     */
-    public PowerUp(double PUx, double PUy){
+    public PowerUp(double PUx, double PUy, boolean malus){
         this.PUx = PUx;
         this.PUy = PUy;
+        this.malus = malus;
     }
 
     /**
@@ -113,14 +115,20 @@ public class PowerUp {
      */
     public static PowerUp randomPU(double x ,double y){
         Random r = new Random();
-        double z = r.nextInt(3);
+        double z = r.nextInt(5);
         if(z == 0){
-            return new MoreBall(x,y);
+            return new MoreBall(x,y, false);
         }else if(z == 1){
-            return new MoreRacketSize(x,y);
+            return new MoreRacketSize(x,y, false);
+        }else if (z==2){
+            return new MoreBallSize(x, y, false);
+        }else if (z==3){
+            return new MalusBallSpeed(x, y, true);
         }else{
-            return new MoreBallSize(x, y);
+            return new MalusRacket(x, y, true);
         }
+        
+        
     }
 
     public void reset(double PUx, double PUy){
@@ -128,6 +136,10 @@ public class PowerUp {
         this.PUy = PUy;
         this.actif = false;
         this.tombe = false;
+    }
+
+    public boolean getMalus(){
+        return this.malus;
     }
 
     
