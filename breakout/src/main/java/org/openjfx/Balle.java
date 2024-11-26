@@ -157,4 +157,11 @@ public class Balle {
         ballSize = 10;
     }
 
+    public static boolean isTouching(Balle balle, Brick brick, double brickX, double brickY){
+         return balle.getXPos() + Balle.getSize() >= brickX &&
+                            balle.getXPos() <= brickX + brick.getWidth() &&
+                            balle.getYPos() + Balle.getSize() >= brickY +5 &&
+                            balle.getYPos() <= brickY + brick.getHeight() + 5;
+    }
+
 }

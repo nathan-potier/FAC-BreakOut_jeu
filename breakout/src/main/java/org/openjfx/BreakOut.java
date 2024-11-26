@@ -427,40 +427,8 @@ public class BreakOut extends Application {
                 // Dessiner les briques
                 niv.afficheNiveau(gc);
             
-                // Détection de collision avec les briques
-                for (int i = 0; i < brickRows; i++) {
-                    for (int j = 0; j < brickCols; j++) {
-                        if (bricks[i][j].isNotBreak) {
-                            double brickX = j * (bricks[i][j].getWidth() + 5);
-                            double brickY = i * (bricks[i][j].getHeight() + 5);
-            
-                            for(int k = 0; k<balles.size(); k++){
-                                if (balles.get(k).getXPos() + Balle.getSize() >= brickX &&
-                                    balles.get(k).getXPos() <= brickX + bricks[i][j].getWidth() &&
-                                    balles.get(k).getYPos() + Balle.getSize() >= brickY +5 &&
-                                    balles.get(k).getYPos() <= brickY + bricks[i][j].getHeight() + 5) {
-                    
-                                    balles.get(k).rebondVertical();
-        
-                                           
-                                    if(bricks[i][j].couleur() != Color.GRAY && bricks[i][j].getNbrVie() == 0){
-                                        bricks[i][j].isNotBreak = false;
-                                        niv.brickDetruite();
-                                        score += bricks[i][j].getScore(); 
-                                        bricks[i][j].getPowerUp().setTombe(true);
-
-
-                                        Son.stopSonBrique(); // le son des briques cassées
-                                        Son.jouerSonBrique(); // 
-
-                                    }else{
-                                        bricks[i][j].setNbrVie(bricks[i][j].getNbrVie() - 1);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                // Détection de collision avec les briques et incrémente le score
+                score += Collision.checkCollision(balles, niv);
 
             //actualisation powerUp
             for (int i = 0; i < brickRows; i++) {
