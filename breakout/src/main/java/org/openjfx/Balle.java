@@ -29,8 +29,8 @@ package org.openjfx;
  */
 
 public class Balle {
-    private int ballYSpeed = 3;
-	private int ballXSpeed = 3;
+    private static int ballYSpeed = 3;
+	private static int ballXSpeed = 3;
     private static int ballSize = 10;   
     private double ballXPos;
     private double ballYPos;
@@ -52,14 +52,21 @@ public class Balle {
      * 
      * @return la vitesse en Y de la balle.
      */
-    public int getYSpeed(){ return this.ballYSpeed; }
+    public static int getYSpeed(){ return ballYSpeed; }
+
+    public static void setYSpeed(int YSpeed){
+        ballYSpeed = YSpeed;
+    }
     /**
      * Retourne la vitesse en X de la balle.
      * 
      * @return la vitesse en X de la balle.
      */
-    public int getXSpeed(){ return this.ballXSpeed; }
+    public static int getXSpeed(){ return ballXSpeed; }
 
+    public static void setXSpeed(int XSpeed){
+        ballXSpeed = XSpeed;
+    }
     /**
      * Retourne la taille des balles.
      * 
@@ -140,6 +147,11 @@ public class Balle {
      */
     public static void resetSize(){
         ballSize = 10;
+    }
+
+    public static void resetSpeed(){
+        ballXSpeed = 3;
+        ballYSpeed = 3;
     }
 
 }

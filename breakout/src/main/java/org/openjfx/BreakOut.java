@@ -52,6 +52,8 @@ public class BreakOut extends Application {
     public static ArrayList<Balle> balles = new ArrayList<>();
     private static double timePU1 = 0;
     private static double  timePU2 = 0;
+    private static double timeMU1 = 0;
+    private static double timeMU2 = 0;
     public static int nbBalle = 1;
     private final Balle balle1 = new Balle(BreakOut.getWidth() / 2,BreakOut.getHeight() / 2);
     
@@ -554,8 +556,13 @@ public class BreakOut extends Application {
                 for (int j = 0; j < brickCols; j++) {
                     if (bricks[i][j].couleur() == Color.RED){
                         if (bricks[i][j].getPowerUp().getTombe()){
-                            gc.setFill(Color.BLUE);
-                            gc.fillOval(bricks[i][j].getPowerUp().getPux() + bricks[i][j].getWidth()/2, bricks[i][j].getPowerUp().getPuy(), PowerUp.getSize(), PowerUp.getSize());
+                            if (bricks[i][j].getPowerUp().getMalus()){
+                                gc.setFill(Color.RED);
+                                gc.fillOval(bricks[i][j].getPowerUp().getPux() + bricks[i][j].getWidth()/2, bricks[i][j].getPowerUp().getPuy(), PowerUp.getSize(), PowerUp.getSize());
+                            }else{
+                                gc.setFill(Color.BLUE);
+                                gc.fillOval(bricks[i][j].getPowerUp().getPux() + bricks[i][j].getWidth()/2, bricks[i][j].getPowerUp().getPuy(), PowerUp.getSize(), PowerUp.getSize());
+                            }
                             bricks[i][j].getPowerUp().actuPUy();
                             if (bricks[i][j].getPowerUp().getPuy() + PowerUp.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
                             bricks[i][j].getPowerUp().getPux() + PowerUp.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
@@ -584,13 +591,31 @@ public class BreakOut extends Application {
             }
 
             //Verif powerUp RacketSize actif si oui augmente le temps passé
-            if (Racket.getWidth() > 50){
+            if (Racket.getWidth() > 100){
                 timePU2++;
                 if (timePU2 >= 700){
                     Racket.resetSize();
                     timePU2 = 0;
                 }
 
+            }
+
+            //verif Malus RacketSize actif si oui augmente le temps passé
+            if (Racket.getWidth() < 100){
+                timeMU1++;
+                if (timeMU1 >= 700){
+                    Racket.resetSize();
+                    timeMU1 = 0;
+                }
+
+            }
+            //verif Malus BALLSPEED actif si oui augmente le temps passé
+            if (Balle.getXSpeed() > 3){
+                timeMU2++;
+                if (timeMU2 >= 700){
+                    Balle.resetSpeed();
+                    timeMU2 = 0;
+                }
             }
 
 

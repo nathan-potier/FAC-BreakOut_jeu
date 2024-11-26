@@ -26,8 +26,8 @@ public class MoreRacketSize extends PowerUp {
      * @param PUx un double représentant la position X initiale du PowerUp
      * @param PUy un double représentant la position Y initiale du PowerUp
     */
-    public MoreRacketSize(double Pux, double PUy) {
-        super(Pux, PUy);
+    public MoreRacketSize(double Pux, double PUy, boolean malus) {
+        super(Pux, PUy, malus);
     }
 
 
