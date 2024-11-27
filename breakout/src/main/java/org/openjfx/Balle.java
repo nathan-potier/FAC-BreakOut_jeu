@@ -58,6 +58,10 @@ public class Balle implements HavePowerUp{
      * @return la vitesse en Y de la balle.
      */
     public int getYSpeed(){ return this.ballYSpeed; }
+
+    public void setYSpeed(int YSpeed){
+        ballYSpeed = YSpeed;
+    }
     /**
      * Retourne la vitesse en X de la balle.
      * 
@@ -65,6 +69,9 @@ public class Balle implements HavePowerUp{
      */
     public int getXSpeed(){ return this.ballXSpeed; }
 
+    public void setXSpeed(int XSpeed){
+        ballXSpeed = XSpeed;
+    }
     /**
      * Retourne la taille des balles.
      * 
@@ -170,6 +177,13 @@ public class Balle implements HavePowerUp{
      */
     public static void resetSize(){
         ballSize = 10;
+    }
+
+    public static void resetSpeed(){
+        for(int i = 0; BreakOut.balles.size() > i; i++){
+            BreakOut.balles.get(i).setXSpeed(BreakOut.balles.get(i).getXSpeed()/2);
+            BreakOut.balles.get(i).setYSpeed(BreakOut.balles.get(i).getYSpeed()/2);
+        }
     }
 
     /**

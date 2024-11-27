@@ -31,8 +31,8 @@ public class MoreBall extends PowerUp{
      * @param PUx un double représentant la position X initiale du PowerUp
      * @param PUy un double représentant la position Y initiale du PowerUp
     */
-    public MoreBall(double PUx, double PUy) {
-        super(PUx, PUy);
+    public MoreBall(double PUx, double PUy, boolean malus) {
+        super(PUx, PUy, malus);
     }
 
     /**

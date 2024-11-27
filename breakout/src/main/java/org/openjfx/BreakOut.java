@@ -4,6 +4,7 @@ package org.openjfx;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -34,6 +35,7 @@ public class BreakOut extends Application {
     private boolean isPaused = false;
     private boolean modeSelection = false;
     private boolean modeCréation = false;
+    private boolean selectionNiveaux = false;
     private boolean gameStarted = false;
     private boolean finDeJeu = false;
     private boolean type = true;
@@ -51,6 +53,8 @@ public class BreakOut extends Application {
     public static ArrayList<Balle> balles = new ArrayList<>();
     private static double timePU1 = 0;
     private static double  timePU2 = 0;
+    private static double timeMU1 = 0;
+    private static double timeMU2 = 0;
     public static int nbBalle = 1;
     private final Balle balle1 = new Balle(BreakOut.getWidth() / 2,BreakOut.getHeight() / 2);
     
@@ -59,11 +63,23 @@ public class BreakOut extends Application {
     private double rectX = (width - rectWidth) / 2;
     private double rectY = (height - rectHeight) / 2;
 
+    private double espacementHorizontalSelectNiv = 60; 
+    private double espacementVerticalSelectNiv = 90;
+    double totalWidthNiv = rectWidth * 5 + espacementHorizontalSelectNiv * 4;
+    double rectXniveau = (width - totalWidthNiv) / 2;
+    double rectYniveau = (height - rectHeight * 2 - espacementVerticalSelectNiv) / 2;
+
     //Espace horizontal entre les boutons "Rejouer" et "Retour"
     private double espaceEntreBoutons = 40;
 
     private double rectRejouerX = (width - (2 * rectWidth + espaceEntreBoutons)) / 2;
     private double rectRetourX = rectRejouerX + rectWidth + espaceEntreBoutons;
+    private double rectChangerModeJeuX = (width - rectWidth) / 2;
+    private double rectChangerModeJeuY = rectY + 50 + rectHeight + 15;
+
+
+    private Bouton boutonRetourAuMode;
+    private List<Bouton> boutonsNiveaux;
     
     private FenetrePerso f1;
     private FenetreEditeur f2;
@@ -107,6 +123,22 @@ public class BreakOut extends Application {
 
         Canvas canvas = new Canvas(width, height);
         GraphicsContext gc = canvas.getGraphicsContext2D();
+        
+        //Initialiser les boutons de niveaux
+        boutonRetourAuMode = new Bouton(rectX, rectY + 250, 100, 40, "Retour");
+        boutonsNiveaux = new ArrayList<>();
+        for (int i = 1; i <= 5; i++) {
+            double x = rectXniveau + (i - 1) * (rectWidth + espacementHorizontalSelectNiv); // Position horizontale
+            Bouton bouton = new Bouton(x, rectY, rectWidth+40, rectHeight, "Niveau " + i);
+            boutonsNiveaux.add(bouton);
+        }
+        for (int i = 6; i <= 10; i++) {
+            double x = rectXniveau + (i - 6) * (rectWidth + espacementHorizontalSelectNiv); // Position horizontale
+            double y = rectYniveau + rectHeight + espacementVerticalSelectNiv; // Position verticale (sous la première ligne)
+            Bouton bouton = new Bouton(x, y, rectWidth+40, rectHeight, "Niveau " + i);
+            boutonsNiveaux.add(bouton);
+        }
+ 
 
         // Initialiser la fenetre personnalisé
         
@@ -121,16 +153,9 @@ public class BreakOut extends Application {
             double mouseX = e.getX();
             double mouseY = e.getY();
 
-            //États visuels des boutons au survol
-            BoutonListe.bJouer.setHover(BoutonListe.bJouer.isHover(mouseX, mouseY));
-            BoutonListe.bRejouer.setHover(BoutonListe.bRejouer.isHover(mouseX, mouseY));
-            BoutonListe.bChangerModeJeu.setHover(BoutonListe.bChangerModeJeu.isHover(mouseX, mouseY));
-            BoutonListe.bRetour.setHover(BoutonListe.bRetour.isHover(mouseX, mouseY));
-            BoutonListe.bClassique.setHover(BoutonListe.bClassique.isHover(mouseX, mouseY));
-            BoutonListe.bPerso.setHover(BoutonListe.bPerso.isHover(mouseX, mouseY));
-            BoutonListe.bRetourSelec.setHover(BoutonListe.bRetourSelec.isHover(mouseX, mouseY));
-            BoutonListe.bSetting.setHover(BoutonListe.bSetting.isHover(mouseX,mouseY));
-            BoutonListe.bCréation.setHover(BoutonListe.bCréation.isHover(mouseX,mouseY));
+            for (Bouton bouton : Bouton.getAllButtons()) {
+                bouton.setHover(bouton.isHover(mouseX, mouseY));
+            }
             
             if (isMouseMode) {
                 Racket.setXpos(mouseX);
@@ -240,9 +265,22 @@ public class BreakOut extends Application {
                 brickRows = niv.getBrickRows();
                 Balle.resetBalles(balle1, balles);
                 modeSelection = false;
-                finDeJeu = false;
-                gameStarted = true;
-                type = true;
+                selectionNiveaux = true;
+            }else if(selectionNiveaux && !boutonRetourAuMode.estClique(clickX, clickY)){
+                for (int i = 0; i < boutonsNiveaux.size(); i++) {
+                    Bouton bouton = boutonsNiveaux.get(i);
+                    if (bouton.estClique(clickX, clickY)) {
+                        niv = new Niveau(i + 1); //Charge le niveau sélectionné
+                        bricks = niv.makeNiveau();
+                        brickRows = niv.getBrickRows();
+                        gameStarted = true; 
+                        selectionNiveaux = false; 
+                    }
+                }
+            //Permet de retourner au sélection de mode lorsqu'on se trouve dans le menu des niveaux
+            }else if(selectionNiveaux && boutonRetourAuMode.estClique(clickX, clickY)){
+                modeSelection = true;
+                selectionNiveaux = false;
 
             //confirme un input sur le bouton Personnalisé
             }else if(!modeCréation && !gameStarted && modeSelection && BoutonListe.bPerso.estClique(clickX, clickY)){
@@ -406,6 +444,8 @@ public class BreakOut extends Application {
                         n.setOuvert(false);
                     }
                 }
+            }else if(selectionNiveaux){
+                Affichage.affichageSelectionNiveaux(gc, boutonsNiveaux, boutonRetourAuMode);
             }else
             if (gameStarted && !niv.finDeJeu()) {
                 if (!Son.musiqueEnCours()) { // Rejouer la music pendant que le jeu en cours
@@ -430,8 +470,13 @@ public class BreakOut extends Application {
                 for (int j = 0; j < brickCols; j++) {
                     if (bricks[i][j].couleur() == Color.RED){
                         if (bricks[i][j].getPowerUp().getTombe()){
-                            gc.setFill(Color.BLUE);
-                            gc.fillOval(bricks[i][j].getPowerUp().getPux() + bricks[i][j].getWidth()/2, bricks[i][j].getPowerUp().getPuy(), PowerUp.getSize(), PowerUp.getSize());
+                            if (bricks[i][j].getPowerUp().getMalus()){
+                                gc.setFill(Color.RED);
+                                gc.fillOval(bricks[i][j].getPowerUp().getPux() + bricks[i][j].getWidth()/2, bricks[i][j].getPowerUp().getPuy(), PowerUp.getSize(), PowerUp.getSize());
+                            }else{
+                                gc.setFill(Color.BLUE);
+                                gc.fillOval(bricks[i][j].getPowerUp().getPux() + bricks[i][j].getWidth()/2, bricks[i][j].getPowerUp().getPuy(), PowerUp.getSize(), PowerUp.getSize());
+                            }
                             bricks[i][j].getPowerUp().actuPUy();
                             if (bricks[i][j].getPowerUp().getPuy() + PowerUp.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
                             bricks[i][j].getPowerUp().getPux() + PowerUp.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
@@ -453,7 +498,7 @@ public class BreakOut extends Application {
             timePU1 = balle1.updateTimer(timePU1);
 
             //Verif powerUp RacketSize actif si oui augmente le temps passé
-            if (Racket.getWidth() > 50){
+            if (Racket.getWidth() > 100){
                 timePU2++;
                 if (timePU2 >= 700){
                     Racket.resetSize();
@@ -461,6 +506,26 @@ public class BreakOut extends Application {
                 }
 
             }
+
+            //verif Malus RacketSize actif si oui augmente le temps passé
+            if (Racket.getWidth() < 100){
+                timeMU1++;
+                if (timeMU1 >= 700){
+                    Racket.resetSize();
+                    timeMU1 = 0;
+                }
+
+            }
+            //verif Malus BALLSPEED actif si oui augmente le temps passé
+            for (int i = 0; i < balles.size(); i++) {
+            if (balles.get(i).getXSpeed() > 3){
+                timeMU2++;
+                if (timeMU2 >= 700){
+                    Balle.resetSpeed();
+                    timeMU2 = 0;
+                }
+            }
+        }
 
 
             for (int i = 0; i < balles.size(); i++) {

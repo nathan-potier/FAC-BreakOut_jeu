@@ -1,6 +1,6 @@
 package org.openjfx;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -498,6 +498,37 @@ public class Affichage {
         
         afficherBoutonJouer(gc, prochainNiveau);
         retour.afficher(gc);    
+    }
+
+    //Méthode pour afficher le bouton "Retour" retournant au menu sélection de mode
+    private static void afficherBoutonRetourAuMode(GraphicsContext gc, Bouton boutonRetourAuMode){
+        gc.setStroke(Color.YELLOW);
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 25));
+        gc.setTextAlign(TextAlignment.CENTER);
+        boutonRetourAuMode.afficher(gc);
+    }
+
+    //Méthode pour afficher les boutons des niveaux
+    public static void afficherBoutonNiveaux(GraphicsContext gc, List<Bouton> boutonsNiveaux){
+        gc.setStroke(Color.YELLOW);
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 25));
+        gc.setTextAlign(TextAlignment.CENTER);
+        for (Bouton bouton : boutonsNiveaux) {
+            bouton.afficher(gc);
+        }
+    }
+
+    /**
+     * Affiche le menu de niveau de 1 à 10
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param boutonsNiveaux Les boutons niveaux permettant de sélection un niveau de 1 à 10
+     * @param boutonRetourAuMode Le bouton permettant de retourner au mode de sélection
+     */
+    //Méthode pour le menu de sélection des niveaux
+    public static void affichageSelectionNiveaux(GraphicsContext gc, List<Bouton> boutonsNiveaux, Bouton boutonRetourAuMode){
+        afficherBoutonNiveaux(gc, boutonsNiveaux);
+        afficherBoutonRetourAuMode(gc, boutonRetourAuMode);
     }
 
     public static void afficherDefFont(GraphicsContext gc){
