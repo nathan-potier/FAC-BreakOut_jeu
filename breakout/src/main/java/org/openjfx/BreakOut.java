@@ -546,7 +546,7 @@ public class BreakOut extends Application {
                     balles.get(i).getXPos() + Balle.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
                     balles.get(i).getXPos() <= Racket.getXPos() + Racket.getWidth() / 2 && balles.get(i).getYSpeed() > 0){
     
-                    balles.get(i).rebondVertical();
+                    balles.get(i).rebondSurRaquette(Racket.getXPos(), Racket.getWidth());
                      
                     // Jouer le son de rebond de balle
                     Son.stopSonRebond();

@@ -1,6 +1,7 @@
 package org.openjfx;
-
+import java.util.Random;
 import java.util.ArrayList;
+
 
 /**
  * La classe Balle sert à générer des Balles utilisables dans un jeu de Breakout.
@@ -33,12 +34,16 @@ import java.util.ArrayList;
  * 
  */
 
+
+
 public class Balle implements HavePowerUp{
-    private int ballYSpeed = 3;
-	private int ballXSpeed = 3;
+    private int ballYSpeed ;
+	private int ballXSpeed ;
+
     private static int ballSize = 10;   
     private double ballXPos;
     private double ballYPos;
+    private final int speedNorm = 3;
 
     /**
      * Constructeur d'une Balle définie par plusieurs paramètres.
@@ -47,9 +52,26 @@ public class Balle implements HavePowerUp{
      * @param BallYPos un double représentant la position Y de la balle
     */
 
-    public Balle(double ballXPos, double ballYPos){
+    public Balle(double ballXPos, double ballYPos) {
         this.ballXPos = ballXPos;
         this.ballYPos = ballYPos;
+        initRandomSpeed();
+    }
+
+    /**
+     * Initialise une direction aléatoire pour la balle.
+     */
+    public void initRandomSpeed() {
+        Random rand = new Random();
+        double angle = rand.nextDouble() * 2 * Math.PI; // Angle aléatoire en radians
+        this.ballXSpeed = (int) Math.round(speedNorm * Math.cos(angle));
+        this.ballYSpeed = Math.abs((int) Math.round(speedNorm * Math.sin(angle)));
+
+
+        // Évite que l'une des vitesses soit 0 pour une meilleure dynamique
+        if (ballXSpeed == 0 || ballYSpeed == 0) {
+            initRandomSpeed();
+        }
     }
 
     /**
@@ -108,8 +130,7 @@ public class Balle implements HavePowerUp{
      *réinitialise les paramètres de base de la balle.
      */
     public void reset(){
-        ballXSpeed = 3;
-        ballYSpeed = 3;
+        initRandomSpeed();
         ballYPos   = BreakOut.getHeight() / 2;
         ballXPos   = BreakOut.getWidth() / 2;
     }
@@ -133,6 +154,32 @@ public class Balle implements HavePowerUp{
     public void rebondVertical(){
         this.ballYSpeed = -this.ballYSpeed; // Rebond vertical
     }
+    
+    public void rebondSurRaquette(double raquetteX, int raquetteLargeur) {
+        // Calcul de la position relative de l'impact (entre -1 et 1)
+        double positionRelative = (this.ballXPos - (raquetteX + raquetteLargeur / 2)) / (raquetteLargeur / 2);
+    
+        // Limite la valeur pour éviter des angles extrêmes
+        positionRelative = Math.max(-1, Math.min(1, positionRelative));
+    
+        // Calcul du nouvel angle en fonction de l'impact
+        double angle = Math.PI / 4 * positionRelative; // Angle entre -45° et +45°
+    
+        // Met à jour les vitesses X et Y en respectant la norme
+        double speed = Math.sqrt(ballXSpeed * ballXSpeed + ballYSpeed * ballYSpeed);
+        int newBallXSpeed = (int) Math.round(speed * Math.sin(angle));
+        int newBallYSpeed = -(int) Math.round(speed * Math.cos(angle)); // Direction vers le haut
+    
+        // Assurer que la direction horizontale respecte la direction actuelle
+        if (Math.signum(ballXSpeed) != Math.signum(newBallXSpeed)) {
+            newBallXSpeed = -newBallXSpeed;
+        }
+    
+        // Mise à jour des vitesses
+        this.ballXSpeed = newBallXSpeed;
+        this.ballYSpeed = newBallYSpeed;
+    }
+    
 
     /**
      * 
@@ -189,6 +236,7 @@ public class Balle implements HavePowerUp{
         ballSize = 10;
     }
 
+
     public static void resetSpeed(){
         for(int i = 0; BreakOut.balles.size() > i; i++){
             BreakOut.balles.get(i).setXSpeed(BreakOut.balles.get(i).getXSpeed()/2);
@@ -211,5 +259,6 @@ public class Balle implements HavePowerUp{
                             balle.getYPos() + Balle.getSize() >= brickY + 5 &&
                             balle.getYPos() <= brickY + brick.getHeight() + 5;
     }
+
 
 }
