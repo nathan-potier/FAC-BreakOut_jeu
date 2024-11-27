@@ -369,6 +369,7 @@ public class Affichage {
      */
     // Méthode pour gérer l'entrée utilisateur depuis le clavier
     public static void handleKeyPress(KeyEvent e) {
+        
         if (isEnteringPseudo) {  // Vérifie si l'on est toujours en mode saisie du pseudo
             if (e.getCode() == KeyCode.BACK_SPACE && pseudoInput.length() > 0) {
                 pseudoInput = pseudoInput.substring(0, pseudoInput.length() - 1);

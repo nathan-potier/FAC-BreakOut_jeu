@@ -336,19 +336,20 @@ public class BreakOut extends Application {
         Son.initPaddleBoundSound(); //Initialiser le son de rebond de balle
         Son.initBrickBreakSound(); // Initialiser le son des briques cassées
         balles.add(balle1);// Ajout de la balle initiale a la liste
-
-        // Gestion des touches clavier pour entrer le pseudo
-        if (!Pseudo.estDef()){
-            canvas.setOnKeyPressed(Affichage::handleKeyPress);
-            canvas.setFocusTraversable(true);  // Nécessaire pour capter les événements de clavier
-        }else{
-            canvas.setOnKeyPressed(null);
-            canvas.setFocusTraversable(false);
-        }
         
-        // Événement du clavier pour mettre le jeu en pause avec la touche ESC
+        canvas.setFocusTraversable(true);
+        canvas.requestFocus();
         canvas.setOnKeyPressed(e -> {
-            if (isKeyboardMode || (isMouseMode && isKeyboardMode)) { // mode clavier ou les deux mode qui sont ouvert
+
+        
+            // Gestion de la saisie du pseudo
+            if (!Pseudo.estDef()) {
+                Affichage.handleKeyPress(e); // Appel de la méthode pour la gestion du pseudo
+                
+            }
+        
+            // Événement du clavier pour mettre le jeu en pause avec la touche ESC
+            if (isKeyboardMode || (isMouseMode && isKeyboardMode)) {
                 if (gameStarted && e.getCode() == KeyCode.ESCAPE) {
                     isPaused = !isPaused; // Bascule l'état de la pause
                 }
@@ -358,13 +359,14 @@ public class BreakOut extends Application {
                         Racket.setXpos(Racket.getXPos() + 50); // Déplacer vers la droite
                     }
                 // Flèche gauche (déplacer vers la gauche)
-                }else if (e.getCode() == KeyCode.LEFT) {
+                } else if (e.getCode() == KeyCode.LEFT) {
                     if (Racket.getXPos() > 0) { // Empêcher la palette de dépasser la limite gauche de l'écran
                         Racket.setXpos(Racket.getXPos() - 50); // Déplacer vers la gauche
                     }
                 }
-            }    
+            }
         });
+        
 
         stage.setWidth(width);
         stage.setHeight(height);
