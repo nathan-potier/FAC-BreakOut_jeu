@@ -130,9 +130,19 @@ public class Balle implements HavePowerUp{
      * 
      *fait rebondir la balle.
      */
-    public void rebond(){
+    public void rebondVertical(){
         this.ballYSpeed = -this.ballYSpeed; // Rebond vertical
     }
+
+    /**
+     * 
+     *fait rebondir la balle horizontalement.
+     */
+    public void rebondHorizontal(){
+        this.ballXSpeed = -this.ballXSpeed; // Rebond horizontal
+
+    }
+
 
 
 

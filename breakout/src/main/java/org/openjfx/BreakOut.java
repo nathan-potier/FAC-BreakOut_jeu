@@ -533,11 +533,11 @@ public class BreakOut extends Application {
             
                 // Collision avec les murs
                 if (balles.get(i).getXPos() <= 0 || balles.get(i).getXPos() >= width - Balle.getSize()) {
-                    balles.get(i).rebond();
+                    balles.get(i).rebondHorizontal();
                 }
     
                 if (balles.get(i).getYPos() <= 0) {
-                    balles.get(i).rebond();
+                    balles.get(i).rebondVertical();
                 }
     
     
@@ -546,7 +546,7 @@ public class BreakOut extends Application {
                     balles.get(i).getXPos() + Balle.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
                     balles.get(i).getXPos() <= Racket.getXPos() + Racket.getWidth() / 2 && balles.get(i).getYSpeed() > 0){
     
-                    balles.get(i).rebond();
+                    balles.get(i).rebondVertical();
                      
                     // Jouer le son de rebond de balle
                     Son.stopSonRebond();

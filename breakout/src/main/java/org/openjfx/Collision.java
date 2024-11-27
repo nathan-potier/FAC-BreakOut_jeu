@@ -16,7 +16,7 @@ public class Collision {
             
                     for(int k = 0; k<balles.size(); k++){
                         if (Balle.isTouching(balles.get(k), bricks[i][j], brickX, brickY)) {
-                            balles.get(k).rebond();
+                            balles.get(k).rebondVertical();
         
                                            
                             if(bricks[i][j].couleur() != Color.GRAY && bricks[i][j].getNbrVie() == 0){

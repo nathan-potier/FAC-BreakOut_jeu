@@ -45,8 +45,8 @@ public class MoreBall extends PowerUp{
         this.balle1 = new Balle(BreakOut.getWidth() / 2,BreakOut.getHeight() / 2);
         this.balle2 = new Balle(BreakOut.getWidth() / 2 +10,BreakOut.getHeight() / 2);
         this.balle3 = new Balle(BreakOut.getWidth() / 2 +20,BreakOut.getHeight() / 2);
-        balle1.rebond(); // les 3 balles prendront une direction différente
-        balle2.rebond();
+        balle1.rebondVertical(); // les 3 balles prendront une direction différente
+        balle2.rebondHorizontal();
         BreakOut.balles.add(balle1);
         BreakOut.balles.add(balle2);
         BreakOut.balles.add(balle3);
