@@ -17,6 +17,7 @@ import java.util.*;
  * <li>Récupérer tous les pseudos enregistrés avec {@link #getAllPseudos()}.</li>
  * <li>Obtenir les scores associés à un pseudo avec {@link #getScoresForPseudo(String)}.</li>
  * <li>Obtenir le meilleur score d'un joueur avec {@link #getBestScore(String)}.</li>
+ * <li>Obtenir l'ancien meilleur score d'un joueur avec {@link #getOldBestScoreForMessage(String, int)}.</li>
  * <li>Obtenir les cinq derniers scores d'un joueur avec {@link #getLastFiveScores(String)}.</li>
  * </ul>
  * 
@@ -159,6 +160,25 @@ public class Score {
         } else {
             return 0;
         }
+    }
+
+    /**
+     * Récupère l'ancien meilleur score d'un pseudo donné.
+     * 
+     * @param pseudo le pseudo du joueur
+     * @return l'ancien meilleur score du joueur
+     */
+    //Méthode pour obtenir l'ancien meilleur score du joueur afin de permettre d'afficher le bon message à la fin de jeu.
+    public static int getOldBestScoreForMessage(String pseudo, int nouveauScore){
+        List<Integer> scores = getScoresForPseudo(pseudo);
+        if(scores.isEmpty()){
+            return 0;
+        }
+        scores.remove(Integer.valueOf(nouveauScore)); //Supprime temporairement le nouveau score si présent dans la liste
+        if(scores.isEmpty()){
+            return nouveauScore;
+        }
+        return Collections.max(scores);
     }
 
     /**

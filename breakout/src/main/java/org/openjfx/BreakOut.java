@@ -4,6 +4,7 @@ package org.openjfx;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -11,6 +12,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -20,22 +22,26 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 
+
 public class BreakOut extends Application {
 
     private static final String GAME_TITLE = "BreakOut";
     private static final int width = 1016;
     private static final int height = 700;
-
+    
+    private boolean isMouseMode = true;
+    private boolean isKeyboardMode =true;
 
     private boolean isPaused = false;
     private boolean modeSelection = false;
     private boolean modeCréation = false;
+    private boolean selectionNiveaux = false;
     private boolean gameStarted = false;
     private boolean finDeJeu = false;
     private boolean type = true;
     private int diff = 1;
-    private Niveau niv; //niveau classique
-    private NiveauInput n = new NiveauInput(); //niveau perso
+    private Niveau niv; 
+    private NiveauInput n = new NiveauInput(); 
     private NiveauEditeur gen = new NiveauEditeur();
 
     private int brickRows;
@@ -47,6 +53,8 @@ public class BreakOut extends Application {
     public static ArrayList<Balle> balles = new ArrayList<>();
     private static double timePU1 = 0;
     private static double  timePU2 = 0;
+    private static double timeMU1 = 0;
+    private static double timeMU2 = 0;
     public static int nbBalle = 1;
     private final Balle balle1 = new Balle(BreakOut.getWidth() / 2,BreakOut.getHeight() / 2);
     
@@ -54,6 +62,12 @@ public class BreakOut extends Application {
     private double rectHeight = 50;
     private double rectX = (width - rectWidth) / 2;
     private double rectY = (height - rectHeight) / 2;
+
+    private double espacementHorizontalSelectNiv = 60; 
+    private double espacementVerticalSelectNiv = 90;
+    double totalWidthNiv = rectWidth * 5 + espacementHorizontalSelectNiv * 4;
+    double rectXniveau = (width - totalWidthNiv) / 2;
+    double rectYniveau = (height - rectHeight * 2 - espacementVerticalSelectNiv) / 2;
 
     //Espace horizontal entre les boutons "Rejouer" et "Retour"
     private double espaceEntreBoutons = 40;
@@ -63,28 +77,13 @@ public class BreakOut extends Application {
     private double rectChangerModeJeuX = (width - rectWidth) / 2;
     private double rectChangerModeJeuY = rectY + 50 + rectHeight + 15;
 
-    private Bouton boutonRejouer;
-    private Bouton boutonRetour;
-    private Bouton boutonChangerModeJeu;
-    private Bouton boutonJouer;
-    private Bouton boutonClassique;
-    private Bouton boutonPerso;
-    private Bouton boutonRetourSelec;
-    private Bouton boutonProchainNiveau;
-    private Bouton boutonRecommencer;
-    private Bouton boutonCréation;
-    private Bouton boutonEnregistrer;
-    private Bouton boutonMute;
-    private Bouton boutonPause;
-    private Bouton boutonToggleBackgroundMusic; 
-    private Bouton boutonToggleCollisionSound;
-    private Bouton boutonToggleBounceSound;
-    
+
+    private Bouton boutonRetourAuMode;
+    private List<Bouton> boutonsNiveaux;
     
     private FenetrePerso f1;
     private FenetreEditeur f2;
 
-    private Bouton boutonSettings;
     private boolean drawSettingsRectangle = false;
 
 
@@ -102,36 +101,19 @@ public class BreakOut extends Application {
     public static int getHeight(){ return height; }
     public static String getTitre(){ return GAME_TITLE; }
 
+
     //Réinitialise l'état du jeu pour recommencer une nouvelle partie
     private void resetGame(GraphicsContext gc){
 
-        this.score = 0;
-        balle1.reset();
-        balles = new ArrayList<>();
-        balles.add(balle1);
-        Racket.resetSize();
-        nbBalle = 1;
-
-  
         this.gameOver = false;
         this.gameStarted = false;
-        Son.StopMusique();  // La musique s'arrête
-        for (int k = 0; k < brickRows; k++) {
-            for (int j = 0; j < brickCols; j++) {
-                if (bricks[k][j].getNbrVie() != -1){
-                    bricks[k][j].isNotBreak = true; 
-                    bricks[k][j].setHavePower(false);// Toutes les briques sont présentes au début
-                    bricks[k][j].getPowerUp().reset(j * 85,k * 25 );
-                }
-            }
-        }
-
-        gc.setFont(Font.font("Arial", FontWeight.NORMAL, 25));
-        gc.setFill(Color.YELLOW);
-        gc.setTextAlign(TextAlignment.CENTER);
-        gc.fillText("Score: " + score, width / 2, height / 2); //score remise à 0
-        
-        Son.JouerMusique(); // Rejouer la musique
+        this.score = 0;
+        nbBalle = 1;
+        Balle.resetBalles(balle1, balles);
+        Racket.resetSize();
+        Brick.resetBrickTab(bricks, brickRows, brickCols);
+        Son.rejouerMusique();
+        Affichage.afficherDefFont(gc);
     }
     
 
@@ -142,28 +124,20 @@ public class BreakOut extends Application {
         Canvas canvas = new Canvas(width, height);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         
-
-        // Initialiser les boutons
-        boutonRejouer = new Bouton(rectRejouerX, rectY + 50, rectWidth + 20, rectHeight, "Rejouer");
-        boutonChangerModeJeu = new Bouton(rectChangerModeJeuX - 70, rectChangerModeJeuY, rectWidth + 160, rectHeight, "Changer de mode"); 
-        boutonRetour = new Bouton(rectRetourX, rectY + 50, rectWidth + 20, rectHeight, "Retour");
-        boutonJouer = new Bouton(rectX, rectY, rectWidth, rectHeight, "Jouer");
-        boutonClassique = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Mode classique");
-        boutonPerso = new Bouton(rectX - 100, rectY + 80, rectWidth + 200, rectHeight, "Mode personnalisé");
-        boutonRetourSelec = new Bouton(rectX, rectY + 250, 100, 40, "Retour");
-        boutonProchainNiveau = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Prochain niveau");
-        boutonRecommencer = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Recommencer");
-        boutonCréation = new Bouton(rectX - 100, rectY + 160, rectWidth + 200, rectHeight, "Mode création");
-        boutonEnregistrer = new Bouton(rectX - 100, rectY + 80, rectWidth + 200, rectHeight, "Enregistrer");
-
-        boutonSettings = new Bouton(20, height - 80, 100, 40, "Settings");
-        boutonMute = new Bouton(425, height - 80, 100, 40, "Muet");
-        boutonPause = new Bouton(525, height - 80, 100, 40,"Pause");
-        boutonToggleBackgroundMusic = new Bouton(100, height - 150, 130, 20, "BackgroundMusic: on");
-        boutonToggleCollisionSound = new Bouton(100, height - 130, 130, 20, "BrickSound: on");
-        boutonToggleBounceSound = new Bouton(100, height - 110, 130, 20, "BounceSound: on");
-
-
+        //Initialiser les boutons de niveaux
+        boutonRetourAuMode = new Bouton(rectX, rectY + 250, 100, 40, "Retour");
+        boutonsNiveaux = new ArrayList<>();
+        for (int i = 1; i <= 5; i++) {
+            double x = rectXniveau + (i - 1) * (rectWidth + espacementHorizontalSelectNiv); // Position horizontale
+            Bouton bouton = new Bouton(x, rectY, rectWidth+40, rectHeight, "Niveau " + i);
+            boutonsNiveaux.add(bouton);
+        }
+        for (int i = 6; i <= 10; i++) {
+            double x = rectXniveau + (i - 6) * (rectWidth + espacementHorizontalSelectNiv); // Position horizontale
+            double y = rectYniveau + rectHeight + espacementVerticalSelectNiv; // Position verticale (sous la première ligne)
+            Bouton bouton = new Bouton(x, y, rectWidth+40, rectHeight, "Niveau " + i);
+            boutonsNiveaux.add(bouton);
+        }
  
 
         // Initialiser la fenetre personnalisé
@@ -179,119 +153,142 @@ public class BreakOut extends Application {
             double mouseX = e.getX();
             double mouseY = e.getY();
 
-            //États visuels des boutons au survol
-            boutonJouer.setHover(boutonJouer.isHover(mouseX, mouseY));
-            boutonRejouer.setHover(boutonRejouer.isHover(mouseX, mouseY));
-            boutonChangerModeJeu.setHover(boutonChangerModeJeu.isHover(mouseX, mouseY));
-            boutonRetour.setHover(boutonRetour.isHover(mouseX, mouseY));
-            boutonClassique.setHover(boutonClassique.isHover(mouseX, mouseY));
-            boutonPerso.setHover(boutonPerso.isHover(mouseX, mouseY));
-            boutonRetourSelec.setHover(boutonRetourSelec.isHover(mouseX, mouseY));
-            boutonSettings.setHover(boutonSettings.isHover(mouseX,mouseY));
-            boutonCréation.setHover(boutonCréation.isHover(mouseX,mouseY));
-
-            Racket.setXpos(mouseX);
+            for (Bouton bouton : Bouton.getAllButtons()) {
+                bouton.setHover(bouton.isHover(mouseX, mouseY));
+            }
+            
+            if (isMouseMode) {
+                Racket.setXpos(mouseX);
+            }
         });
 
 		canvas.setOnMouseClicked(e -> {
             double clickX = e.getX();
             double clickY = e.getY();
             if (drawSettingsRectangle) {  // Traiter les clics sur les boutons uniquement lorsque le menu des paramètres est ouvert
-                if (boutonToggleBackgroundMusic.estClique(clickX, clickY)) {
+                // Gérer le basculement entre le mode souris et le mode clavier
+                if (BoutonListe.bMouse.estClique(clickX, clickY)) {
+                    // Basculer l'état du mode souris
+                    isMouseMode = !isMouseMode;// Inverser l'état du mode souris
+                    BoutonListe.bMouse.setText(isMouseMode ? "Souris: on" : "Souris: off");// Définir le texte en fonction de l'état
+                }
+                if (BoutonListe.bKeyboard.estClique(clickX, clickY)) {
+                    // Basculer l'état du mode clavier
+                    isKeyboardMode=!isKeyboardMode;// Inverser l'état du mode clavier
+                    BoutonListe.bKeyboard.setText(isKeyboardMode ? "Clavier: on" : "Clavier: off");// Définir le texte en fonction de l'état
+                }                
+
+                if (BoutonListe.bToggleBackgroundMusic.estClique(clickX, clickY)) {
                     // Basculer la musique de fond
                     if (Son.isBackgroundMusicOn()) {
                         Son.setBackgroundMusicOn(false);  // Arrêter la musique de fond
-                        boutonToggleBackgroundMusic.setText("BackgroundMusic: off");
+                        BoutonListe.bToggleBackgroundMusic.setText("BackgroundMusic: off");
                     } else {
                         Son.setBackgroundMusicOn(true); // Démarrer la musique de fond
-                        boutonToggleBackgroundMusic.setText("BackgroundMusic: on");
+                        BoutonListe.bToggleBackgroundMusic.setText("BackgroundMusic: on");
                     }
                 }
                 
-                if (boutonToggleCollisionSound.estClique(clickX, clickY)) {
+                if (BoutonListe.bToggleCollisionSound.estClique(clickX, clickY)) {
                     // Basculer le son de collision
                     if (Son.isCollisionSoundOn()) {
                         Son.setCollisionSoundOn(false);  // Désactiver le son de collision
-                        boutonToggleCollisionSound.setText("BrickSound: off");
+                        BoutonListe.bToggleCollisionSound.setText("BrickSound: off");
                     } else {
                         Son.setCollisionSoundOn(true);   // Activer le son de collision
-                        boutonToggleCollisionSound.setText("BrickSound: on");
+                        BoutonListe.bToggleCollisionSound.setText("BrickSound: on");
                     }
                 }
     
-                if (boutonToggleBounceSound.estClique(clickX, clickY)) {
+                if (BoutonListe.bToggleBounceSound.estClique(clickX, clickY)) {
                     // Basculer le son de rebond
                     if (Son.isBounceSoundOn()) {
                         Son.setBounceSoundOn(false); // Désactiver le son de rebond
-                        boutonToggleBounceSound.setText("BounceSound: off");
+                        BoutonListe.bToggleBounceSound.setText("BounceSound: off");
                     } else {
                         Son.setBounceSoundOn(true); // Activer le son de rebond
-                        boutonToggleBounceSound.setText("BounceSound: on");
+                        BoutonListe.bToggleBounceSound.setText("BounceSound: on");
                     }
                 }
             }
         
              //Paramètres de clic du bouton muet
-             if (boutonMute.estClique(clickX, clickY)) {
+             if (BoutonListe.bMute.estClique(clickX, clickY)) {
                 if(!Son.isMuted()){
                     Son.toggleMute(); // Changer l'état muet
-                    boutonMute.setText("Son activé");
-                } else {
+                    BoutonListe.bMute.setText("Son activé");
+                }else {
                     Son.toggleMute(); // Changer l'état avec son
-                    boutonMute.setText("Muet");
+                    BoutonListe.bMute.setText("Muet");
                 }
             }
 
             //Paramètres de clic du bouton Pause
-            if (boutonPause.estClique(clickX, clickY)) {
+            if (gameStarted && BoutonListe.bPause.estClique(clickX, clickY)) {
                 if (isPaused) {
                     isPaused = false;
+                    //Son.toggleMute(); // Changer l'état avec son
                 } else {
                     isPaused = true; 
-                    boutonPause.setText("Pause");
+                    BoutonListe.bPause.setText("Pause");
+                    //Son.toggleMute(); // Changer l'état muet
                 }
             }
             
 
             if(gameOver){
-                if(boutonRejouer.estClique(clickX, clickY)){
+                if(BoutonListe.bRejouer.estClique(clickX, clickY)){
                     resetGame(gc);
                     gameStarted = true; //Rejouer le jeu
                     gameOver = false;   //sans retourner au menu principal
-                    Son.JouerMusique();
-                }else if(boutonChangerModeJeu.estClique(clickX, clickY)){
+                    Son.jouerMusique();
+                }else if(BoutonListe.bChangerModeJeu.estClique(clickX, clickY)){
                     resetGame(gc);
                     modeSelection = true; //retourner sur la selection de mode
-                }else if(boutonRetour.estClique(clickX, clickY)){
+                }else if(BoutonListe.bRetour.estClique(clickX, clickY)){
                     resetGame(gc); //Réinitialise le jeu -> retour au menu
-                    Son.JouerMusique(); // Rejoue de la music
-                }else if (boutonSettings.estClique(clickX, clickY)) { //bouton "Settings" à la fin de jeu 
+                    Son.jouerMusique(); // Rejoue de la music
+                }else if (BoutonListe.bSetting.estClique(clickX, clickY)) { //bouton "Settings" à la fin de jeu 
                     drawSettingsRectangle = !drawSettingsRectangle; //l'affichage du rectangle
                 }
-            }else if (!modeCréation && !gameStarted && !modeSelection && !finDeJeu && boutonJouer.estClique(clickX, clickY)) {
+            }else if (!modeCréation && !gameStarted && !modeSelection && !finDeJeu && BoutonListe.bJouer.estClique(clickX, clickY)) {
                 //bascule sur la selection de mode
                 modeSelection = true;
                 Affichage.enregistrerPseudo();  // Stocker le pseudo avant de commencer
                 drawSettingsRectangle = false; 
 
             //confirme un input sur le bouton "Mode classique" ou "Prochain niveau"
-            }else if(!modeCréation && !gameStarted && type && ((modeSelection && boutonClassique.estClique(clickX, clickY))
-                    || (finDeJeu && boutonProchainNiveau.estClique(clickX, clickY)))){
+            }else if(!modeCréation && !gameStarted && type && ((modeSelection && BoutonListe.bClassique.estClique(clickX, clickY))
+                    || (finDeJeu && BoutonListe.bProchainNiveau.estClique(clickX, clickY)))){
                 niv = new Niveau(diff);
                 bricks = niv.makeNiveau();
                 brickRows = niv.getBrickRows();
+                Balle.resetBalles(balle1, balles);
                 modeSelection = false;
-                finDeJeu = false;
-                gameStarted = true;
-                type = true;
+                selectionNiveaux = true;
+            }else if(selectionNiveaux && !boutonRetourAuMode.estClique(clickX, clickY)){
+                for (int i = 0; i < boutonsNiveaux.size(); i++) {
+                    Bouton bouton = boutonsNiveaux.get(i);
+                    if (bouton.estClique(clickX, clickY)) {
+                        niv = new Niveau(i + 1); //Charge le niveau sélectionné
+                        bricks = niv.makeNiveau();
+                        brickRows = niv.getBrickRows();
+                        gameStarted = true; 
+                        selectionNiveaux = false; 
+                    }
+                }
+            //Permet de retourner au sélection de mode lorsqu'on se trouve dans le menu des niveaux
+            }else if(selectionNiveaux && boutonRetourAuMode.estClique(clickX, clickY)){
+                modeSelection = true;
+                selectionNiveaux = false;
 
             //confirme un input sur le bouton Personnalisé
-            }else if(!modeCréation && !gameStarted && modeSelection && boutonPerso.estClique(clickX, clickY)){
+            }else if(!modeCréation && !gameStarted && modeSelection && BoutonListe.bPerso.estClique(clickX, clickY)){
                 niv = n;
                 n.setOuvert(true);
                 f1.setVisible(true);
             }
-            else if( !modeCréation && !gameStarted && modeSelection && boutonCréation.estClique(clickX, clickY)){
+            else if( !modeCréation && !gameStarted && modeSelection && BoutonListe.bCréation.estClique(clickX, clickY)){
                 modeSelection = false;
                 modeCréation = true;
                 brickRows = gen.getBrickRows();
@@ -299,24 +296,24 @@ public class BreakOut extends Application {
     
 
             }else if(!modeCréation && !gameStarted && 
-                    ((modeSelection && boutonRetourSelec.estClique(clickX, clickY))||
-                    finDeJeu && boutonRetourSelec.estClique(clickX, clickY))){
+                    ((modeSelection && BoutonListe.bRetourSelec.estClique(clickX, clickY))||
+                    finDeJeu && BoutonListe.bRetourSelec.estClique(clickX, clickY))){
                 modeSelection = false;
                 finDeJeu = false;
-            }else if(!modeCréation && !gameStarted && !type && boutonRecommencer.estClique(clickX, clickY)){
+            }else if(!modeCréation && !gameStarted && !type && BoutonListe.bRecommencer.estClique(clickX, clickY)){
                 resetGame(gc);
                 gameStarted = true;
                 niv.resetBrick();
             }
             else if(!gameStarted && modeCréation){
 
-                if (boutonEnregistrer.estClique(clickX, clickY)){
+                if (BoutonListe.bEnregistrer.estClique(clickX, clickY)){
                     f2.getNiv(gen);
 
                     f2.setVisible(true);
                     
                 } 
-                else if (boutonRetourSelec.estClique(clickX, clickY)){
+                else if (BoutonListe.bRetourSelec.estClique(clickX, clickY)){
                     modeCréation = false;
 
                 }
@@ -329,7 +326,7 @@ public class BreakOut extends Application {
 
 
             // Vérifier si le bouton Settings a été cliqué
-            if (!gameStarted && !gameOver && boutonSettings.estClique(clickX, clickY)) {
+            if (!gameStarted && !gameOver && BoutonListe.bSetting.estClique(clickX, clickY)) {
                 drawSettingsRectangle = !drawSettingsRectangle; // Pour ouvrir et fermer les parametres
             }
 
@@ -349,7 +346,25 @@ public class BreakOut extends Application {
             canvas.setFocusTraversable(false);
         }
         
-
+        // Événement du clavier pour mettre le jeu en pause avec la touche ESC
+        canvas.setOnKeyPressed(e -> {
+            if (isKeyboardMode || (isMouseMode && isKeyboardMode)) { // mode clavier ou les deux mode qui sont ouvert
+                if (gameStarted && e.getCode() == KeyCode.ESCAPE) {
+                    isPaused = !isPaused; // Bascule l'état de la pause
+                }
+                // Flèche droite (déplacer vers la droite)
+                if (e.getCode() == KeyCode.RIGHT) {
+                    if (Racket.getXPos() + Racket.getWidth() < width) { // Empêcher la palette de dépasser la limite droite de l'écran
+                        Racket.setXpos(Racket.getXPos() + 50); // Déplacer vers la droite
+                    }
+                // Flèche gauche (déplacer vers la gauche)
+                }else if (e.getCode() == KeyCode.LEFT) {
+                    if (Racket.getXPos() > 0) { // Empêcher la palette de dépasser la limite gauche de l'écran
+                        Racket.setXpos(Racket.getXPos() - 50); // Déplacer vers la gauche
+                    }
+                }
+            }    
+        });
 
         stage.setWidth(width);
         stage.setHeight(height);
@@ -357,8 +372,6 @@ public class BreakOut extends Application {
         stage.setScene(new Scene(new StackPane(canvas)));
         stage.setResizable(false);
 
-
-    
             
 
         // Charger le meilleur score au début
@@ -376,7 +389,7 @@ public class BreakOut extends Application {
 
         //Si en mode Pause,le jeu s'arrete mais pas revenir le page de menu principal
         if (isPaused) {
-            Affichage.afficherBoutonPause(gc,boutonPause);  // S'arrete le jeu
+            Affichage.afficherBoutonPause(gc,BoutonListe.bPause);  // S'arrete le jeu
             return;  
         }        
 
@@ -389,7 +402,7 @@ public class BreakOut extends Application {
         else{
             if (modeCréation){
                 gen.afficheNiveau(gc);
-                Affichage.affichageMenuProchainNiveau(gc, boutonEnregistrer, boutonRetourSelec);
+                Affichage.affichageMenuProchainNiveau(gc, BoutonListe.bEnregistrer, BoutonListe.bRetourSelec);
                 if (!gen.getOuvert()){
                     modeCréation = false;
                 }
@@ -397,10 +410,10 @@ public class BreakOut extends Application {
             else
             if (!gameStarted && finDeJeu){
                 if (type){
-                    Affichage.affichageMenuProchainNiveau(gc, boutonProchainNiveau, boutonRetourSelec);
+                    Affichage.affichageMenuProchainNiveau(gc, BoutonListe.bProchainNiveau, BoutonListe.bRetourSelec);
                 }
                 else{
-                    Affichage.affichageMenuProchainNiveau(gc, boutonRecommencer, boutonRetourSelec);
+                    Affichage.affichageMenuProchainNiveau(gc, BoutonListe.bRecommencer, BoutonListe.bRetourSelec);
                 }
             }
             else
@@ -408,16 +421,16 @@ public class BreakOut extends Application {
                 gameStarted = false;
                 finDeJeu = niv.finDeJeu();
                 if (type){
-                    if (diff <10) diff++;
+                    if (diff < 8) diff++;
                 }
             }
             else
             if(gameOver){
-                Son.PauseMusique(); // stop music
-                Affichage.afficherFinDeJeu(gc, score, boutonRejouer, boutonChangerModeJeu, boutonRetour, boutonSettings, drawSettingsRectangle);
+                Son.pauseMusique(); // stop music
+                Affichage.afficherFinDeJeu(gc, score, BoutonListe.bRejouer, BoutonListe.bChangerModeJeu, BoutonListe.bRetour, BoutonListe.bSetting, drawSettingsRectangle);
             }else 
             if (modeSelection){
-                Affichage.affichageMenuSelection(gc, boutonClassique, boutonPerso, boutonCréation, boutonRetourSelec);
+                Affichage.affichageMenuSelection(gc, BoutonListe.bClassique, BoutonListe.bPerso, BoutonListe.bCréation, BoutonListe.bRetourSelec);
                 if (n.getPath() != null && n.getOuvert()){
                     bricks = niv.makeNiveau();
                     if (bricks == null){
@@ -431,68 +444,39 @@ public class BreakOut extends Application {
                         n.setOuvert(false);
                     }
                 }
+            }else if(selectionNiveaux){
+                Affichage.affichageSelectionNiveaux(gc, boutonsNiveaux, boutonRetourAuMode);
             }else
             if (gameStarted && !niv.finDeJeu()) {
-                if (!Son.MusiqueEnCours()) { // Rejouer la music pendant que le jeu en cours
-                    Son.JouerMusique();
+                if (!Son.musiqueEnCours()) { // Rejouer la music pendant que le jeu en cours
+                    Son.jouerMusique();
                 }
                 gc.fillText("Score: " + score, width / 2, height / 2);
 
-                Affichage.afficherBoutonMute(gc, boutonMute); // afficher le bouton
-                Affichage.afficherBoutonPause(gc, boutonPause);
+                Affichage.afficherBoutonMute(gc, BoutonListe.bMute); // afficher le bouton
+                Affichage.afficherBoutonPause(gc, BoutonListe.bPause);
 
-                for(int i = 0; i<balles.size(); i++){
-                    balles.get(i).MAJPosHorizontal();
-                    balles.get(i).MAJPosVertical();
-                    gc.fillOval(balles.get(i).getXPos(), balles.get(i).getYPos(), Balle.getSize(), Balle.getSize());
-                }
+                Affichage.afficheBalles(gc, balles);
     
 
                 // Dessiner les briques
                 niv.afficheNiveau(gc);
             
-                // Détection de collision avec les briques
-                for (int i = 0; i < brickRows; i++) {
-                    for (int j = 0; j < brickCols; j++) {
-                        if (bricks[i][j].isNotBreak) {
-                            double brickX = j * (bricks[i][j].getWidth() + 5);
-                            double brickY = i * (bricks[i][j].getHeight() + 5);
-            
-                            for(int k = 0; k<balles.size(); k++){
-                                if (balles.get(k).getXPos() + Balle.getSize() >= brickX &&
-                                    balles.get(k).getXPos() <= brickX + bricks[i][j].getWidth() &&
-                                    balles.get(k).getYPos() + Balle.getSize() >= brickY +5 &&
-                                    balles.get(k).getYPos() <= brickY + bricks[i][j].getHeight() + 5) {
-                    
-                                    balles.get(k).rebondVertical();
-        
-                                           
-                                    if(bricks[i][j].couleur() != Color.GRAY && bricks[i][j].getNbrVie() == 0){
-                                        bricks[i][j].isNotBreak = false;
-                                        niv.brickDetruite();
-                                        score += bricks[i][j].getScore(); 
-                                        bricks[i][j].getPowerUp().setTombe(true);
-
-
-                                        Son.StopSonBrique(); // le son des briques cassées
-                                        Son.JouerSonBrique(); // 
-
-                                    }else{
-                                        bricks[i][j].setNbrVie(bricks[i][j].getNbrVie() - 1);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                // Détection de collision avec les briques et incrémente le score
+                score += Collision.checkCollision(balles, niv);
 
             //actualisation powerUp
             for (int i = 0; i < brickRows; i++) {
                 for (int j = 0; j < brickCols; j++) {
                     if (bricks[i][j].couleur() == Color.RED){
                         if (bricks[i][j].getPowerUp().getTombe()){
-                            gc.setFill(Color.BLUE);
-                            gc.fillOval(bricks[i][j].getPowerUp().getPux() + bricks[i][j].getWidth()/2, bricks[i][j].getPowerUp().getPuy(), PowerUp.getSize(), PowerUp.getSize());
+                            if (bricks[i][j].getPowerUp().getMalus()){
+                                gc.setFill(Color.RED);
+                                gc.fillOval(bricks[i][j].getPowerUp().getPux() + bricks[i][j].getWidth()/2, bricks[i][j].getPowerUp().getPuy(), PowerUp.getSize(), PowerUp.getSize());
+                            }else{
+                                gc.setFill(Color.BLUE);
+                                gc.fillOval(bricks[i][j].getPowerUp().getPux() + bricks[i][j].getWidth()/2, bricks[i][j].getPowerUp().getPuy(), PowerUp.getSize(), PowerUp.getSize());
+                            }
                             bricks[i][j].getPowerUp().actuPUy();
                             if (bricks[i][j].getPowerUp().getPuy() + PowerUp.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
                             bricks[i][j].getPowerUp().getPux() + PowerUp.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
@@ -511,17 +495,10 @@ public class BreakOut extends Application {
                 }
             }
             //verif powerUp BALLSIZE actif si oui augmente le temps passé
-            if (Balle.getSize() == 50){
-                timePU1++;
-                if (timePU1 >= 700){
-                    Balle.resetSize();
-                    timePU1 = 0;
-                }
-
-            }
+            timePU1 = balle1.updateTimer(timePU1);
 
             //Verif powerUp RacketSize actif si oui augmente le temps passé
-            if (Racket.getWidth() > 50){
+            if (Racket.getWidth() > 100){
                 timePU2++;
                 if (timePU2 >= 700){
                     Racket.resetSize();
@@ -529,6 +506,26 @@ public class BreakOut extends Application {
                 }
 
             }
+
+            //verif Malus RacketSize actif si oui augmente le temps passé
+            if (Racket.getWidth() < 100){
+                timeMU1++;
+                if (timeMU1 >= 700){
+                    Racket.resetSize();
+                    timeMU1 = 0;
+                }
+
+            }
+            //verif Malus BALLSPEED actif si oui augmente le temps passé
+            for (int i = 0; i < balles.size(); i++) {
+            if (balles.get(i).getXSpeed() > 3){
+                timeMU2++;
+                if (timeMU2 >= 700){
+                    Balle.resetSpeed();
+                    timeMU2 = 0;
+                }
+            }
+        }
 
 
             for (int i = 0; i < balles.size(); i++) {
@@ -552,8 +549,8 @@ public class BreakOut extends Application {
                     balles.get(i).rebondSurRaquette(Racket.getXPos(), Racket.getWidth());
                      
                     // Jouer le son de rebond de balle
-                    Son.StopSonRebond();
-                    Son.JouerSonRebond();
+                    Son.stopSonRebond();
+                    Son.jouerSonRebond();
                 }
     
                 }
@@ -582,15 +579,17 @@ public class BreakOut extends Application {
 
             }else {
 
-                Affichage.afficherMenuPrincipal(gc, boutonJouer, boutonSettings, drawSettingsRectangle);
+                Affichage.afficherMenuPrincipal(gc, BoutonListe.bJouer, BoutonListe.bSetting, drawSettingsRectangle);
                
             }
 
             if (drawSettingsRectangle) {
-                Affichage.dessinerRectangle(gc, boutonSettings);
-                Affichage.afficherBoutonToggleBackgroundMusic(gc, boutonToggleBackgroundMusic);//Affiche dans le boutonSetting
-                Affichage.afficherBoutonToggleCollisionSound(gc, boutonToggleCollisionSound);//Affiche dans le boutonSetting
-                Affichage.afficherBoutonToggleBounceSound(gc, boutonToggleBounceSound);//Affiche dans le boutonSetting  
+                Affichage.dessinerRectangle(gc, BoutonListe.bSetting);
+                Affichage.afficherBoutonToggleBackgroundMusic(gc, BoutonListe.bToggleBackgroundMusic);//Affiche dans le boutonSetting
+                Affichage.afficherBoutonToggleCollisionSound(gc, BoutonListe.bToggleCollisionSound);//Affiche dans le boutonSetting
+                Affichage.afficherBoutonToggleBounceSound(gc, BoutonListe.bToggleBounceSound);//Affiche dans le boutonSetting  
+                Affichage.afficherBoutonKeyboard(gc, BoutonListe.bKeyboard);//Affiche dans le boutonSetting
+                Affichage.afficherBoutonMouse(gc, BoutonListe.bMouse);//Affiche dans le boutonSetting
             }
             
         }        

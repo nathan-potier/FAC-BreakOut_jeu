@@ -1,6 +1,7 @@
 package org.openjfx;
-
 import java.util.Random;
+import java.util.ArrayList;
+
 
 /**
  * La classe Balle sert à générer des Balles utilisables dans un jeu de Breakout.
@@ -16,13 +17,16 @@ import java.util.Random;
  * <li> Retourne la taille des Balles {@link #getSize()}.</li>
  * <li> Retourne la position X de la balle {@link #getXPos()}.</li>
  * <li> Renvoie la position Y de la balle {@link #getYPos()}.</li>
+ * <li> Retourne la présence ou non d'un power up actif {@link #isActive()}.<\li>
+ * <li> Retourne vrai tant que la timer n'a pas atteint un tant donnée {@link #isTimeUp(double)}.<\li>
  * <li> Reinitialise a ses valeurs initiales les parametres de la balle {@link #reset()}.</li>
- * <li> Fait rebondir verticalement la balle {@link #rebondVertical()}.</li>
- * <li> Fait rebondir horizontalement la balle {@link #rebondHorizontal()}.</li>
+ * <li> Reinitialise une balle et un array de balle à leur valeur initiales {@link #resetBalles(Balle, ArrayList)}.<\li>
+ * <li> Fait rebondir la balle {@link #rebond()}.</li>
  * <li> Met a jour la position X de la balle {@link #MAJPosHorizontal()}.</li>
  * <li> Met a jour la postion Y de la balle {@link #MAJPosVertical()}.</li>
  * <li> Met la taille des balles au int donner {@link #setBallSize(int)}.</li>
  * <li> Réinitialise la taille des balles {@link #resetSize()}.</li>
+ * <li> regarde si la balle touche une brique donnée {@link #isTouching(Balle, Brick, int, int)}.<\li>
  * </ul>
  * 
  * @author Noa Gregoire-Mellier
@@ -30,9 +34,12 @@ import java.util.Random;
  * 
  */
 
-public class Balle {
+
+
+public class Balle implements HavePowerUp{
     private int ballYSpeed ;
 	private int ballXSpeed ;
+
     private static int ballSize = 10;   
     private double ballXPos;
     private double ballYPos;
@@ -73,6 +80,10 @@ public class Balle {
      * @return la vitesse en Y de la balle.
      */
     public int getYSpeed(){ return this.ballYSpeed; }
+
+    public void setYSpeed(int YSpeed){
+        ballYSpeed = YSpeed;
+    }
     /**
      * Retourne la vitesse en X de la balle.
      * 
@@ -80,6 +91,9 @@ public class Balle {
      */
     public int getXSpeed(){ return this.ballXSpeed; }
 
+    public void setXSpeed(int XSpeed){
+        ballXSpeed = XSpeed;
+    }
     /**
      * Retourne la taille des balles.
      * 
@@ -102,6 +116,16 @@ public class Balle {
     public double getYPos(){ return this.ballYPos; }
 
     /**
+     * Retourne si la balle a un power up appliqué ou non.    
+     * 
+     * @return la présence ou non d'un power up.
+     */
+    public boolean isActive(){return Balle.getSize() == 50;}
+
+
+    public boolean isTimeUp(double timer){return timer >= 700;}
+
+    /**
      * 
      *réinitialise les paramètres de base de la balle.
      */
@@ -112,8 +136,20 @@ public class Balle {
     }
 
     /**
+     * réinitialise les paramètres de la balle et la liste des balles pour ne contenir qu'une balle
      * 
-     *fait rebondir la balle verticalement.
+     * @param balle     balle initial 
+     * @param balleArray    liste des balles
+     */
+    public static void resetBalles(Balle balle, ArrayList<Balle> balleArray){
+        balle.reset();
+        balleArray = new ArrayList<>();
+        balleArray.add(balle);
+    }
+
+    /**
+     * 
+     *fait rebondir la balle.
      */
     public void rebondVertical(){
         this.ballYSpeed = -this.ballYSpeed; // Rebond vertical
@@ -155,6 +191,8 @@ public class Balle {
     }
 
 
+
+
     /**
      * 
      *actualise la position X de la balle.
@@ -179,12 +217,47 @@ public class Balle {
         ballSize = ballsize;
     }
 
+    public double updateTimer(double timer){
+        if (isActive()){
+            timer++;
+            if (isTimeUp(timer)){
+                Balle.resetSize();
+                return 0;
+            }
+        }
+        return timer;
+    }
+
     /**
      * 
      *réinitialise la taille des balles.
      */
     public static void resetSize(){
         ballSize = 10;
+    }
+
+
+    public static void resetSpeed(){
+        for(int i = 0; BreakOut.balles.size() > i; i++){
+            BreakOut.balles.get(i).setXSpeed(BreakOut.balles.get(i).getXSpeed()/2);
+            BreakOut.balles.get(i).setYSpeed(BreakOut.balles.get(i).getYSpeed()/2);
+        }
+    }
+
+    /**
+     *  regarde si la balle touche la brique courante.
+     * 
+     * @param balle  balle courante
+     * @param brick  brick courante
+     * @param brickX    coordonnée X du point en haut à gauche de la brique courante
+     * @param brickY    coordonnée Y du point en haut à gauche de la brique courante
+     * @return  booleen qui vérifie su une balle touche la brique courante
+     */
+    public static boolean isTouching(Balle balle, Brick brick, double brickX, double brickY){
+         return balle.getXPos() + Balle.getSize() >= brickX &&
+                            balle.getXPos() <= brickX + brick.getWidth() &&
+                            balle.getYPos() + Balle.getSize() >= brickY + 5 &&
+                            balle.getYPos() <= brickY + brick.getHeight() + 5;
     }
 
 
