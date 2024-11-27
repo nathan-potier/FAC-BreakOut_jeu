@@ -58,7 +58,8 @@ public class Balle {
         Random rand = new Random();
         double angle = rand.nextDouble() * 2 * Math.PI; // Angle aléatoire en radians
         this.ballXSpeed = (int) Math.round(speedNorm * Math.cos(angle));
-        this.ballYSpeed = (int) Math.round(speedNorm * Math.sin(angle));
+        this.ballYSpeed = Math.abs((int) Math.round(speedNorm * Math.sin(angle)));
+
 
         // Évite que l'une des vitesses soit 0 pour une meilleure dynamique
         if (ballXSpeed == 0 || ballYSpeed == 0) {
