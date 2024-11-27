@@ -141,10 +141,10 @@ public class Balle implements HavePowerUp{
      * @param balle     balle initial 
      * @param balleArray    liste des balles
      */
-    public static void resetBalles(Balle balle, ArrayList<Balle> balleArray){
+    public static void resetBalles(Balle balle){
         balle.reset();
-        balleArray = new ArrayList<>();
-        balleArray.add(balle);
+        BreakOut.balles = new ArrayList<>();
+        BreakOut.balles.add(balle);
     }
 
     /**

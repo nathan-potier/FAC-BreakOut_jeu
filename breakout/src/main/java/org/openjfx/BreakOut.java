@@ -109,7 +109,7 @@ public class BreakOut extends Application {
         this.gameStarted = false;
         this.score = 0;
         nbBalle = 1;
-        Balle.resetBalles(balle1, balles);
+        Balle.resetBalles(balle1);
         Racket.resetSize();
         Brick.resetBrickTab(bricks, brickRows, brickCols);
         Son.rejouerMusique();
@@ -263,7 +263,7 @@ public class BreakOut extends Application {
                 niv = new Niveau(diff);
                 bricks = niv.makeNiveau();
                 brickRows = niv.getBrickRows();
-                Balle.resetBalles(balle1, balles);
+                Balle.resetBalles(balle1);
                 modeSelection = false;
                 selectionNiveaux = true;
             }else if(selectionNiveaux && !boutonRetourAuMode.estClique(clickX, clickY)){
