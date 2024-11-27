@@ -10,15 +10,16 @@ public class BoutonListe{
     private static final double rectX = (width - rectWidth) / 2;
     private static final double rectY = (height - rectHeight) / 2;
     
-    private static final double rectChangerModeJeuY = rectY + 50 + rectHeight + 15;
-    private static final double espaceEntreBoutons = 40;
+    private static double espaceEntreBoutons = 40;
 
-    private static final double rectRejouerX = (width - (2 * rectWidth + espaceEntreBoutons)) / 2;
-    private static final double rectRetourX = rectRejouerX + rectWidth + espaceEntreBoutons;
+    private static double rectRejouerX = (width - (2 * rectWidth + espaceEntreBoutons)) / 2;
+    private static double rectRetourX = rectRejouerX + rectWidth + espaceEntreBoutons;
+    private static double rectChangerModeJeuX = (width - rectWidth) / 2;
+    private static double rectChangerModeJeuY = rectY + 50 + rectHeight + 15;
 
-    public static Bouton bRejouer = new Bouton(rectX, rectY + 50, rectWidth + 20, rectHeight, "Rejouer");
-    public static Bouton bRetour = new Bouton(rectX - 70, rectChangerModeJeuY, rectWidth + 160, rectHeight, "Changer de mode");
-    public static Bouton bChangerModeJeu = new Bouton(rectRetourX, rectY + 50, rectWidth + 20, rectHeight, "Retour");
+    public static Bouton bRejouer = new Bouton(rectRejouerX, rectY + 50, rectWidth + 20, rectHeight, "Rejouer");
+    public static Bouton bChangerModeJeu = new Bouton(rectChangerModeJeuX - 70, rectChangerModeJeuY, rectWidth + 160, rectHeight, "Changer de mode");
+    public static Bouton bRetour = new Bouton(rectRetourX, rectY + 50, rectWidth + 20, rectHeight, "Retour");
     public static Bouton bJouer = new Bouton(rectX, rectY, rectWidth, rectHeight, "Jouer");
     public static Bouton bClassique = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Mode classique");
     public static Bouton bPerso = new Bouton(rectX - 100, rectY + 80, rectWidth + 200, rectHeight, "Mode personnalisé");
