@@ -76,7 +76,7 @@ public class Racket {
      *réinitialise la largeur de la raquette au paramètre initial.
      */
     public static void resetSize(){
-        racketWidth = 50;
+        racketWidth = 100;
     }
 }
 
