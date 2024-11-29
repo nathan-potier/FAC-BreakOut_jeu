@@ -2,7 +2,6 @@ package org.openjfx;
 
 import java.io.*;
 import java.util.*;
-import java.util.Base64;
 
 /**
  * Classe Score mise à jour avec chiffrement et déchiffrement des scores.
@@ -125,18 +124,60 @@ public class Score {
     }
 
     private static List<String> getAllScores() {
-        List<String> lines = new ArrayList<>();
+        List<String> validLines = new ArrayList<>();
+        boolean hasInvalidLines = false;
 
         try (Scanner scanner = new Scanner(new File(fileName))) {
             while (scanner.hasNextLine()) {
-                lines.add(scanner.nextLine());
+                String encryptedLine = scanner.nextLine();
+                try {
+                    String decryptedLine = decrypt(encryptedLine); // Déchiffre la ligne
+
+                    // Valide la structure de la ligne
+                    if (isValidLine(decryptedLine)) {
+                        validLines.add(encryptedLine); // Ligne valide, on la conserve
+                    } else {
+                        hasInvalidLines = true; // Ligne invalide détectée
+                    }
+                } catch (Exception e) {
+                    hasInvalidLines = true; // Ligne non déchiffrable
+                }
             }
         } catch (FileNotFoundException e) {
             System.out.println("Aucun fichier de scores trouvé.");
         }
 
-        return lines;
+        // Si des lignes invalides ont été détectées, réécrire le fichier
+        if (hasInvalidLines) {
+            rewriteFile(validLines);
+        }
+
+        return validLines;
     }
+    private static boolean isValidLine(String line) {
+        String[] parts = line.split(":");
+        if (parts.length == 2) {
+            try {
+                parseScores(parts[1]); // Valide les scores
+                return true; // La ligne est valide
+            } catch (Exception e) {
+                return false; // Les scores sont invalides
+            }
+        }
+        return false; // Ligne mal formée
+    }
+    private static void rewriteFile(List<String> validLines) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (String line : validLines) {
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Erreur lors de la correction du fichier : " + e.getMessage());
+        }
+    }
+    
+
 
     private static List<Integer> parseScores(String scoreString) {
         List<Integer> scoreList = new ArrayList<>();
