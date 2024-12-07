@@ -14,10 +14,11 @@ import java.nio.file.Paths;
  * </p>
  * 
  * <ul>
- * <li>Initialiser et jouer la musique de fond avec {@link #initBackgroundMusic()} et {@link #JouerMusique()}.</li>
- * <li>Initialiser et jouer le son de rebond de balle avec {@link #initPaddleBoundSound()} et {@link #JouerSonRebond()}.</li>
- * <li>Initialiser et jouer le son des briques cassées avec {@link #initBrickBreakSound()} et {@link #JouerSonBrique()}.</li>
- * <li>Contrôler l'état de la musique et des effets sonores (mettre en pause, arrêter, ou basculer le mode silencieux) avec {@link #StopMusique()}, {@link #PauseMusique()}, {@link #StopSonRebond()}, {@link #StopSonBrique()}, et {@link #toggleMute()}.</li>
+ * <li>Initialiser et jouer la musique de fond avec {@link #initBackgroundMusic()} et {@link #jouerMusique()}.</li>
+ * <li>Initialiser et jouer le son de rebond de balle avec {@link #initPaddleBoundSound()} et {@link #jouerSonRebond()}.</li>
+ * <li>Initialiser et jouer le son des briques cassées avec {@link #initBrickBreakSound()} et {@link #jouerSonBrique()}.</li>
+ * <li>Contrôler l'état de la musique et des effets sonores (mettre en pause, arrêter, ou basculer le mode silencieux) avec {@link #StopMusique()}, {@link #PauseMusique()}, {@link #s()}, {@link #StopSonBrique()}, et {@link #toggleMute()}.</li>
+ * <li>Coupe puis rejoue la musique {@link #rejouerMusique()}.<\li>
  * </ul>
  * 
  * <p>
@@ -80,7 +81,7 @@ public class Son {
         if (isMuted) {
             stopAllSounds();
         } else {
-            JouerMusique(); 
+            jouerMusique(); 
         }
     }
 
@@ -93,9 +94,9 @@ public class Son {
     public static void setBackgroundMusicOn(boolean enabled) {
         backgroundMusicOn = enabled;
         if (!isMuted) {
-            JouerMusique();
+            jouerMusique();
         } else if(!enabled){
-            StopMusique();
+            stopMusique();
         }
     }
 
@@ -171,7 +172,7 @@ public class Son {
      * Joue la musique de fond si le mode silencieux est désactivé.
      */
     // Méthode pour jouer la musique de fond
-    public static void JouerMusique(){
+    public static void jouerMusique(){
         if (!isMuted && backgroundMusicOn && mediaPlayer != null && mediaPlayer.getStatus() != MediaPlayer.Status.PLAYING) { //Si ce n'est pas en mode silencieux
             mediaPlayer.play(); //Rejouer la musique
         }
@@ -182,7 +183,7 @@ public class Son {
      * Arrête le son du rebond de la balle.
      */
     // Méthode pour arrêter le son de rebond de la balle
-    public static void StopSonRebond(){
+    public static void stopSonRebond(){
         if (paddleBoundPlayer != null) {
             paddleBoundPlayer.stop(); 
         }
@@ -192,10 +193,16 @@ public class Son {
      * Joue le son du rebond de la balle si le mode silencieux est désactivé.
      */
     // Méthode pour jouer le son de rebond de la balle
-    public static void JouerSonRebond(){
+    public static void jouerSonRebond(){
         if (!isMuted && bounceSoundOn && paddleBoundPlayer != null) { //Si ce n'est pas en mode silencieux
-            paddleBoundPlayer.stop();
-            paddleBoundPlayer.play(); 
+            if (paddleBoundPlayer.getStatus() != MediaPlayer.Status.READY &&
+                paddleBoundPlayer.getStatus() != MediaPlayer.Status.STOPPED) { //Si le son est en cours de lecture
+                paddleBoundPlayer.stop(); 
+            }
+            paddleBoundPlayer.seek(javafx.util.Duration.ZERO); // Recommencer le son
+            paddleBoundPlayer.play();
+        } else {
+            System.err.println("Le son de rebond n'a pas pu être joué car le lecteur est null ou le mode silencieux est activé");
         }
     }
 
@@ -203,10 +210,16 @@ public class Son {
      * Joue le son des briques cassées si le mode silencieux est désactivé.
      */
     // Méthode pour jouer le son des briques cassées
-    public static void JouerSonBrique(){
+    public static void jouerSonBrique(){
         if (!isMuted && collisionSoundOn && brickBreakPlayer != null) { //Si ce n'est pas en mode silencieux
-           brickBreakPlayer.stop();
+            if (brickBreakPlayer.getStatus() != MediaPlayer.Status.READY &&
+                brickBreakPlayer.getStatus() != MediaPlayer.Status.STOPPED) { //Si le son est en cours de lecture
+                brickBreakPlayer.stop(); 
+            }
+            brickBreakPlayer.seek(javafx.util.Duration.ZERO); // Recommencer le son
             brickBreakPlayer.play();
+        } else {
+            System.err.println("Le son des briques cassées n'a pas pu être joué car le lecteur est null ou le mode silencieux est activé");
         }
     }
     
@@ -214,7 +227,7 @@ public class Son {
      * Arrête le son des briques cassées.
      */
     // Méthode pour arrêter le son des briques cassées
-    public static void StopSonBrique(){
+    public static void stopSonBrique(){
         if (brickBreakPlayer != null) {
             brickBreakPlayer.stop();
         }
@@ -224,7 +237,7 @@ public class Son {
      * Arrête la musique de fond.
      */
     // Méthode pour arrêter la musique de fond
-    public static void StopMusique(){
+    public static void stopMusique(){
         if (mediaPlayer != null) {
             mediaPlayer.stop();
         }
@@ -234,16 +247,16 @@ public class Son {
      * Arrête tous les sons et la music.
      */
     public static void stopAllSounds() {
-        StopMusique();
-        StopSonRebond();
-        StopSonBrique();
+        stopMusique();
+        stopSonRebond();
+        stopSonBrique();
     }
 
     /**
      * Met en pause la musique de fond.
      */
     // Méthode pour mettre la musique en pause
-    public static void PauseMusique(){
+    public static void pauseMusique(){
         if (mediaPlayer != null) {
             mediaPlayer.pause();
         }
@@ -255,7 +268,15 @@ public class Son {
      * @return <code>true</code> si la musique est en cours de lecture, <code>false</code> sinon
      */
     // Méthode pour vérifier si la musique est en cours
-    public static boolean MusiqueEnCours(){
+    public static boolean musiqueEnCours(){
         return mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING);
+    }
+
+    /**
+     * rejoue la musique depuis le début en coupant la musique courante
+     */
+    public static void rejouerMusique(){
+        stopMusique();
+        jouerMusique();
     }
 }
