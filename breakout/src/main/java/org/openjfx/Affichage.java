@@ -481,11 +481,12 @@ public class Affichage {
     }
 
     //menu selection mode classique ou personnalisé
-    public static void affichageMenuSelection(GraphicsContext gc, Bouton classique, Bouton perso, Bouton création, Bouton retour){
+    public static void affichageMenuSelection(GraphicsContext gc, Bouton classique, Bouton perso, Bouton création, Bouton multijoueur, Bouton retour){
         
         afficherBoutonJouer(gc, classique);
         afficherBoutonJouer(gc, perso);
         afficherBoutonJouer(gc, création);
+        afficherBoutonJouer(gc, multijoueur);
         retour.afficher(gc);    
     }
 

@@ -37,5 +37,6 @@ public class BoutonListe{
     public static Bouton bMouse = new Bouton(180, height - 130, 130, 20,"Souris: on");
     public static Bouton bSetting = new Bouton(20, height - 80, 100, 40, "Settings");
 
+    public static Bouton bMultijoueur = new Bouton(rectX - 100, rectY -80, rectWidth + 200, rectHeight, "Mode Multijoueur");
     
 }

@@ -29,6 +29,7 @@ public class BreakOut extends Application {
     private static final int width = 1016;
     private static final int height = 700;
     
+    private boolean modeMulti = false;
     private boolean isMouseMode = true;
     private boolean isKeyboardMode =true;
 
@@ -235,6 +236,12 @@ public class BreakOut extends Application {
                 }
             }
             
+            //confirme un input sur le bouton "Mode multijoueur"
+            if (!modeCréation && !gameStarted && modeSelection && BoutonListe.bMultijoueur.estClique(clickX, clickY)){
+                modeSelection = false;
+                modeMulti = true;
+                selectionNiveaux = true;
+            }
 
             if(gameOver){
                 if(BoutonListe.bRejouer.estClique(clickX, clickY)){
@@ -432,7 +439,7 @@ public class BreakOut extends Application {
                 Affichage.afficherFinDeJeu(gc, score, BoutonListe.bRejouer, BoutonListe.bChangerModeJeu, BoutonListe.bRetour, BoutonListe.bSetting, drawSettingsRectangle);
             }else 
             if (modeSelection){
-                Affichage.affichageMenuSelection(gc, BoutonListe.bClassique, BoutonListe.bPerso, BoutonListe.bCréation, BoutonListe.bRetourSelec);
+                Affichage.affichageMenuSelection(gc, BoutonListe.bClassique, BoutonListe.bPerso, BoutonListe.bCréation, BoutonListe.bMultijoueur, BoutonListe.bRetourSelec);
                 if (n.getPath() != null && n.getOuvert()){
                     bricks = niv.makeNiveau();
                     if (bricks == null){
