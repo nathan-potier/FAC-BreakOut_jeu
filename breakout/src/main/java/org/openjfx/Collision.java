@@ -18,6 +18,10 @@ public class Collision {
                         if (Balle.isTouching(balles.get(k), bricks[i][j], brickX, brickY)) {
                             balles.get(k).rebondVertical();
         
+                            if (bricks[i][j] instanceof BrickDouble) { //jouer son brique cassée avec les briques doubles
+                                Son.stopSonBrique();
+                                Son.jouerSonBrique();
+                            }
                                            
                             if(bricks[i][j].couleur() != Color.GRAY && bricks[i][j].getNbrVie() == 0){
                                 bricks[i][j].isNotBreak = false;

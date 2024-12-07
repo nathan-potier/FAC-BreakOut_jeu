@@ -195,8 +195,14 @@ public class Son {
     // Méthode pour jouer le son de rebond de la balle
     public static void jouerSonRebond(){
         if (!isMuted && bounceSoundOn && paddleBoundPlayer != null) { //Si ce n'est pas en mode silencieux
-            paddleBoundPlayer.stop();
-            paddleBoundPlayer.play(); 
+            if (paddleBoundPlayer.getStatus() != MediaPlayer.Status.READY &&
+                paddleBoundPlayer.getStatus() != MediaPlayer.Status.STOPPED) { //Si le son est en cours de lecture
+                paddleBoundPlayer.stop(); 
+            }
+            paddleBoundPlayer.seek(javafx.util.Duration.ZERO); // Recommencer le son
+            paddleBoundPlayer.play();
+        } else {
+            System.err.println("Le son de rebond n'a pas pu être joué car le lecteur est null ou le mode silencieux est activé");
         }
     }
 
@@ -206,8 +212,14 @@ public class Son {
     // Méthode pour jouer le son des briques cassées
     public static void jouerSonBrique(){
         if (!isMuted && collisionSoundOn && brickBreakPlayer != null) { //Si ce n'est pas en mode silencieux
-           brickBreakPlayer.stop();
+            if (brickBreakPlayer.getStatus() != MediaPlayer.Status.READY &&
+                brickBreakPlayer.getStatus() != MediaPlayer.Status.STOPPED) { //Si le son est en cours de lecture
+                brickBreakPlayer.stop(); 
+            }
+            brickBreakPlayer.seek(javafx.util.Duration.ZERO); // Recommencer le son
             brickBreakPlayer.play();
+        } else {
+            System.err.println("Le son des briques cassées n'a pas pu être joué car le lecteur est null ou le mode silencieux est activé");
         }
     }
     
