@@ -481,9 +481,9 @@ public class Affichage {
     }
 
     //menu selection mode classique ou personnalisé
-    public static void affichageMenuSelection(GraphicsContext gc, Bouton classique, Bouton perso, Bouton création, Bouton multijoueur, Bouton retour){
-        
+    public static void affichageMenuSelection(GraphicsContext gc, Bouton classique, Bouton experimental, Bouton perso, Bouton création, Bouton multijoueur, Bouton retour){ 
         afficherBoutonJouer(gc, classique);
+        afficherBoutonJouer(gc, experimental);
         afficherBoutonJouer(gc, perso);
         afficherBoutonJouer(gc, création);
         afficherBoutonJouer(gc, multijoueur);
@@ -501,6 +501,23 @@ public class Affichage {
         
         afficherBoutonJouer(gc, prochainNiveau);
         retour.afficher(gc);    
+    }
+
+    /**
+     * Affiche le texte "Choisir un niveau" au-dessus des boutons.
+     *
+     * @param gc Le contexte graphique utilisé pour dessiner le texte.
+     */
+    //Méthode pour afficher le texte au dessus des boutons niveaux
+    private static void afficherTexteChoisirNiveau(GraphicsContext gc) {
+        gc.setStroke(Color.YELLOW);
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 35));
+        gc.setTextAlign(TextAlignment.CENTER);
+
+        double texteX = BreakOut.getWidth()/2; //milieu de la fenêtre
+        double texteY = BreakOut.getHeight()/2-50;  //au-dessus des boutons
+
+        gc.strokeText("Choisir un niveau", texteX, texteY);
     }
 
     //Méthode pour afficher le bouton "Retour" retournant au menu sélection de mode
@@ -530,6 +547,7 @@ public class Affichage {
      */
     //Méthode pour le menu de sélection des niveaux
     public static void affichageSelectionNiveaux(GraphicsContext gc, List<Bouton> boutonsNiveaux, Bouton boutonRetourAuMode){
+        afficherTexteChoisirNiveau(gc);
         afficherBoutonNiveaux(gc, boutonsNiveaux);
         afficherBoutonRetourAuMode(gc, boutonRetourAuMode);
     }

@@ -44,6 +44,7 @@ public class BreakOut extends Application {
     private Niveau niv; 
     private NiveauInput n = new NiveauInput(); 
     private NiveauEditeur gen = new NiveauEditeur();
+    private String modeActif;
 
     private int brickRows;
     private final int brickCols = 12;
@@ -70,16 +71,6 @@ public class BreakOut extends Application {
     double rectXniveau = (width - totalWidthNiv) / 2;
     double rectYniveau = (height - rectHeight * 2 - espacementVerticalSelectNiv) / 2;
 
-    //Espace horizontal entre les boutons "Rejouer" et "Retour"
-    private double espaceEntreBoutons = 40;
-
-    private double rectRejouerX = (width - (2 * rectWidth + espaceEntreBoutons)) / 2;
-    private double rectRetourX = rectRejouerX + rectWidth + espaceEntreBoutons;
-    private double rectChangerModeJeuX = (width - rectWidth) / 2;
-    private double rectChangerModeJeuY = rectY + 50 + rectHeight + 15;
-
-
-    private Bouton boutonRetourAuMode;
     private List<Bouton> boutonsNiveaux;
     
     private FenetrePerso f1;
@@ -126,7 +117,6 @@ public class BreakOut extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         
         //Initialiser les boutons de niveaux
-        boutonRetourAuMode = new Bouton(rectX, rectY + 250, 100, 40, "Retour");
         boutonsNiveaux = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
             double x = rectXniveau + (i - 1) * (rectWidth + espacementHorizontalSelectNiv); // Position horizontale
@@ -264,33 +254,43 @@ public class BreakOut extends Application {
                 Affichage.enregistrerPseudo();  // Stocker le pseudo avant de commencer
                 drawSettingsRectangle = false; 
 
-            //confirme un input sur le bouton "Mode classique" ou "Prochain niveau"
-            }else if(!modeCréation && !gameStarted && type && ((modeSelection && BoutonListe.bClassique.estClique(clickX, clickY))
-                    || (finDeJeu && BoutonListe.bProchainNiveau.estClique(clickX, clickY)))){
-                niv = new Niveau(diff);
-                bricks = niv.makeNiveau();
-                brickRows = niv.getBrickRows();
-                Balle.resetBalles(balle1);
+
+            //confirme un input sur le bouton "Mode classique" ou "Mode expérimental"
+            }else if(!modeCréation && !gameStarted && !finDeJeu && modeSelection && BoutonListe.bClassique.estClique(clickX, clickY)){
                 modeSelection = false;
                 selectionNiveaux = true;
-            }else if(selectionNiveaux && !boutonRetourAuMode.estClique(clickX, clickY)){
-                for (int i = 0; i < boutonsNiveaux.size(); i++) {
-                    Bouton bouton = boutonsNiveaux.get(i);
-                    if (bouton.estClique(clickX, clickY)) {
-                        niv = new Niveau(i + 1); //Charge le niveau sélectionné
-                        bricks = niv.makeNiveau();
-                        brickRows = niv.getBrickRows();
-                        gameStarted = true; 
-                        selectionNiveaux = false; 
-                    }
-                }
-            //Permet de retourner au sélection de mode lorsqu'on se trouve dans le menu des niveaux
-            }else if(selectionNiveaux && boutonRetourAuMode.estClique(clickX, clickY)){
+                modeActif = "classique";
+            }else if(!modeCréation && !gameStarted && !finDeJeu && modeSelection && BoutonListe.bExperimental.estClique(clickX, clickY)){
+                modeSelection = false;
+                selectionNiveaux = true;
+                modeActif = "experimental";
+
+            //Retourne à la sélection de mode lorsqu'on se trouve dans le menu des niveaux
+            }else if (!modeSelection && selectionNiveaux && BoutonListe.bRetourAuMode.estClique(clickX, clickY)){
                 modeSelection = true;
                 selectionNiveaux = false;
 
+            }else if(selectionNiveaux && !gameStarted){ 
+                for (int i = 0; i < boutonsNiveaux.size(); i++) {
+                    Bouton bouton = boutonsNiveaux.get(i);
+                    if (bouton.estClique(clickX, clickY) && !modeSelection) {
+                        if(modeActif.equals("classique")){
+                            niv = new Niveau(i + 1); //Charger le niveau sélectionné
+                            bricks = niv.makeNiveau();
+                        }else if(modeActif.equals("experimental")){ 
+                            niv = new Niveau();
+                            bricks = niv.makeNiveauExperimental("Niveau" + (i+1) + ".txt"); //Crée les briques en fonction du niveau sélectionné à partir d'un fichier existant
+                        }
+                        brickRows = niv.getBrickRows();
+                        gameStarted = true;
+                        selectionNiveaux = false; 
+                        break; 
+                    }
+                }
+            }
+
             //confirme un input sur le bouton Personnalisé
-            }else if(!modeCréation && !gameStarted && modeSelection && BoutonListe.bPerso.estClique(clickX, clickY)){
+            else if(!modeCréation && !gameStarted && modeSelection && BoutonListe.bPerso.estClique(clickX, clickY)){
                 niv = n;
                 n.setOuvert(true);
                 f1.setVisible(true);
@@ -439,7 +439,8 @@ public class BreakOut extends Application {
                 Affichage.afficherFinDeJeu(gc, score, BoutonListe.bRejouer, BoutonListe.bChangerModeJeu, BoutonListe.bRetour, BoutonListe.bSetting, drawSettingsRectangle);
             }else 
             if (modeSelection){
-                Affichage.affichageMenuSelection(gc, BoutonListe.bClassique, BoutonListe.bPerso, BoutonListe.bCréation, BoutonListe.bMultijoueur, BoutonListe.bRetourSelec);
+
+                Affichage.affichageMenuSelection(gc, BoutonListe.bClassique, BoutonListe.bExperimental, BoutonListe.bPerso, BoutonListe.bCréation, BoutonListe.bMultijoueur, BoutonListe.bRetourSelec);
                 if (n.getPath() != null && n.getOuvert()){
                     bricks = niv.makeNiveau();
                     if (bricks == null){
@@ -454,9 +455,9 @@ public class BreakOut extends Application {
                     }
                 }
             }else if(selectionNiveaux){
-                Affichage.affichageSelectionNiveaux(gc, boutonsNiveaux, boutonRetourAuMode);
-            }else
-            if (gameStarted && !niv.finDeJeu()) {
+                Affichage.affichageSelectionNiveaux(gc, boutonsNiveaux, BoutonListe.bRetourAuMode);
+
+            }else if (gameStarted && !niv.finDeJeu()) {
                 if (!Son.musiqueEnCours()) { // Rejouer la music pendant que le jeu en cours
                     Son.jouerMusique();
                 }

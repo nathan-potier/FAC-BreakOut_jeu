@@ -2,7 +2,15 @@ package org.openjfx;
 
 
 import javafx.scene.canvas.GraphicsContext;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 
 
@@ -25,6 +33,7 @@ import java.util.Random;
  * <li> Fixe le nombre total de brique cassable du niveau {@link #setInitNbBrick()}.</li>
  * <li> Réinitialise l'état des briques {@link #resetBrick()}.</li>
  * <li> Crée un tableau à deux dimensions de briques selon la difficulté {@link #makeNiveau()}.</li>
+ * <li> Crée un niveau à partir du fichier stocké dans filePath {@link #makeNiveauExperimental(String)}</li>
  * </ul>
  * 
  * @author Le-Augustin NGUYEN
@@ -232,4 +241,101 @@ public class Niveau {
         setTabBrick(tab);
         return tab;
     }
+
+    public Brick[][] makeNiveau(String cheminFichier) {
+        Brick[][] tab = new Brick[brickRows][brickCols];
+        try (BufferedReader br = new BufferedReader(new FileReader(cheminFichier))) {
+            String ligne;
+            int i = 0; 
+            while ((ligne = br.readLine()) != null && i < brickRows) {
+                String[] valeurs = ligne.split(","); 
+                for (int j = 0; j < valeurs.length && j < brickCols; j++) {
+                    int val = Integer.parseInt(valeurs[j]);
+                    //Associer les valeurs du fichier aux types de briques
+                    if (val == 0) {
+                        tab[i][j] = null; // Pas de brique
+                    } else if (val == 1) {
+                        tab[i][j] = new BrickRouge(true, 80, 20, PowerUp.randomPU(j * 85, i * 25));
+                    } else if (val == 2) {
+                        tab[i][j] = new BrickDouble(true, 80, 20, PowerUp.randomPU(j * 85, i * 25));
+                    } else if (val == 3) {
+                        tab[i][j] = new BrickBleue(true, 80, 20, PowerUp.randomPU(j * 85, i * 25));
+                    } else if (val == 4) {
+                        tab[i][j] = new BrickUnbreakable(true, 80, 20, PowerUp.randomPU(j * 85, i * 25));
+                    }
+                }
+                i++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); // Afficher l'erreur si le fichier ne peut pas être lu
+        }
+    
+        setInitNbBrick(); // Calculer le nombre total de briques
+        setTabBrick(tab); // Définir le tableau de briques
+        return tab;
+    }
+
+     /**
+     * Crée un niveau à partir du fichier stocké dans filePath
+     * 
+     * @param filePath Le chemin d'accès au fichier contenant la configuration du niveau où chaque ligne correspond à une ligne de briques et chaque valeur à un type de brique.
+     * 
+     * @return tableau à deux dimensions de Brick représentant le niveau, interprété à partir du contenu du fichier filePath, renvoie null si invalide.
+     * 
+     */
+    public Brick[][] makeNiveauExperimental(String filePath){
+        ArrayList<String[]> niveauValues = new ArrayList<String[]>();
+        int nbLine = 0;
+        String[] courant;
+
+        try(Scanner scanner = new Scanner(new File(filePath))){
+            if (!scanner.hasNextLine()) return null;
+            while(scanner.hasNextLine() && nbLine < 12){
+                courant = scanner.nextLine().split(",");
+                if (courant.length != 12) return null;        
+                niveauValues.add(courant);    
+                nbLine++;
+            }        
+            if (scanner.hasNextLine()) return null;        
+            setBrickRows(nbLine);
+            
+            //Création du niveau        
+            Brick[][] niv = new Brick[nbLine][12];        
+            String[] ligneCourante;
+            int intCourant;
+            for(int i=0; i < nbLine; i++){
+                ligneCourante = niveauValues.get(i);        
+                for(int j=0; j < 12; j++){
+                    try{
+                        intCourant = Integer.parseInt(ligneCourante[j]);
+                        switch(intCourant){        
+                            case 1: niv[i][j] = new BrickBleue(true, 80, 20,PowerUp.randomPU(j * 85, i * 25)); 
+                                    diff++; break;
+                            case 2: niv[i][j] = new BrickDouble(true, 80, 20,PowerUp.randomPU(j * 85, i * 25)); 
+                                    diff++; break;
+                            case 3: niv[i][j] = new BrickRouge(true, 80, 20, PowerUp.randomPU(j * 85, i * 25)); 
+                                    diff++; break;
+                            case 4: niv[i][j] = new BrickUnbreakable(true, 80, 20, PowerUp.randomPU(j * 85, i * 25)); brickDetruite(); 
+                                    break;
+                            case 5: niv[i][j] = new BrickVide(false, 80, 20, PowerUp.randomPU(j * 85, i * 25)); brickDetruite(); 
+                                    break;
+                            default : return null;
+                        }
+                        brickAdd();
+                    }        
+                    catch (NumberFormatException a){
+                        return null;
+                    }
+                }
+            }        
+            setInitNbBrick();
+            setTabBrick(niv);
+            return niv;  
+
+        }catch(FileNotFoundException e){
+            return null;
+        }
+    }
+
+
 }

@@ -1,6 +1,5 @@
 package org.openjfx;
 
-
 public class BoutonListe{
 
     private static final int width = 1016;
@@ -21,7 +20,8 @@ public class BoutonListe{
     public static Bouton bChangerModeJeu = new Bouton(rectChangerModeJeuX - 70, rectChangerModeJeuY, rectWidth + 160, rectHeight, "Changer de mode");
     public static Bouton bRetour = new Bouton(rectRetourX, rectY + 50, rectWidth + 20, rectHeight, "Retour");
     public static Bouton bJouer = new Bouton(rectX, rectY, rectWidth, rectHeight, "Jouer");
-    public static Bouton bClassique = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Mode classique");
+    public static Bouton bClassique = new Bouton(rectX - 100, rectY - 80, rectWidth + 200, rectHeight, "Mode classique");
+    public static Bouton bExperimental = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Mode expérimental");
     public static Bouton bPerso = new Bouton(rectX - 100, rectY + 80, rectWidth + 200, rectHeight, "Mode personnalisé");
     public static Bouton bRetourSelec = new Bouton(rectX, rectY + 250, 100, 40, "Retour");
     public static Bouton bProchainNiveau = new Bouton(rectX - 100, rectY, rectWidth + 200, rectHeight, "Prochain niveau");
@@ -37,6 +37,6 @@ public class BoutonListe{
     public static Bouton bMouse = new Bouton(180, height - 130, 130, 20,"Souris: on");
     public static Bouton bSetting = new Bouton(20, height - 80, 100, 40, "Settings");
 
-    public static Bouton bMultijoueur = new Bouton(rectX - 100, rectY -80, rectWidth + 200, rectHeight, "Mode Multijoueur");
-    
+    public static Bouton bMultijoueur = new Bouton(rectX - 100, rectY -160, rectWidth + 200, rectHeight, "Mode Multijoueur");
+    public static Bouton bRetourAuMode = new Bouton(rectX, rectY + 250, 100, 40, "Retour");
 }
