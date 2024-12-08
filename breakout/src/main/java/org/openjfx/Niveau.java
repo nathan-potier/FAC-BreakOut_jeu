@@ -242,39 +242,6 @@ public class Niveau {
         return tab;
     }
 
-    public Brick[][] makeNiveau(String cheminFichier) {
-        Brick[][] tab = new Brick[brickRows][brickCols];
-        try (BufferedReader br = new BufferedReader(new FileReader(cheminFichier))) {
-            String ligne;
-            int i = 0; 
-            while ((ligne = br.readLine()) != null && i < brickRows) {
-                String[] valeurs = ligne.split(","); 
-                for (int j = 0; j < valeurs.length && j < brickCols; j++) {
-                    int val = Integer.parseInt(valeurs[j]);
-                    //Associer les valeurs du fichier aux types de briques
-                    if (val == 0) {
-                        tab[i][j] = null; // Pas de brique
-                    } else if (val == 1) {
-                        tab[i][j] = new BrickRouge(true, 80, 20, PowerUp.randomPU(j * 85, i * 25));
-                    } else if (val == 2) {
-                        tab[i][j] = new BrickDouble(true, 80, 20, PowerUp.randomPU(j * 85, i * 25));
-                    } else if (val == 3) {
-                        tab[i][j] = new BrickBleue(true, 80, 20, PowerUp.randomPU(j * 85, i * 25));
-                    } else if (val == 4) {
-                        tab[i][j] = new BrickUnbreakable(true, 80, 20, PowerUp.randomPU(j * 85, i * 25));
-                    }
-                }
-                i++;
-            }
-        } catch (IOException e) {
-            e.printStackTrace(); // Afficher l'erreur si le fichier ne peut pas être lu
-        }
-    
-        setInitNbBrick(); // Calculer le nombre total de briques
-        setTabBrick(tab); // Définir le tableau de briques
-        return tab;
-    }
-
      /**
      * Crée un niveau à partir du fichier stocké dans filePath
      * 
