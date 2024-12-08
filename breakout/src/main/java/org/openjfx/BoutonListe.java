@@ -1,6 +1,5 @@
 package org.openjfx;
 
-
 public class BoutonListe{
 
     private static final int width = 1016;
@@ -39,5 +38,5 @@ public class BoutonListe{
     public static Bouton bSetting = new Bouton(20, height - 80, 100, 40, "Settings");
 
     public static Bouton bMultijoueur = new Bouton(rectX - 100, rectY -160, rectWidth + 200, rectHeight, "Mode Multijoueur");
-    
+    public static Bouton bRetourAuMode = new Bouton(rectX, rectY + 250, 100, 40, "Retour");
 }
