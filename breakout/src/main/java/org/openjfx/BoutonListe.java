@@ -1,7 +1,11 @@
 package org.openjfx;
 
+import java.util.ArrayList;
+
+
 public class BoutonListe{
 
+    static ArrayList<Bouton> boutonsNiveaux = new ArrayList<>();;
     private static final int width = 1016;
     private static final int height = 700;
     private static final double rectWidth = 100;
@@ -15,6 +19,11 @@ public class BoutonListe{
     private static double rectRetourX = rectRejouerX + rectWidth + espaceEntreBoutons;
     private static double rectChangerModeJeuX = (width - rectWidth) / 2;
     private static double rectChangerModeJeuY = rectY + 50 + rectHeight + 15;
+    private static double espacementHorizontalSelectNiv = 60; 
+    private static double espacementVerticalSelectNiv = 90;
+    private static double totalWidthNiv = rectWidth * 5 + espacementHorizontalSelectNiv * 4;
+    private static double rectXniveau = (GameSpec.width - totalWidthNiv) / 2;
+    private static double rectYniveau = (GameSpec.height - rectHeight * 2 - espacementVerticalSelectNiv) / 2;
 
     static Bouton bRejouer = new Bouton(rectRejouerX, rectY + 50, rectWidth + 20, rectHeight, "Rejouer");
     static Bouton bChangerModeJeu = new Bouton(rectChangerModeJeuX - 70, rectChangerModeJeuY, rectWidth + 160, rectHeight, "Changer de mode");
@@ -39,4 +48,23 @@ public class BoutonListe{
 
     static Bouton bMultijoueur = new Bouton(rectX - 100, rectY -160, rectWidth + 200, rectHeight, "Mode Multijoueur");
     static Bouton bRetourAuMode = new Bouton(rectX, rectY + 250, 100, 40, "Retour");
+
+    static void makeBoutons(){
+        for (int i = 1; i <= 5; i++) {
+            double x = rectXniveau + (i - 1) * (rectWidth + espacementHorizontalSelectNiv); // Position horizontale
+            Bouton bouton = new Bouton(x, rectY, rectWidth+40, rectHeight, "Niveau " + i);
+            boutonsNiveaux.add(bouton);
+        
+            x = rectXniveau + (i + 5 - 6) * (rectWidth + espacementHorizontalSelectNiv); // Position horizontale
+            double y = rectYniveau + rectHeight + espacementVerticalSelectNiv; // Position verticale (sous la première ligne)
+            bouton = new Bouton(x, y, rectWidth+40, rectHeight, "Niveau " + i);
+            boutonsNiveaux.add(bouton);
+
+        }
+    }
+
+    
+
+
+
 }

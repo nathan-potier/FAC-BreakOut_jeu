@@ -38,25 +38,9 @@ public class BreakOut extends Application {
     private int score = 0;
     private int bestScore = 0; // Meilleur score
     public static ArrayList<Balle> balles = new ArrayList<>();
-    private static double timePU1 = 0;
-    private static double  timePU2 = 0;
-    private static double timeMU1 = 0;
-    private static double timeMU2 = 0;
     public static int nbBalle = 1;
     private final Balle balle1 = new Balle(BreakOut.getWidth() / 2,BreakOut.getHeight() / 2);
     
-    private double rectWidth = 100;
-    private double rectHeight = 50;
-    private double rectX = (GameSpec.width - rectWidth) / 2;
-    private double rectY = (GameSpec.height - rectHeight) / 2;
-
-    private double espacementHorizontalSelectNiv = 60; 
-    private double espacementVerticalSelectNiv = 90;
-    double totalWidthNiv = rectWidth * 5 + espacementHorizontalSelectNiv * 4;
-    double rectXniveau = (GameSpec.width - totalWidthNiv) / 2;
-    double rectYniveau = (GameSpec.height - rectHeight * 2 - espacementVerticalSelectNiv) / 2;
-
-    private List<Bouton> boutonsNiveaux;
     
     private FenetrePerso f1;
     private FenetreEditeur f2;
@@ -102,24 +86,14 @@ public class BreakOut extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         
         //Initialiser les boutons de niveaux
-        boutonsNiveaux = new ArrayList<>();
-        for (int i = 1; i <= 5; i++) {
-            double x = rectXniveau + (i - 1) * (rectWidth + espacementHorizontalSelectNiv); // Position horizontale
-            Bouton bouton = new Bouton(x, rectY, rectWidth+40, rectHeight, "Niveau " + i);
-            boutonsNiveaux.add(bouton);
-        }
-        for (int i = 6; i <= 10; i++) {
-            double x = rectXniveau + (i - 6) * (rectWidth + espacementHorizontalSelectNiv); // Position horizontale
-            double y = rectYniveau + rectHeight + espacementVerticalSelectNiv; // Position verticale (sous la première ligne)
-            Bouton bouton = new Bouton(x, y, rectWidth+40, rectHeight, "Niveau " + i);
-            boutonsNiveaux.add(bouton);
-        }
+        
  
 
         // Initialiser la fenetre personnalisé
         
         f1 = new FenetrePerso(n);
         f2 = new FenetreEditeur();
+        BoutonListe.makeBoutons();
 
 
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run(gc)));
@@ -256,8 +230,8 @@ public class BreakOut extends Application {
                 GameState.isSelectingNiv = false;
 
             }else if(GameState.isSelectingNiv && !GameState.isGameStarted){ 
-                for (int i = 0; i < boutonsNiveaux.size(); i++) {
-                    Bouton bouton = boutonsNiveaux.get(i);
+                for (int i = 0; i < BoutonListe.boutonsNiveaux.size(); i++) {
+                    Bouton bouton = BoutonListe.boutonsNiveaux.get(i);
                     if (bouton.estClique(clickX, clickY) && !GameState.isSelectingMode) {
                         if(modeActif.equals("classique")){
                             niv = new Niveau(i + 1); //Charger le niveau sélectionné
@@ -437,7 +411,7 @@ public class BreakOut extends Application {
                     }
                 }
             }else if(GameState.isSelectingNiv){
-                Affichage.affichageSelectionNiveaux(gc, boutonsNiveaux, BoutonListe.bRetourAuMode);
+                Affichage.affichageSelectionNiveaux(gc, BoutonListe.boutonsNiveaux, BoutonListe.bRetourAuMode);
 
             }else if (GameState.isGameStarted && !niv.finDeJeu()) {
                 if (!Son.musiqueEnCours()) { // Rejouer la music pendant que le jeu en cours
@@ -487,34 +461,34 @@ public class BreakOut extends Application {
                 }
             }
             //verif powerUp BALLSIZE actif si oui augmente le temps passé
-            timePU1 = balle1.updateTimer(timePU1);
+            TimerListe.timePU1 = balle1.updateTimer(TimerListe.timePU1);
 
             //Verif powerUp RacketSize actif si oui augmente le temps passé
             if (Racket.getWidth() > 100){
-                timePU2++;
-                if (timePU2 >= 700){
+                TimerListe.timePU2++;
+                if (TimerListe.timePU2 >= 700){
                     Racket.resetSize();
-                    timePU2 = 0;
+                    TimerListe.timePU2 = 0;
                 }
 
             }
 
             //verif Malus RacketSize actif si oui augmente le temps passé
             if (Racket.getWidth() < 100){
-                timeMU1++;
-                if (timeMU1 >= 700){
+                TimerListe.timeMU1++;
+                if (TimerListe.timeMU1 >= 700){
                     Racket.resetSize();
-                    timeMU1 = 0;
+                    TimerListe.timeMU1 = 0;
                 }
 
             }
             //verif Malus BALLSPEED actif si oui augmente le temps passé
             for (int i = 0; i < balles.size(); i++) {
             if (balles.get(i).getXSpeed() > 3){
-                timeMU2++;
-                if (timeMU2 >= 700){
+                TimerListe.timeMU2++;
+                if (TimerListe.timeMU2 >= 700){
                     Balle.resetSpeed();
-                    timeMU2 = 0;
+                    TimerListe.timeMU2 = 0;
                 }
             }
         }
