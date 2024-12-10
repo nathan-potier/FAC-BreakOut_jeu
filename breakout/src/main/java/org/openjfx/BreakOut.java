@@ -551,7 +551,7 @@ public class BreakOut extends Application {
                     balles.get(i).rebondHorizontal();
                 }
     
-                if (balles.get(i).getYPos() <= 0) {
+                if (balles.get(i).getYPos() <= 20) {
                     balles.get(i).rebondVertical();
                 }
     
