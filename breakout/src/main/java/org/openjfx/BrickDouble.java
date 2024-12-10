@@ -1,5 +1,6 @@
 package org.openjfx;
 
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 /**
@@ -28,6 +29,7 @@ public class BrickDouble extends Brick {
 
     private int nbrVie;
     private final int score;
+    public Image imageVerte;
 
     /**
      * Constructeur d'une BrickDouble définie par plusieurs paramètres.
@@ -42,6 +44,7 @@ public class BrickDouble extends Brick {
         this.score = 30;
         this.nbrVie = 1;
         setHavePower(true);
+        this.imageVerte = new Image("file:src/main/resources/Bricks/Verte.png"); // Chemin vers l'image de la brique verte
     }
 
     /**
