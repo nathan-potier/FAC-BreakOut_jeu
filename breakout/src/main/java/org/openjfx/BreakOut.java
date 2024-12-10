@@ -323,6 +323,7 @@ public class BreakOut extends Application {
                     f2.getNiv(gen);
 
                     f2.setVisible(true);
+                    BoutonListe.bJouer.enable();
                     
                 } 
                 else if (BoutonListe.bRetourSelec.estClique(clickX, clickY)){

@@ -30,6 +30,7 @@ public class BrickDouble extends Brick {
     private int nbrVie;
     private final int score;
     public Image imageVerte;
+    private final Image imageVerte2; // Image après avoir été touchée une fois
 
     /**
      * Constructeur d'une BrickDouble définie par plusieurs paramètres.
@@ -44,7 +45,8 @@ public class BrickDouble extends Brick {
         this.score = 30;
         this.nbrVie = 1;
         setHavePower(true);
-        this.imageVerte = new Image("file:src/main/resources/Bricks/Verte.png"); // Chemin vers l'image de la brique verte
+        this.imageVerte = new Image("file:src/main/resources/Bricks/Verte.png");
+        this.imageVerte2 = new Image("file:src/main/resources/Bricks/Verte2.png");
     }
 
     /**
@@ -81,6 +83,19 @@ public class BrickDouble extends Brick {
      */
     public void setNbrVie(int nbrVie) {
         this.nbrVie = nbrVie;
+
+        // Change l'image lorsque la vie passe à 0
+        if (this.nbrVie == 0) {
+            this.imageVerte = this.imageVerte2;
+        }
+    }
+
+    /**
+     * 
+     * @param imageVerte Image représentant la texture de la brique.
+     */
+    public void setimageVerte(Image imageVerte) {
+        this.imageVerte = imageVerte;
     }
 
 
