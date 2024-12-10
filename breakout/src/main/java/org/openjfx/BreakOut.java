@@ -239,12 +239,15 @@ public class BreakOut extends Application {
                     gameStarted = true; //Rejouer le jeu
                     gameOver = false;   //sans retourner au menu principal
                     Son.jouerMusique();
+                    drawSettingsRectangle = false;
                 }else if(BoutonListe.bChangerModeJeu.estClique(clickX, clickY)){
                     resetGame(gc);
                     modeSelection = true; //retourner sur la selection de mode
                 }else if(BoutonListe.bRetour.estClique(clickX, clickY)){
                     resetGame(gc); //Réinitialise le jeu -> retour au menu
                     Son.jouerMusique(); // Rejoue de la music
+                    BoutonListe.bJouer.enable();
+                    drawSettingsRectangle = false;
                 }else if (BoutonListe.bSetting.estClique(clickX, clickY)) { //bouton "Settings" à la fin de jeu 
                     drawSettingsRectangle = !drawSettingsRectangle; //l'affichage du rectangle
                 }
@@ -253,6 +256,7 @@ public class BreakOut extends Application {
                 modeSelection = true;
                 Affichage.enregistrerPseudo();  // Stocker le pseudo avant de commencer
                 drawSettingsRectangle = false; 
+                BoutonListe.bJouer.disable();
 
 
             //confirme un input sur le bouton "Mode classique" ou "Mode expérimental"
@@ -307,6 +311,7 @@ public class BreakOut extends Application {
                     finDeJeu && BoutonListe.bRetourSelec.estClique(clickX, clickY))){
                 modeSelection = false;
                 finDeJeu = false;
+                BoutonListe.bJouer.enable();
             }else if(!modeCréation && !gameStarted && !type && BoutonListe.bRecommencer.estClique(clickX, clickY)){
                 resetGame(gc);
                 gameStarted = true;
@@ -322,7 +327,7 @@ public class BreakOut extends Application {
                 } 
                 else if (BoutonListe.bRetourSelec.estClique(clickX, clickY)){
                     modeCréation = false;
-
+                    BoutonListe.bJouer.enable();
                 }
                 else{
                     gen.genNiveau(clickX, clickY);

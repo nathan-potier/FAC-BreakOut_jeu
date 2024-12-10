@@ -43,6 +43,7 @@ public class Bouton {
     private Color defaultColor = Color.YELLOW;
     private Color hoverColor = Color.RED;
     private boolean isHover = false;
+    private boolean isEnabled = true;
 
     // Liste statique pour stocker toutes les instances de Bouton
     private static final List<Bouton> allButtons = new ArrayList<>();
@@ -65,6 +66,29 @@ public class Bouton {
 
         // Ajout automatique du bouton à la liste globale
         allButtons.add(this);
+    }
+
+    /**
+     * Désactive le bouton, empêchant les interactions avec lui.
+     */
+    public void disable() {
+        isEnabled = false;
+    }
+
+    /**
+     * Réactive le bouton, permettant les interactions à nouveau.
+     */
+    public void enable() {
+        isEnabled = true;
+    }
+
+    /**
+     * Vérifie si le bouton est activé.
+     * 
+     * @return {@code true} si le bouton est activé, sinon {@code false}
+     */
+    public boolean isEnabled() {
+        return isEnabled;
     }
 
     /**
@@ -187,7 +211,7 @@ public class Bouton {
      * @return {@code true} si le clic est à l'intérieur du bouton, sinon {@code false}
      */
     public boolean estClique(double mouseX, double mouseY) {
-        return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
+        return isEnabled && mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
 
     /**
@@ -198,6 +222,6 @@ public class Bouton {
      * @return {@code true} si la souris est au-dessus du bouton, sinon {@code false}
      */
     public boolean isHover(double mouseX, double mouseY) {
-        return estClique(mouseX, mouseY);
+        return isEnabled && estClique(mouseX, mouseY);
     }
 }
