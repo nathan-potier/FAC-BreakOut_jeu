@@ -2,8 +2,8 @@ package org.openjfx;
 
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyCode;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.input.KeyCode;
 
 class EventKeyPress implements EventTrigger{
 
