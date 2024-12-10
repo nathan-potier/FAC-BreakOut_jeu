@@ -190,12 +190,37 @@ public class Niveau {
                 if (tabBrick[i][j].isNotBreak) {
                     double brickX = j * (tabBrick[i][j].getWidth() + 5);
                     double brickY = i * (tabBrick[i][j].getHeight() + 5);
-                    gc.setFill(tabBrick[i][j].couleur());
-                    gc.fillRect(brickX, brickY + 20, tabBrick[i][j].getWidth(), tabBrick[i][j].getHeight());
+                    double imageWidth = tabBrick[i][j].getWidth();
+                    double imageHeight = tabBrick[i][j].getHeight();
+                    
+                    if (tabBrick[i][j] instanceof BrickBleue) {
+                        BrickBleue brickBleue = (BrickBleue) tabBrick[i][j];
+                        gc.drawImage(brickBleue.imageBleue, brickX, brickY + 20, imageWidth, imageHeight);
+                    }else if (tabBrick[i][j] instanceof BrickDouble) {
+                        BrickDouble brickDouble = (BrickDouble) tabBrick[i][j];
+                        gc.drawImage(brickDouble.imageVerte, brickX, brickY + 20, imageWidth, imageHeight);
+                    }else if (tabBrick[i][j] instanceof BrickRouge) {
+                        BrickRouge brickRouge = (BrickRouge) tabBrick[i][j];
+                        gc.drawImage(brickRouge.imageRouge, brickX, brickY + 20, imageWidth, imageHeight);
+                    }else if (tabBrick[i][j] instanceof BrickUnbreakable) {
+                        BrickUnbreakable brickUnbreakable = (BrickUnbreakable) tabBrick[i][j];
+                        gc.drawImage(brickUnbreakable.imageUnbreakable, brickX, brickY + 20, imageWidth, imageHeight);
+                    } else {
+                        // Affichage de la couleur de la brique normale
+                        gc.setFill(tabBrick[i][j].couleur());
+                        gc.fillRect(brickX, brickY + 20, tabBrick[i][j].getWidth(), tabBrick[i][j].getHeight());
+                    }
                 }
             }
         }
     }
+
+
+
+
+
+
+
 
 
 
