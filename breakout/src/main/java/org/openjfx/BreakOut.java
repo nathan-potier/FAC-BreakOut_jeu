@@ -1,8 +1,5 @@
 package org.openjfx;
 
-
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,34 +22,11 @@ import javafx.util.Duration;
 
 public class BreakOut extends Application {
 
-    private boolean type = true;
-    private Niveau niv; 
-    private NiveauInput n = new NiveauInput(); 
-    private NiveauEditeur gen = new NiveauEditeur();
-    private String modeActif;
 
-    private int brickRows;
-    private final int brickCols = 12;
-    private Brick[][] bricks;
-
-    private int score = 0;
     private int bestScore = 0; // Meilleur score
-    public static ArrayList<Balle> balles = new ArrayList<>();
-    public static int nbBalle = 1;
-    private final Balle balle1 = new Balle(BreakOut.getWidth() / 2,BreakOut.getHeight() / 2);
-    
-    
-    private FenetrePerso f1;
-    private FenetreEditeur f2;
-
-    private boolean drawSettingsRectangle = false;
-
-
-
     
 
 
-    private boolean IsGameOver = false;
     private boolean ouvert = false;
 
 
@@ -61,21 +35,6 @@ public class BreakOut extends Application {
     public static int getWidth(){ return GameSpec.width; }
     public static int getHeight(){ return GameSpec.height; }
     public static String getTitre(){ return GameSpec.GAME_TITLE; }
-
-
-    //Réinitialise l'état du jeu pour recommencer une nouvelle partie
-    private void resetGame(GraphicsContext gc){
-
-        this.IsGameOver = false;
-        GameState.isGameStarted = false;
-        this.score = 0;
-        nbBalle = 1;
-        Balle.resetBalles(balle1);
-        Racket.resetSize();
-        Brick.resetBrickTab(bricks, brickRows, brickCols);
-        Son.rejouerMusique();
-        Affichage.afficherDefFont(gc);
-    }
     
 
 
@@ -91,8 +50,6 @@ public class BreakOut extends Application {
 
         // Initialiser la fenetre personnalisé
         
-        f1 = new FenetrePerso(n);
-        f2 = new FenetreEditeur();
         BoutonListe.makeBoutons();
 
 
@@ -112,196 +69,13 @@ public class BreakOut extends Application {
             }
         });
 
-		canvas.setOnMouseClicked(e -> {
-            double clickX = e.getX();
-            double clickY = e.getY();
-            if (drawSettingsRectangle) {  // Traiter les clics sur les boutons uniquement lorsque le menu des paramètres est ouvert
-                // Gérer le basculement entre le mode souris et le mode clavier
-                if (BoutonListe.bMouse.estClique(clickX, clickY)) {
-                    // Basculer l'état du mode souris
-                    GameState.isMouseMode = !GameState.isMouseMode;// Inverser l'état du mode souris
-                    BoutonListe.bMouse.setText(GameState.isMouseMode ? "Souris: on" : "Souris: off");// Définir le texte en fonction de l'état
-                }
-                if (BoutonListe.bKeyboard.estClique(clickX, clickY)) {
-                    // Basculer l'état du mode clavier
-                    GameState.isKeyboardMode=!GameState.isKeyboardMode;// Inverser l'état du mode clavier
-                    BoutonListe.bKeyboard.setText(GameState.isKeyboardMode ? "Clavier: on" : "Clavier: off");// Définir le texte en fonction de l'état
-                }                
-
-                if (BoutonListe.bToggleBackgroundMusic.estClique(clickX, clickY)) {
-                    // Basculer la musique de fond
-                    if (Son.isBackgroundMusicOn()) {
-                        Son.setBackgroundMusicOn(false);  // Arrêter la musique de fond
-                        BoutonListe.bToggleBackgroundMusic.setText("BackgroundMusic: off");
-                    } else {
-                        Son.setBackgroundMusicOn(true); // Démarrer la musique de fond
-                        BoutonListe.bToggleBackgroundMusic.setText("BackgroundMusic: on");
-                    }
-                }
-                
-                if (BoutonListe.bToggleCollisionSound.estClique(clickX, clickY)) {
-                    // Basculer le son de collision
-                    if (Son.isCollisionSoundOn()) {
-                        Son.setCollisionSoundOn(false);  // Désactiver le son de collision
-                        BoutonListe.bToggleCollisionSound.setText("BrickSound: off");
-                    } else {
-                        Son.setCollisionSoundOn(true);   // Activer le son de collision
-                        BoutonListe.bToggleCollisionSound.setText("BrickSound: on");
-                    }
-                }
-    
-                if (BoutonListe.bToggleBounceSound.estClique(clickX, clickY)) {
-                    // Basculer le son de rebond
-                    if (Son.isBounceSoundOn()) {
-                        Son.setBounceSoundOn(false); // Désactiver le son de rebond
-                        BoutonListe.bToggleBounceSound.setText("BounceSound: off");
-                    } else {
-                        Son.setBounceSoundOn(true); // Activer le son de rebond
-                        BoutonListe.bToggleBounceSound.setText("BounceSound: on");
-                    }
-                }
-            }
-        
-             //Paramètres de clic du bouton muet
-             if (BoutonListe.bMute.estClique(clickX, clickY)) {
-                if(!Son.isMuted()){
-                    Son.toggleMute(); // Changer l'état muet
-                    BoutonListe.bMute.setText("Son activé");
-                }else {
-                    Son.toggleMute(); // Changer l'état avec son
-                    BoutonListe.bMute.setText("Muet");
-                }
-            }
-
-            //Paramètres de clic du bouton Pause
-            if (GameState.isGameStarted && BoutonListe.bPause.estClique(clickX, clickY)) {
-                if (GameState.isPaused) {
-                    GameState.isPaused = false;
-                    //Son.toggleMute(); // Changer l'état avec son
-                } else {
-                    GameState.isPaused = true; 
-                    BoutonListe.bPause.setText("Pause");
-                    //Son.toggleMute(); // Changer l'état muet
-                }
-            }
-            
-            //confirme un input sur le bouton "Mode multijoueur"
-            if (!GameState.isCreatingNiv && !GameState.isGameStarted && GameState.isSelectingMode && BoutonListe.bMultijoueur.estClique(clickX, clickY)){
-                GameState.isSelectingMode = false;
-                GameState.isPlayingMulti = true;
-                GameState.isSelectingNiv = true;
-            }
-
-            if(IsGameOver){
-                if(BoutonListe.bRejouer.estClique(clickX, clickY)){
-                    resetGame(gc);
-                    GameState.isGameStarted = true; //Rejouer le jeu
-                    IsGameOver = false;   //sans retourner au menu principal
-                    Son.jouerMusique();
-                }else if(BoutonListe.bChangerModeJeu.estClique(clickX, clickY)){
-                    resetGame(gc);
-                    GameState.isSelectingMode = true; //retourner sur la selection de mode
-                }else if(BoutonListe.bRetour.estClique(clickX, clickY)){
-                    resetGame(gc); //Réinitialise le jeu -> retour au menu
-                    Son.jouerMusique(); // Rejoue de la music
-                }else if (BoutonListe.bSetting.estClique(clickX, clickY)) { //bouton "Settings" à la fin de jeu 
-                    drawSettingsRectangle = !drawSettingsRectangle; //l'affichage du rectangle
-                }
-            }else if (!GameState.isCreatingNiv && !GameState.isGameStarted && !GameState.isSelectingMode && !GameState.isGameOver && BoutonListe.bJouer.estClique(clickX, clickY)) {
-                //bascule sur la selection de mode
-                GameState.isSelectingMode = true;
-                Affichage.enregistrerPseudo();  // Stocker le pseudo avant de commencer
-                drawSettingsRectangle = false; 
-
-
-            //confirme un input sur le bouton "Mode classique" ou "Mode expérimental"
-            }else if(!GameState.isCreatingNiv && !GameState.isGameStarted && !GameState.isGameOver && GameState.isSelectingMode && BoutonListe.bClassique.estClique(clickX, clickY)){
-                GameState.isSelectingMode = false;
-                GameState.isSelectingNiv = true;
-                modeActif = "classique";
-            }else if(!GameState.isCreatingNiv && !GameState.isGameStarted && !GameState.isGameOver && GameState.isSelectingMode && BoutonListe.bExperimental.estClique(clickX, clickY)){
-                GameState.isSelectingMode = false;
-                GameState.isSelectingNiv = true;
-                modeActif = "experimental";
-
-            //Retourne à la sélection de mode lorsqu'on se trouve dans le menu des niveaux
-            }else if (!GameState.isSelectingMode && GameState.isSelectingNiv && BoutonListe.bRetourAuMode.estClique(clickX, clickY)){
-                GameState.isSelectingMode = true;
-                GameState.isSelectingNiv = false;
-
-            }else if(GameState.isSelectingNiv && !GameState.isGameStarted){ 
-                for (int i = 0; i < BoutonListe.boutonsNiveaux.size(); i++) {
-                    Bouton bouton = BoutonListe.boutonsNiveaux.get(i);
-                    if (bouton.estClique(clickX, clickY) && !GameState.isSelectingMode) {
-                        if(modeActif.equals("classique")){
-                            niv = new Niveau(i + 1); //Charger le niveau sélectionné
-                            bricks = niv.makeNiveau();
-                        }else if(modeActif.equals("experimental")){ 
-                            niv = new Niveau();
-                            bricks = niv.makeNiveauExperimental("Niveau" + (i+1) + ".txt"); //Crée les briques en fonction du niveau sélectionné à partir d'un fichier existant
-                        }
-                        brickRows = niv.getBrickRows();
-                        GameState.isGameStarted = true;
-                        GameState.isSelectingNiv = false; 
-                        break; 
-                    }
-                }
-            }
-
-            //confirme un input sur le bouton Personnalisé
-            else if(!GameState.isCreatingNiv && !GameState.isGameStarted && GameState.isSelectingMode && BoutonListe.bPerso.estClique(clickX, clickY)){
-                niv = n;
-                n.setOuvert(true);
-                f1.setVisible(true);
-            }
-            else if( !GameState.isCreatingNiv && !GameState.isGameStarted && GameState.isSelectingMode && BoutonListe.bCréation.estClique(clickX, clickY)){
-                GameState.isSelectingMode = false;
-                GameState.isCreatingNiv = true;
-                brickRows = gen.getBrickRows();
-                gen.setOuvert(true);
-    
-
-            }else if(!GameState.isCreatingNiv && !GameState.isGameStarted && 
-                    ((GameState.isSelectingMode && BoutonListe.bRetourSelec.estClique(clickX, clickY))||
-                    GameState.isGameOver && BoutonListe.bRetourSelec.estClique(clickX, clickY))){
-                GameState.isSelectingMode = false;
-                GameState.isGameOver = false;
-            }else if(!GameState.isCreatingNiv && !GameState.isGameStarted && !type && BoutonListe.bRecommencer.estClique(clickX, clickY)){
-                resetGame(gc);
-                GameState.isGameStarted = true;
-                niv.resetBrick();
-            }
-            else if(!GameState.isGameStarted && GameState.isCreatingNiv){
-
-                if (BoutonListe.bEnregistrer.estClique(clickX, clickY)){
-                    f2.getNiv(gen);
-
-                    f2.setVisible(true);
-                    
-                } 
-                else if (BoutonListe.bRetourSelec.estClique(clickX, clickY)){
-                    GameState.isCreatingNiv = false;
-
-                }
-                else{
-                    gen.genNiveau(clickX, clickY);
-                }
-            }
-            
-
-
-
-            // Vérifier si le bouton Settings a été cliqué
-            if (!GameState.isGameStarted && !IsGameOver && BoutonListe.bSetting.estClique(clickX, clickY)) {
-                drawSettingsRectangle = !drawSettingsRectangle; // Pour ouvrir et fermer les parametres
-            }
-
-        });
+        EventMouseClick.actOnInput(canvas, gc);
+		
 
         Son.initBackgroundMusic();//Initialiser la music 
         Son.initPaddleBoundSound(); //Initialiser le son de rebond de balle
         Son.initBrickBreakSound(); // Initialiser le son des briques cassées
-        balles.add(balle1);// Ajout de la balle initiale a la liste
+        NiveauActuel.balles.add(NiveauActuel.balle1);// Ajout de la balle initiale a la liste
         
         canvas.setFocusTraversable(true);
         canvas.requestFocus();
@@ -364,20 +138,20 @@ public class BreakOut extends Application {
         Affichage.setGC(gc);
 
         
-        if (f1.isActive() || (f2 != null && f2.isActive())){
+        if (FenetrePossible.f1.isActive() || (FenetrePossible.f2 != null && FenetrePossible.f2.isActive())){
 
         }
         else{
             if (GameState.isCreatingNiv){
-                gen.afficheNiveau(gc);
+                NiveauPossible.gen.afficheNiveau(gc);
                 Affichage.affichageMenuProchainNiveau(gc, BoutonListe.bEnregistrer, BoutonListe.bRetourSelec);
-                if (!gen.getOuvert()){
+                if (!NiveauPossible.gen.getOuvert()){
                     GameState.isCreatingNiv = false;
                 }
             }
             else
             if (!GameState.isGameStarted && GameState.isGameOver){
-                if (type){
+                if (NiveauActuel.type){
                     Affichage.affichageMenuProchainNiveau(gc, BoutonListe.bProchainNiveau, BoutonListe.bRetourSelec);
                 }
                 else{
@@ -385,73 +159,74 @@ public class BreakOut extends Application {
                 }
             }
             else
-            if (GameState.isGameStarted && niv.finDeJeu()){
+            if (GameState.isGameStarted && NiveauActuel.niv.finDeJeu()){
                 GameState.isGameStarted = false;
-                GameState.isGameOver = niv.finDeJeu();
+                GameState.isGameOver
+ = NiveauActuel.niv.finDeJeu();
             }
             else
-            if(IsGameOver){
+            if(GameState.isGameOver){
                 Son.pauseMusique(); // stop music
-                Affichage.afficherFinDeJeu(gc, score, BoutonListe.bRejouer, BoutonListe.bChangerModeJeu, BoutonListe.bRetour, BoutonListe.bSetting, drawSettingsRectangle);
+                Affichage.afficherFinDeJeu(gc, NiveauActuel.score, BoutonListe.bRejouer, BoutonListe.bChangerModeJeu, BoutonListe.bRetour, BoutonListe.bSetting, GameState.isSettingOpen);
             }else 
             if (GameState.isSelectingMode){
 
                 Affichage.affichageMenuSelection(gc, BoutonListe.bClassique, BoutonListe.bExperimental, BoutonListe.bPerso, BoutonListe.bCréation, BoutonListe.bMultijoueur, BoutonListe.bRetourSelec);
-                if (n.getPath() != null && n.getOuvert()){
-                    bricks = niv.makeNiveau();
-                    if (bricks == null){
+                if (NiveauPossible.n.getPath() != null && NiveauPossible.n.getOuvert()){
+                    NiveauActuel.tabBrick = NiveauActuel.niv.makeNiveau();
+                    if (NiveauActuel.tabBrick == null){
                         Affichage.afficheTexte(gc, "format du ficher personnalisé invalide");
                     }
                     else{
-                        type = false;
-                        brickRows = niv.getBrickRows();
+                        NiveauActuel.type = false;
+                        NiveauActuel.brickRows = NiveauActuel.niv.getBrickRows();
                         GameState.isSelectingMode = false;
                         GameState.isGameStarted = true;
-                        n.setOuvert(false);
+                        NiveauPossible.n.setOuvert(false);
                     }
                 }
             }else if(GameState.isSelectingNiv){
                 Affichage.affichageSelectionNiveaux(gc, BoutonListe.boutonsNiveaux, BoutonListe.bRetourAuMode);
 
-            }else if (GameState.isGameStarted && !niv.finDeJeu()) {
+            }else if (GameState.isGameStarted && !NiveauActuel.niv.finDeJeu()) {
                 if (!Son.musiqueEnCours()) { // Rejouer la music pendant que le jeu en cours
                     Son.jouerMusique();
                 }
-                gc.fillText("Score: " + score, GameSpec.width / 2, GameSpec.height / 2);
+                gc.fillText("Score: " + NiveauActuel.score, GameSpec.width / 2, GameSpec.height / 2);
 
                 Affichage.afficherBoutonMute(gc, BoutonListe.bMute); // afficher le bouton
                 Affichage.afficherBoutonPause(gc, BoutonListe.bPause);
 
-                Affichage.afficheBalles(gc, balles);
+                Affichage.afficheBalles(gc, NiveauActuel.balles);
     
 
                 // Dessiner les briques
-                niv.afficheNiveau(gc);
+                NiveauActuel.niv.afficheNiveau(gc);
             
                 // Détection de collision avec les briques et incrémente le score
-                score += Collision.checkCollision(balles, niv);
+                NiveauActuel.score += Collision.checkCollision(NiveauActuel.balles, NiveauActuel.niv);
 
             //actualisation powerUp
-            for (int i = 0; i < brickRows; i++) {
-                for (int j = 0; j < brickCols; j++) {
-                    if (bricks[i][j].couleur() == Color.RED){
-                        if (bricks[i][j].getPowerUp().getTombe()){
-                            if (bricks[i][j].getPowerUp().getMalus()){
+            for (int i = 0; i < NiveauActuel.brickRows; i++) {
+                for (int j = 0; j < NiveauActuel.brickCols; j++) {
+                    if (NiveauActuel.tabBrick[i][j].couleur() == Color.RED){
+                        if (NiveauActuel.tabBrick[i][j].getPowerUp().getTombe()){
+                            if (NiveauActuel.tabBrick[i][j].getPowerUp().getMalus()){
                                 gc.setFill(Color.RED);
-                                gc.fillOval(bricks[i][j].getPowerUp().getPux() + bricks[i][j].getWidth()/2, bricks[i][j].getPowerUp().getPuy(), PowerUp.getSize(), PowerUp.getSize());
+                                gc.fillOval(NiveauActuel.tabBrick[i][j].getPowerUp().getPux() + NiveauActuel.tabBrick[i][j].getWidth()/2, NiveauActuel.tabBrick[i][j].getPowerUp().getPuy(), PowerUp.getSize(), PowerUp.getSize());
                             }else{
                                 gc.setFill(Color.BLUE);
-                                gc.fillOval(bricks[i][j].getPowerUp().getPux() + bricks[i][j].getWidth()/2, bricks[i][j].getPowerUp().getPuy(), PowerUp.getSize(), PowerUp.getSize());
+                                gc.fillOval(NiveauActuel.tabBrick[i][j].getPowerUp().getPux() + NiveauActuel.tabBrick[i][j].getWidth()/2, NiveauActuel.tabBrick[i][j].getPowerUp().getPuy(), PowerUp.getSize(), PowerUp.getSize());
                             }
-                            bricks[i][j].getPowerUp().actuPUy();
-                            if (bricks[i][j].getPowerUp().getPuy() + PowerUp.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
-                            bricks[i][j].getPowerUp().getPux() + PowerUp.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
-                            bricks[i][j].getPowerUp().getPux() <= Racket.getXPos() + Racket.getWidth() / 2){
-                                bricks[i][j].getPowerUp().applyEffect();
-                                bricks[i][j].getPowerUp().setTombe(false);
+                            NiveauActuel.tabBrick[i][j].getPowerUp().actuPUy();
+                            if (NiveauActuel.tabBrick[i][j].getPowerUp().getPuy() + PowerUp.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
+                            NiveauActuel.tabBrick[i][j].getPowerUp().getPux() + PowerUp.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
+                            NiveauActuel.tabBrick[i][j].getPowerUp().getPux() <= Racket.getXPos() + Racket.getWidth() / 2){
+                                NiveauActuel.tabBrick[i][j].getPowerUp().applyEffect();
+                                NiveauActuel.tabBrick[i][j].getPowerUp().setTombe(false);
                             }
-                            if(bricks[i][j].getPowerUp().getPuy() > Racket.getYPos() +10){
-                                bricks[i][j].getPowerUp().setTombe(false);
+                            if(NiveauActuel.tabBrick[i][j].getPowerUp().getPuy() > Racket.getYPos() +10){
+                                NiveauActuel.tabBrick[i][j].getPowerUp().setTombe(false);
                             }
                         
     
@@ -461,7 +236,7 @@ public class BreakOut extends Application {
                 }
             }
             //verif powerUp BALLSIZE actif si oui augmente le temps passé
-            TimerListe.timePU1 = balle1.updateTimer(TimerListe.timePU1);
+            TimerListe.timePU1 = NiveauActuel.balle1.updateTimer(TimerListe.timePU1);
 
             //Verif powerUp RacketSize actif si oui augmente le temps passé
             if (Racket.getWidth() > 100){
@@ -483,8 +258,8 @@ public class BreakOut extends Application {
 
             }
             //verif Malus BALLSPEED actif si oui augmente le temps passé
-            for (int i = 0; i < balles.size(); i++) {
-            if (balles.get(i).getXSpeed() > 3){
+            for (int i = 0; i < NiveauActuel.balles.size(); i++) {
+            if (NiveauActuel.balles.get(i).getXSpeed() > 3){
                 TimerListe.timeMU2++;
                 if (TimerListe.timeMU2 >= 700){
                     Balle.resetSpeed();
@@ -494,25 +269,25 @@ public class BreakOut extends Application {
         }
 
 
-            for (int i = 0; i < balles.size(); i++) {
+            for (int i = 0; i < NiveauActuel.balles.size(); i++) {
                 
             
                 // Collision avec les murs
-                if (balles.get(i).getXPos() <= 0 || balles.get(i).getXPos() >= GameSpec.width - Balle.getSize()) {
-                    balles.get(i).rebondHorizontal();
+                if (NiveauActuel.balles.get(i).getXPos() <= 0 || NiveauActuel.balles.get(i).getXPos() >= GameSpec.width - Balle.getSize()) {
+                    NiveauActuel.balles.get(i).rebondHorizontal();
                 }
     
-                if (balles.get(i).getYPos() <= 0) {
-                    balles.get(i).rebondVertical();
+                if (NiveauActuel.balles.get(i).getYPos() <= 0) {
+                    NiveauActuel.balles.get(i).rebondVertical();
                 }
     
     
                 // Collision avec la raquette
-                if (balles.get(i).getYPos() + Balle.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
-                    balles.get(i).getXPos() + Balle.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
-                    balles.get(i).getXPos() <= Racket.getXPos() + Racket.getWidth() / 2 && balles.get(i).getYSpeed() > 0){
+                if (NiveauActuel.balles.get(i).getYPos() + Balle.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
+                    NiveauActuel.balles.get(i).getXPos() + Balle.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
+                    NiveauActuel.balles.get(i).getXPos() <= Racket.getXPos() + Racket.getWidth() / 2 && NiveauActuel.balles.get(i).getYSpeed() > 0){
     
-                    balles.get(i).rebondSurRaquette(Racket.getXPos(), Racket.getWidth());
+                    NiveauActuel.balles.get(i).rebondSurRaquette(Racket.getXPos(), Racket.getWidth());
                      
                     // Jouer le son de rebond de balle
                     Son.stopSonRebond();
@@ -521,19 +296,20 @@ public class BreakOut extends Application {
     
                 }
 
-                for (int i = 0; i < balles.size(); i++) {
-                    if (balles.get(i).getYPos() > Racket.getYPos()){
-                        nbBalle = nbBalle -1;
-                        balles.remove(i);
+                for (int i = 0; i < NiveauActuel.balles.size(); i++) {
+                    if (NiveauActuel.balles.get(i).getYPos() > Racket.getYPos()){
+                        NiveauActuel.nbBalle--;
+                        NiveauActuel.balles.remove(i);
                     
                     }
                 }
     
     
-                if (nbBalle == 0){
-                    IsGameOver = true; 
+                if (NiveauActuel.nbBalle == 0){
+                    GameState.isGameOver
+     = true; 
                     GameState.isGameStarted = false; // Fin de la partie
-                    Score.saveScoreToFile(Pseudo.getPseudo(), score);
+                    Score.saveScoreToFile(Pseudo.getPseudo(), NiveauActuel.score);
                     bestScore = Score.getBestScore(Pseudo.getPseudo()); // Mettre à jour le meilleur score
     
 
@@ -545,11 +321,11 @@ public class BreakOut extends Application {
 
             }else {
 
-                Affichage.afficherMenuPrincipal(gc, BoutonListe.bJouer, BoutonListe.bSetting, drawSettingsRectangle);
+                Affichage.afficherMenuPrincipal(gc, BoutonListe.bJouer, BoutonListe.bSetting, GameState.isSettingOpen);
                
             }
 
-            if (drawSettingsRectangle) {
+            if (GameState.isSettingOpen) {
                 Affichage.dessinerRectangle(gc, BoutonListe.bSetting);
                 Affichage.afficherBoutonToggleBackgroundMusic(gc, BoutonListe.bToggleBackgroundMusic);//Affiche dans le boutonSetting
                 Affichage.afficherBoutonToggleCollisionSound(gc, BoutonListe.bToggleCollisionSound);//Affiche dans le boutonSetting

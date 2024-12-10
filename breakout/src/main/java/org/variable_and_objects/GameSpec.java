@@ -1,5 +1,6 @@
 package org.openjfx;
 
+
 public class GameSpec {
 
     static final String GAME_TITLE = "BreakOut";

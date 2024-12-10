@@ -143,8 +143,8 @@ public class Balle implements HavePowerUp{
      */
     public static void resetBalles(Balle balle){
         balle.reset();
-        BreakOut.balles = new ArrayList<>();
-        BreakOut.balles.add(balle);
+        NiveauActuel.balles = new ArrayList<>();
+        NiveauActuel.balles.add(balle);
     }
 
     /**
@@ -238,9 +238,9 @@ public class Balle implements HavePowerUp{
 
 
     public static void resetSpeed(){
-        for(int i = 0; BreakOut.balles.size() > i; i++){
-            BreakOut.balles.get(i).setXSpeed(BreakOut.balles.get(i).getXSpeed()/2);
-            BreakOut.balles.get(i).setYSpeed(BreakOut.balles.get(i).getYSpeed()/2);
+        for(int i = 0; NiveauActuel.balles.size() > i; i++){
+            NiveauActuel.balles.get(i).setXSpeed(NiveauActuel.balles.get(i).getXSpeed()/2);
+            NiveauActuel.balles.get(i).setYSpeed(NiveauActuel.balles.get(i).getYSpeed()/2);
         }
     }
 

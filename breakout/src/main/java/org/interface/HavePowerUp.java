@@ -1,5 +1,6 @@
 package org.openjfx;
 
+
 public interface HavePowerUp {
     
     public boolean isActive();

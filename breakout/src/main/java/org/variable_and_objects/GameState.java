@@ -13,4 +13,5 @@ public class GameState {
     static boolean isSelectingNiv = false;
     static boolean isGameStarted = false;
     static boolean isGameOver = false;
+    static boolean isSettingOpen = false;
 }
