@@ -1,5 +1,6 @@
 package org.openjfx;
 
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 /**
@@ -25,6 +26,7 @@ public class BrickRouge extends Brick{
 
 
     private final int score;
+    public Image imageRouge;
 
     /**
      * Constructeur d'une BrickRouge définie par plusieurs paramètres.
@@ -39,6 +41,7 @@ public class BrickRouge extends Brick{
         super(isNotBreak, brickWidth, brickHeight, powerup);
         this.score = 50;
         setHavePower(true);
+        this.imageRouge = new Image("file:src/main/resources/Bricks/Rouge.png");
 
     }
     
