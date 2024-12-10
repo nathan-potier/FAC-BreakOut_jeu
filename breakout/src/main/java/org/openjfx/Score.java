@@ -4,6 +4,36 @@ import java.io.*;
 import java.util.*;
 
 /**
+ * La classe Score permet de gérer les scores des joueurs et de les sauvegarder
+ * dans un fichier. Chaque pseudo de joueur est associé à une liste de scores,
+ * et les 5 meilleurs scores sont conservés.
+ * 
+ * <p>
+ * Cette classe offre des méthodes pour :
+ * </p>
+ * 
+ * <ul>
+ * <li>Sauvegarder un score pour un joueur avec {@link #saveScoreToFile(String, int)}.</li>
+ * <li>Récupérer tous les pseudos enregistrés avec {@link #getAllPseudos()}.</li>
+ * <li>Obtenir les scores associés à un pseudo avec {@link #getScoresForPseudo(String)}.</li>
+ * <li>Obtenir le meilleur score d'un joueur avec {@link #getBestScore(String)}.</li>
+ * <li>Obtenir l'ancien meilleur score d'un joueur avec {@link #getOldBestScoreForMessage(String, int)}.</li>
+ * <li>Obtenir les cinq derniers scores d'un joueur avec {@link #getLastFiveScores(String)}.</li>
+ * </ul>
+ * 
+ * <p>
+ * Le fichier de score est nommé <strong>scores.txt</strong>, et chaque ligne est
+ * structurée sous la forme <code>pseudo:score1,score2,...</code>.
+ * </p>
+ * 
+ * <p>
+ * Les méthodes auxiliaires permettent également de lire et d'écrire dans le fichier,
+ * et de convertir une chaîne de caractères représentant une liste de scores en une
+ * liste d'entiers.
+ * </p>
+ * 
+ * @author Nathan POTIER
+ * @version 1.0
  * Classe Score mise à jour avec chiffrement et déchiffrement des scores.
  */
 public class Score {
