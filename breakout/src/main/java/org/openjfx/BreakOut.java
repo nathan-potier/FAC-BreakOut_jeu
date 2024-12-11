@@ -540,7 +540,23 @@ public class BreakOut extends Application {
                     timeMU2 = 0;
                 }
             }
-        }
+
+
+            }
+
+            for (int i = 0; i < balles.size(); i++) {
+
+                if (balles.get(i).getXPos() <= 0 || balles.get(i).getXPos() >= width - Balle.getSize()) {
+                    if(balles.get(i).getXPos() <= 0){
+                        balles.get(i).setXpos(width - 20);
+                    }
+                    else{
+                        balles.get(i).setXpos(5);
+                    }
+                }
+
+            }
+
 
 
             for (int i = 0; i < balles.size(); i++) {
