@@ -179,6 +179,7 @@ class EventMouseClick implements EventTrigger{
                     FenetrePossible.f2.getNiv(NiveauPossible.gen);
 
                     FenetrePossible.f2.setVisible(true);
+                    BoutonListe.bJouer.enable();
                     
                 } 
                 else if (BoutonListe.bRetourSelec.estClique(clickX, clickY)){

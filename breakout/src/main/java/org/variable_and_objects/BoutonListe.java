@@ -46,7 +46,7 @@ public class BoutonListe{
     static Bouton bMouse = new Bouton(180, height - 130, 130, 20,"Souris: on");
     static Bouton bSetting = new Bouton(20, height - 80, 100, 40, "Settings");
 
-    static Bouton bMultijoueur = new Bouton(rectX - 100, rectY -160, rectWidth + 200, rectHeight, "Mode Multijoueur");
+
     static Bouton bRetourAuMode = new Bouton(rectX, rectY + 250, 100, 40, "Retour");
 
     static void makeBoutons(){
@@ -57,7 +57,7 @@ public class BoutonListe{
         
             x = rectXniveau + (i + 5 - 6) * (rectWidth + espacementHorizontalSelectNiv); // Position horizontale
             double y = rectYniveau + rectHeight + espacementVerticalSelectNiv; // Position verticale (sous la première ligne)
-            bouton = new Bouton(x, y, rectWidth+40, rectHeight, "Niveau " + i);
+            bouton = new Bouton(x, y, rectWidth+40, rectHeight, "Niveau " + (i+5));
             boutonsNiveaux.add(bouton);
 
         }

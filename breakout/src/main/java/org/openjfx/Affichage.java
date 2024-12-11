@@ -1,16 +1,16 @@
 package org.openjfx;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
-import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 
 /**
  * La classe Affichage est responsable de la gestion de l'affichage du jeu BreakOut.
@@ -486,7 +486,6 @@ public class Affichage {
         afficherBoutonJouer(gc, experimental);
         afficherBoutonJouer(gc, perso);
         afficherBoutonJouer(gc, création);
-        afficherBoutonJouer(gc, multijoueur);
         retour.afficher(gc);    
     }
 
