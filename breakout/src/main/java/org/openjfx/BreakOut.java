@@ -124,8 +124,7 @@ public class BreakOut extends Application {
             else
             if (GameState.isGameStarted && NiveauActuel.niv.finDeJeu()){
                 GameState.isGameStarted = false;
-                GameState.isGameOver
- = NiveauActuel.niv.finDeJeu();
+                GameState.isGameOver = NiveauActuel.niv.finDeJeu();
             }
             else
             if(GameState.isGameOver){
@@ -269,8 +268,7 @@ public class BreakOut extends Application {
     
     
                 if (NiveauActuel.nbBalle == 0){
-                    GameState.isGameOver
-     = true; 
+                    GameState.isGameOver = true; 
                     GameState.isGameStarted = false; // Fin de la partie
                     Score.saveScoreToFile(Pseudo.getPseudo(), NiveauActuel.score);
                     bestScore = Score.getBestScore(Pseudo.getPseudo()); // Mettre à jour le meilleur score
