@@ -1,9 +1,8 @@
 package org.openjfx;
 
 
-import javafx.scene.canvas.GraphicsContext;
-
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 
 class EventMouseClick implements EventTrigger{
 
@@ -94,12 +93,16 @@ class EventMouseClick implements EventTrigger{
                     GameState.isGameStarted = true; //Rejouer le jeu
                     GameState.isGameOver = false;   //sans retourner au menu principal
                     Son.jouerMusique();
+                    GameState.isSettingOpen = false;
                 }else if(BoutonListe.bChangerModeJeu.estClique(clickX, clickY)){
                     NiveauActuel.resetGame(gc);
                     GameState.isSelectingMode = true; //retourner sur la selection de mode
                 }else if(BoutonListe.bRetour.estClique(clickX, clickY)){
                     NiveauActuel.resetGame(gc); //Réinitialise le jeu -> retour au menu
                     Son.jouerMusique(); // Rejoue de la music
+                    BoutonListe.bJouer.enable();
+                    GameState.isSettingOpen = false;
+
                 }else if (BoutonListe.bSetting.estClique(clickX, clickY)) { //bouton "Settings" à la fin de jeu 
                     GameState.isSettingOpen = !GameState.isSettingOpen; //l'affichage du rectangle
                 }
@@ -108,6 +111,7 @@ class EventMouseClick implements EventTrigger{
                 GameState.isSelectingMode = true;
                 Affichage.enregistrerPseudo();  // Stocker le pseudo avant de commencer
                 GameState.isSettingOpen = false; 
+                BoutonListe.bJouer.disable();
 
 
             //confirme un input sur le bouton "Mode classique" ou "Mode expérimental"
@@ -163,6 +167,7 @@ class EventMouseClick implements EventTrigger{
                     GameState.isGameOver && BoutonListe.bRetourSelec.estClique(clickX, clickY))){
                 GameState.isSelectingMode = false;
                 GameState.isGameOver = false;
+                BoutonListe.bJouer.enable();
             }else if(!GameState.isCreatingNiv && !GameState.isGameStarted && !NiveauActuel.type && BoutonListe.bRecommencer.estClique(clickX, clickY)){
                 NiveauActuel.resetGame(gc);
                 GameState.isGameStarted = true;
@@ -178,6 +183,7 @@ class EventMouseClick implements EventTrigger{
                 } 
                 else if (BoutonListe.bRetourSelec.estClique(clickX, clickY)){
                     GameState.isCreatingNiv = false;
+                    BoutonListe.bJouer.enable();
 
                 }
                 else{
