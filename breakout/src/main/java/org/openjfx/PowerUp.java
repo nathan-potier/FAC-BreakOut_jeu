@@ -115,7 +115,7 @@ public class PowerUp {
      */
     public static PowerUp randomPU(double x ,double y){
         Random r = new Random();
-        double z = r.nextInt(5);
+        double z = r.nextInt(6);
         if(z == 0){
             return new MoreBall(x,y, false);
         }else if(z == 1){
@@ -124,8 +124,10 @@ public class PowerUp {
             return new MoreBallSize(x, y, false);
         }else if (z==3){
             return new MalusBallSpeed(x, y, true);
-        }else{
+        }else if (z==4){
             return new MalusRacket(x, y, true);
+        }else{
+            return new TpBalle(x, y, false);
         }
     }
 

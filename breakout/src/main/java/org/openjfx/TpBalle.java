@@ -9,8 +9,7 @@ public class TpBalle extends PowerUp{
 
     @Override
     public void applyEffect(){
-        
-        
+        BreakOut.wallOpen = true;
 
     }
 }

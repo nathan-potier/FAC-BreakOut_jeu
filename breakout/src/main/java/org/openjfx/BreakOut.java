@@ -57,6 +57,8 @@ public class BreakOut extends Application {
     private static double  timePU2 = 0;
     private static double timeMU1 = 0;
     private static double timeMU2 = 0;
+    private static double timePU4 = 0;
+    public static boolean wallOpen = false;
     public static int nbBalle = 1;
     private final Balle balle1 = new Balle(BreakOut.getWidth() / 2,BreakOut.getHeight() / 2);
     
@@ -543,7 +545,8 @@ public class BreakOut extends Application {
 
 
             }
-
+            if (wallOpen){
+                timePU4++;
             for (int i = 0; i < balles.size(); i++) {
 
                 if (balles.get(i).getXPos() <= 0 || balles.get(i).getXPos() >= width - Balle.getSize()) {
@@ -555,6 +558,11 @@ public class BreakOut extends Application {
                     }
                 }
 
+            }
+            if (timePU4>=700){
+                timePU4 =0;
+                wallOpen = false;
+            }
             }
 
 
