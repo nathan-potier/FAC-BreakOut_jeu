@@ -95,7 +95,7 @@ public class BreakOut extends Application {
 
     //Réinitialise l'état du jeu pour recommencer une nouvelle partie
     private void resetGame(GraphicsContext gc){
-
+        wallOpen = false;
         this.gameOver = false;
         this.gameStarted = false;
         this.score = 0;
