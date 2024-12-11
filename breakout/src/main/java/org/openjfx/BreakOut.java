@@ -224,13 +224,6 @@ public class BreakOut extends Application {
                     //Son.toggleMute(); // Changer l'état muet
                 }
             }
-            
-            //confirme un input sur le bouton "Mode multijoueur"
-            if (!modeCréation && !gameStarted && modeSelection && BoutonListe.bMultijoueur.estClique(clickX, clickY)){
-                modeSelection = false;
-                modeMulti = true;
-                selectionNiveaux = true;
-            }
 
             if(gameOver){
                 if(BoutonListe.bRejouer.estClique(clickX, clickY)){
@@ -446,7 +439,7 @@ public class BreakOut extends Application {
             }else 
             if (modeSelection){
 
-                Affichage.affichageMenuSelection(gc, BoutonListe.bClassique, BoutonListe.bExperimental, BoutonListe.bPerso, BoutonListe.bCréation, BoutonListe.bMultijoueur, BoutonListe.bRetourSelec);
+                Affichage.affichageMenuSelection(gc, BoutonListe.bClassique, BoutonListe.bExperimental, BoutonListe.bPerso, BoutonListe.bCréation, BoutonListe.bRetourSelec);
                 if (n.getPath() != null && n.getOuvert()){
                     bricks = niv.makeNiveau();
                     if (bricks == null){
