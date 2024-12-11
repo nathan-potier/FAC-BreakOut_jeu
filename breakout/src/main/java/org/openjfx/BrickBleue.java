@@ -1,8 +1,7 @@
 package org.openjfx;
 
-import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 
 /**
@@ -41,7 +40,12 @@ public class BrickBleue extends Brick{
         super(isNotBreak, brickWidth, brickHeight, powerup);
         this.score = 10;
         setHavePower(false);
-        this.imageBleue = new Image("file:src/main/resources/Bricks/Bleue.png"); // Chemin vers votre image
+        try {
+            this.imageBleue = new Image("file:src/main/resources/Bricks/Bleue.png"); // Chemin vers votre image
+
+        } catch (Exception e) {
+            System.out.print("cela ne marche pas");
+        }
         
 
     }

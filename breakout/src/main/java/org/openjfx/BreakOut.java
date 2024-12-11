@@ -15,9 +15,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -325,6 +322,8 @@ public class BreakOut extends Application {
                     f2.getNiv(gen);
 
                     f2.setVisible(true);
+                    BoutonListe.bJouer.enable();
+
                     
                 } 
                 else if (BoutonListe.bRetourSelec.estClique(clickX, clickY)){

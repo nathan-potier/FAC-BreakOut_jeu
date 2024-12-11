@@ -44,7 +44,12 @@ public class BrickDouble extends Brick {
         this.score = 30;
         this.nbrVie = 1;
         setHavePower(true);
-        this.imageVerte = new Image("file:src/main/resources/Bricks/Verte.png"); // Chemin vers l'image de la brique verte
+        try {
+            this.imageVerte = new Image("file:src/main/resources/Bricks/Verte.png"); // Chemin vers l'image de la brique verte
+
+        } catch (Exception e) {
+            System.out.print("cela ne marche pas");
+        }
     }
 
     /**
