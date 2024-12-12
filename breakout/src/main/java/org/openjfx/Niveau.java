@@ -198,7 +198,7 @@ public class Niveau {
                         gc.drawImage(brickBleue.imageBleue, brickX, brickY + 20, imageWidth, imageHeight);
                     }else if (tabBrick[i][j] instanceof BrickDouble) {
                         BrickDouble brickDouble = (BrickDouble) tabBrick[i][j];
-                        gc.drawImage(brickDouble.imageVerte, brickX, brickY + 20, imageWidth, imageHeight);
+                        gc.drawImage(brickDouble.imageAct, brickX, brickY + 20, imageWidth, imageHeight);
                     }else if (tabBrick[i][j] instanceof BrickRouge) {
                         BrickRouge brickRouge = (BrickRouge) tabBrick[i][j];
                         gc.drawImage(brickRouge.imageRouge, brickX, brickY + 20, imageWidth, imageHeight);

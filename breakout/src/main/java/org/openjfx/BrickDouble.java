@@ -29,6 +29,7 @@ public class BrickDouble extends Brick {
 
     private int nbrVie;
     private final int score;
+    public Image imageAct;
     public Image imageVerte;
     public Image imageVerte2;
 
@@ -45,8 +46,13 @@ public class BrickDouble extends Brick {
         this.score = 30;
         this.nbrVie = 1;
         setHavePower(true);
+        initialiserImage();
+        this.imageAct = imageVerte;
+    }
+
+    public void initialiserImage(){
         try {
-            this.imageVerte = new Image("file:src/main/resources/Bricks/Verte.png"); // Chemin vers l'image de la brique verte
+            this.imageVerte = new Image("file:src/main/resources/Bricks/Verte.png");
             this.imageVerte2 = new Image("file:src/main/resources/Bricks/Verte2.png");
 
 
@@ -92,7 +98,10 @@ public class BrickDouble extends Brick {
 
         // Change l'image lorsque la vie passe à 0
         if (this.nbrVie == 0) {
-            this.imageVerte = this.imageVerte2;
+            this.imageAct = this.imageVerte2;
+        }
+        if(nbrVie == 1){
+            this.imageAct = this.imageVerte;
         }
     }
 
