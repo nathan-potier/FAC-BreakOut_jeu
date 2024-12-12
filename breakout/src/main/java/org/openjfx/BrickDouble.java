@@ -30,6 +30,7 @@ public class BrickDouble extends Brick {
     private int nbrVie;
     private final int score;
     public Image imageVerte;
+    public Image imageVerte2;
 
     /**
      * Constructeur d'une BrickDouble définie par plusieurs paramètres.
@@ -46,6 +47,8 @@ public class BrickDouble extends Brick {
         setHavePower(true);
         try {
             this.imageVerte = new Image("file:src/main/resources/Bricks/Verte.png"); // Chemin vers l'image de la brique verte
+            this.imageVerte2 = new Image("file:src/main/resources/Bricks/Verte2.png");
+
 
         } catch (Exception e) {
             System.out.print("cela ne marche pas");
@@ -86,6 +89,11 @@ public class BrickDouble extends Brick {
      */
     public void setNbrVie(int nbrVie) {
         this.nbrVie = nbrVie;
+
+        // Change l'image lorsque la vie passe à 0
+        if (this.nbrVie == 0) {
+            this.imageVerte = this.imageVerte2;
+        }
     }
 
 
