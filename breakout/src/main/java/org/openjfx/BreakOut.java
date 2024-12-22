@@ -1,11 +1,7 @@
 package org.openjfx;
 
-
-
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -17,8 +13,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-
 
 public class BreakOut extends Application {
 
@@ -71,27 +65,16 @@ public class BreakOut extends Application {
     double rectYniveau = (height - rectHeight * 2 - espacementVerticalSelectNiv) / 2;
 
     private List<Bouton> boutonsNiveaux;
-    
     private FenetrePerso f1;
     private FenetreEditeur f2;
-
     private boolean drawSettingsRectangle = false;
-
-
-
-    
-
 
     private boolean gameOver = false;
     private boolean ouvert = false;
 
-
-
-
     public static int getWidth(){ return width; }
     public static int getHeight(){ return height; }
     public static String getTitre(){ return GAME_TITLE; }
-
 
     //Réinitialise l'état du jeu pour recommencer une nouvelle partie
     private void resetGame(GraphicsContext gc){
@@ -106,15 +89,11 @@ public class BreakOut extends Application {
         Son.rejouerMusique();
         Affichage.afficherDefFont(gc);
     }
-    
-
 
     @Override
     public void start(Stage stage) throws Exception {
-
         Canvas canvas = new Canvas(width, height);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        
         //Initialiser les boutons de niveaux
         boutonsNiveaux = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
@@ -128,13 +107,10 @@ public class BreakOut extends Application {
             Bouton bouton = new Bouton(x, y, rectWidth+40, rectHeight, "Niveau " + i);
             boutonsNiveaux.add(bouton);
         }
- 
 
         // Initialiser la fenetre personnalisé
-        
         f1 = new FenetrePerso(n);
         f2 = new FenetreEditeur();
-
 
         Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run(gc)));
 		tl.setCycleCount(Timeline.INDEFINITE);
@@ -142,7 +118,6 @@ public class BreakOut extends Application {
 		canvas.setOnMouseMoved(e ->{
             double mouseX = e.getX();
             double mouseY = e.getY();
-
             for (Bouton bouton : Bouton.getAllButtons()) {
                 bouton.setHover(bouton.isHover(mouseX, mouseY));
             }
@@ -201,7 +176,6 @@ public class BreakOut extends Application {
                     }
                 }
             }
-        
              //Paramètres de clic du bouton muet
              if (BoutonListe.bMute.estClique(clickX, clickY)) {
                 if(!Son.isMuted()){
@@ -253,8 +227,6 @@ public class BreakOut extends Application {
                 drawSettingsRectangle = false; 
                 BoutonListe.bJouer.disable();
                 BoutonListe.bSetting.disable();
-
-
             //confirme un input sur le bouton "Mode classique" ou "Mode expérimental"
             }else if(!modeCréation && !gameStarted && !finDeJeu && modeSelection && BoutonListe.bClassique.estClique(clickX, clickY)){
                 modeSelection = false;
@@ -288,7 +260,6 @@ public class BreakOut extends Application {
                     }
                 }
             }
-
             //confirme un input sur le bouton Personnalisé
             else if(!modeCréation && !gameStarted && modeSelection && BoutonListe.bPerso.estClique(clickX, clickY)){
                 niv = n;
@@ -312,15 +283,11 @@ public class BreakOut extends Application {
                 niv.resetBrick();
             }
             else if(!gameStarted && modeCréation){
-
                 if (BoutonListe.bEnregistrer.estClique(clickX, clickY)){
                     f2.getNiv(gen);
-
                     f2.setVisible(true);
                     BoutonListe.bJouer.enable();
                     BoutonListe.bSetting.enable();
-
-                    
                 } 
                 else if (BoutonListe.bRetourSelec.estClique(clickX, clickY)){
                     modeCréation = false;
@@ -330,33 +297,23 @@ public class BreakOut extends Application {
                     gen.genNiveau(clickX, clickY);
                 }
             }
-            
-
-
-
             // Vérifier si le bouton Settings a été cliqué
             if (!gameStarted && !gameOver && BoutonListe.bSetting.estClique(clickX, clickY)) {
                 drawSettingsRectangle = !drawSettingsRectangle; // Pour ouvrir et fermer les parametres
             }
 
         });
-
         Son.initBackgroundMusic();//Initialiser la music 
         Son.initPaddleBoundSound(); //Initialiser le son de rebond de balle
         Son.initBrickBreakSound(); // Initialiser le son des briques cassées
         balles.add(balle1);// Ajout de la balle initiale a la liste
-        
         canvas.setFocusTraversable(true);
         canvas.requestFocus();
         canvas.setOnKeyPressed(e -> {
-
-        
             // Gestion de la saisie du pseudo
             if (!Pseudo.estDef()) {
                 Affichage.handleKeyPress(e); // Appel de la méthode pour la gestion du pseudo
-                
             }
-        
             // Événement du clavier pour mettre le jeu en pause avec la touche ESC
             if (isKeyboardMode || (isMouseMode && isKeyboardMode)) {
                 if (gameStarted && e.getCode() == KeyCode.ESCAPE) {
@@ -375,41 +332,25 @@ public class BreakOut extends Application {
                 }
             }
         });
-        
 
         stage.setWidth(width);
         stage.setHeight(height);
         stage.setTitle("Breakout");
         stage.setScene(new Scene(new StackPane(canvas)));
         stage.setResizable(false);
-
-            
-
-        // Charger le meilleur score au début
-        bestScore = Score.getBestScore(Pseudo.getPseudo());
-
-       
-
+        bestScore = Score.getBestScore(Pseudo.getPseudo()); // Charger le meilleur score au début
         stage.show();
         tl.play();
     }
-    
 
-    
     private void run(GraphicsContext gc) {
-
         //Si en mode Pause,le jeu s'arrete mais pas revenir le page de menu principal
         if (isPaused) {
             Affichage.afficherBoutonPause(gc,BoutonListe.bPause);  // S'arrete le jeu
             return;  
         }        
-
         Affichage.setGC(gc);
-
-        
-        if (f1.isActive() || (f2 != null && f2.isActive())){
-
-        }
+        if (f1.isActive() || (f2 != null && f2.isActive())){return;}
         else{
             if (modeCréation){
                 gen.afficheNiveau(gc);
@@ -458,25 +399,17 @@ public class BreakOut extends Application {
                 }
             }else if(selectionNiveaux){
                 Affichage.affichageSelectionNiveaux(gc, boutonsNiveaux, BoutonListe.bRetourAuMode);
-
             }else if (gameStarted && !niv.finDeJeu()) {
                 if (!Son.musiqueEnCours()) { // Rejouer la music pendant que le jeu en cours
                     Son.jouerMusique();
                 }
                 gc.fillText("Score: " + score, width / 2, height / 2);
-
-                Affichage.afficherBoutonMute(gc, BoutonListe.bMute); // afficher le bouton
+                Affichage.afficherBoutonMute(gc, BoutonListe.bMute);
                 Affichage.afficherBoutonPause(gc, BoutonListe.bPause);
-
                 Affichage.afficheBalles(gc, balles);
-    
-
-                // Dessiner les briques
-                niv.afficheNiveau(gc);
-            
+                niv.afficheNiveau(gc);// Dessiner les briques
                 // Détection de collision avec les briques et incrémente le score
                 score += Collision.checkCollision(balles, niv);
-
             //actualisation powerUp
             for (int i = 0; i < brickRows; i++) {
                 for (int j = 0; j < brickCols; j++) {
@@ -499,8 +432,6 @@ public class BreakOut extends Application {
                             if(bricks[i][j].getPowerUp().getPuy() > Racket.getYPos() +10){
                                 bricks[i][j].getPowerUp().setTombe(false);
                             }
-                        
-    
                         }
                     }
                     
@@ -508,7 +439,6 @@ public class BreakOut extends Application {
             }
             //verif powerUp BALLSIZE actif si oui augmente le temps passé
             timePU1 = balle1.updateTimer(timePU1);
-
             //Verif powerUp RacketSize actif si oui augmente le temps passé
             if (Racket.getWidth() > 100){
                 timePU2++;
@@ -516,9 +446,7 @@ public class BreakOut extends Application {
                     Racket.resetSize();
                     timePU2 = 0;
                 }
-
             }
-
             //verif Malus RacketSize actif si oui augmente le temps passé
             if (Racket.getWidth() < 100){
                 timeMU1++;
@@ -526,19 +454,16 @@ public class BreakOut extends Application {
                     Racket.resetSize();
                     timeMU1 = 0;
                 }
-
             }
             //verif Malus BALLSPEED actif si oui augmente le temps passé
             for (int i = 0; i < balles.size(); i++) {
-            if (balles.get(i).getXSpeed() > 3){
-                timeMU2++;
-                if (timeMU2 >= 700){
-                    Balle.resetSpeed();
-                    timeMU2 = 0;
+                if (balles.get(i).getXSpeed() > 3){
+                    timeMU2++;
+                    if (timeMU2 >= 700){
+                        Balle.resetSpeed();
+                        timeMU2 = 0;
+                    }
                 }
-            }
-
-
             }
             if (wallOpen){
                 timePU4++;
@@ -552,43 +477,30 @@ public class BreakOut extends Application {
                         balles.get(i).setXpos(5);
                     }
                 }
-
             }
             if (timePU4>=700){
                 timePU4 =0;
                 wallOpen = false;
             }
             }
-
-
-
             for (int i = 0; i < balles.size(); i++) {
-                
-            
                 // Collision avec les murs
                 if (balles.get(i).getXPos() <= 0 || balles.get(i).getXPos() >= width - Balle.getSize()) {
                     balles.get(i).rebondHorizontal();
                 }
-    
                 if (balles.get(i).getYPos() <= 20) {
                     balles.get(i).rebondVertical();
                 }
-    
-    
                 // Collision avec la raquette
                 if (balles.get(i).getYPos() + Balle.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
                     balles.get(i).getXPos() + Balle.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
                     balles.get(i).getXPos() <= Racket.getXPos() + Racket.getWidth() / 2 && balles.get(i).getYSpeed() > 0){
-    
                     balles.get(i).rebondSurRaquette(Racket.getXPos(), Racket.getWidth());
-                     
                     // Jouer le son de rebond de balle
                     Son.stopSonRebond();
                     Son.jouerSonRebond();
                 }
-    
                 }
-
                 for (int i = 0; i < balles.size(); i++) {
                     if (balles.get(i).getYPos() > Racket.getYPos()){
                         nbBalle = nbBalle -1;
@@ -596,27 +508,19 @@ public class BreakOut extends Application {
                     
                     }
                 }
-    
-    
                 if (nbBalle == 0){
                     gameOver = true; 
                     gameStarted = false; // Fin de la partie
                     Score.saveScoreToFile(Pseudo.getPseudo(), score);
                     bestScore = Score.getBestScore(Pseudo.getPseudo()); // Mettre à jour le meilleur score
-    
-
                 }
                 gc.setFill(Color.YELLOW);
                 gc.fillRect(Racket.getXPos() - Racket.getWidth() / 2,
                 Racket.getYPos() - Racket.getHeight() / 2,
                 Racket.getWidth(), Racket.getHeight());
-
             }else {
-
                 Affichage.afficherMenuPrincipal(gc, BoutonListe.bJouer, BoutonListe.bSetting, drawSettingsRectangle);
-               
             }
-
             if (drawSettingsRectangle) {
                 Affichage.dessinerRectangle(gc, BoutonListe.bSetting);
                 Affichage.afficherBoutonToggleBackgroundMusic(gc, BoutonListe.bToggleBackgroundMusic);//Affiche dans le boutonSetting
@@ -628,9 +532,6 @@ public class BreakOut extends Application {
             
         }        
     }
-
-    
-
     public static void main(String[] args) {
         launch(args);
     }
