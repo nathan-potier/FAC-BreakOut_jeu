@@ -292,6 +292,7 @@ public class BreakOut extends Application {
                 else if (BoutonListe.bRetourSelec.estClique(clickX, clickY)){
                     modeCréation = false;
                     BoutonListe.bJouer.enable();
+                    BoutonListe.bSetting.enable();
                 }
                 else{
                     gen.genNiveau(clickX, clickY);
