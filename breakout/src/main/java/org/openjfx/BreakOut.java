@@ -159,25 +159,25 @@ public class BreakOut extends Application {
                 // Gérer le basculement entre le mode souris et le mode clavier
                 if (BoutonListe.bMouse.estClique(clickX, clickY)) {
                     // Basculer l'état du mode souris
-                    isMouseMode = !isMouseMode;// Inverser l'état du mode souris
-                    BoutonListe.bMouse.setText(isMouseMode ? "Souris: on" : "Souris: off");// Définir le texte en fonction de l'état
+                    isMouseMode = !isMouseMode; // Inverser l'état du mode souris
+                    // Si les deux modes sont off, réactiver le mode clavier
+                    if (!isMouseMode && !isKeyboardMode) {
+                        isKeyboardMode = true;
+                        BoutonListe.bKeyboard.setText("Clavier: on");
+                    }
+                    BoutonListe.bMouse.setText(isMouseMode ? "Souris: on" : "Souris: off");
                 }
+
                 if (BoutonListe.bKeyboard.estClique(clickX, clickY)) {
                     // Basculer l'état du mode clavier
-                    isKeyboardMode=!isKeyboardMode;// Inverser l'état du mode clavier
-                    BoutonListe.bKeyboard.setText(isKeyboardMode ? "Clavier: on" : "Clavier: off");// Définir le texte en fonction de l'état
-                }                
-
-                if (BoutonListe.bToggleBackgroundMusic.estClique(clickX, clickY)) {
-                    // Basculer la musique de fond
-                    if (Son.isBackgroundMusicOn()) {
-                        Son.setBackgroundMusicOn(false);  // Arrêter la musique de fond
-                        BoutonListe.bToggleBackgroundMusic.setText("BackgroundMusic: off");
-                    } else {
-                        Son.setBackgroundMusicOn(true); // Démarrer la musique de fond
-                        BoutonListe.bToggleBackgroundMusic.setText("BackgroundMusic: on");
+                    isKeyboardMode = !isKeyboardMode; // Inverser l'état du mode clavier
+                    // Si les deux modes sont off, réactiver le mode souris
+                    if (!isMouseMode && !isKeyboardMode) {
+                        isMouseMode = true;
+                        BoutonListe.bMouse.setText("Souris: on");
                     }
-                }
+                    BoutonListe.bKeyboard.setText(isKeyboardMode ? "Clavier: on" : "Clavier: off");
+                }     
                 
                 if (BoutonListe.bToggleCollisionSound.estClique(clickX, clickY)) {
                     // Basculer le son de collision
@@ -226,15 +226,18 @@ public class BreakOut extends Application {
             }
 
             if(gameOver){
+                BoutonListe.bSetting.enable();
                 if(BoutonListe.bRejouer.estClique(clickX, clickY)){
                     resetGame(gc);
                     gameStarted = true; //Rejouer le jeu
                     gameOver = false;   //sans retourner au menu principal
                     Son.jouerMusique();
                     drawSettingsRectangle = false;
+                    BoutonListe.bSetting.disable();
                 }else if(BoutonListe.bChangerModeJeu.estClique(clickX, clickY)){
                     resetGame(gc);
                     modeSelection = true; //retourner sur la selection de mode
+                    drawSettingsRectangle = false;
                 }else if(BoutonListe.bRetour.estClique(clickX, clickY)){
                     resetGame(gc); //Réinitialise le jeu -> retour au menu
                     Son.jouerMusique(); // Rejoue de la music
@@ -249,6 +252,7 @@ public class BreakOut extends Application {
                 Affichage.enregistrerPseudo();  // Stocker le pseudo avant de commencer
                 drawSettingsRectangle = false; 
                 BoutonListe.bJouer.disable();
+                BoutonListe.bSetting.disable();
 
 
             //confirme un input sur le bouton "Mode classique" ou "Mode expérimental"
@@ -295,15 +299,13 @@ public class BreakOut extends Application {
                 modeSelection = false;
                 modeCréation = true;
                 brickRows = gen.getBrickRows();
-                gen.setOuvert(true);
-    
+                gen.setOuvert(true);    
 
-            }else if(!modeCréation && !gameStarted && 
-                    ((modeSelection && BoutonListe.bRetourSelec.estClique(clickX, clickY))||
-                    finDeJeu && BoutonListe.bRetourSelec.estClique(clickX, clickY))){
+            }else if(!modeCréation && !gameStarted && ((modeSelection && BoutonListe.bRetourSelec.estClique(clickX, clickY)) || finDeJeu && BoutonListe.bRetourSelec.estClique(clickX, clickY))){
                 modeSelection = false;
                 finDeJeu = false;
                 BoutonListe.bJouer.enable();
+                BoutonListe.bSetting.enable();
             }else if(!modeCréation && !gameStarted && !type && BoutonListe.bRecommencer.estClique(clickX, clickY)){
                 resetGame(gc);
                 gameStarted = true;
@@ -316,6 +318,7 @@ public class BreakOut extends Application {
 
                     f2.setVisible(true);
                     BoutonListe.bJouer.enable();
+                    BoutonListe.bSetting.enable();
 
                     
                 } 
