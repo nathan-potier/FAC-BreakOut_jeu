@@ -481,7 +481,7 @@ public class Affichage {
     }
 
     //menu selection mode classique ou personnalisé
-    public static void affichageMenuSelection(GraphicsContext gc, Bouton classique, Bouton experimental, Bouton perso, Bouton création, Bouton multijoueur, Bouton retour){ 
+    public static void affichageMenuSelection(GraphicsContext gc, Bouton classique, Bouton experimental, Bouton perso, Bouton création, Bouton retour){ 
         afficherBoutonJouer(gc, classique);
         afficherBoutonJouer(gc, experimental);
         afficherBoutonJouer(gc, perso);

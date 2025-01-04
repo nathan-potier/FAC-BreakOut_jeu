@@ -108,6 +108,8 @@ public class Balle implements HavePowerUp{
      */
     public double getXPos(){ return this.ballXPos; }
 
+    public void setXpos(double ballXPos){ this.ballXPos = ballXPos;}
+
     /**
      * Retourne la position en Y de la balle.
      * 
@@ -255,9 +257,9 @@ public class Balle implements HavePowerUp{
      */
     public static boolean isTouching(Balle balle, Brick brick, double brickX, double brickY){
          return balle.getXPos() + Balle.getSize() >= brickX &&
-                            balle.getXPos() <= brickX + brick.getWidth() &&
-                            balle.getYPos() + Balle.getSize() >= brickY + 5 &&
-                            balle.getYPos() <= brickY + brick.getHeight() + 5;
+                            balle.getXPos() <= brickX + brick.getWidth() + 15 &&
+                            balle.getYPos() + Balle.getSize() >= brickY + 20 &&
+                            balle.getYPos() <= brickY + brick.getHeight() + 20;
     }
 
 

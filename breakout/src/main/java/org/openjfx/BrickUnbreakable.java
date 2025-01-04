@@ -39,7 +39,12 @@ public class BrickUnbreakable extends Brick{
         super(isNotBreak, brickWidth, brickHeight, powerup);
         this.score = 10;
         setHavePower(false);
-        this.imageUnbreakable = new Image("file:src/main/resources/Bricks/Incassable.png"); // Chemin vers l'image de la brique incassable
+        try {
+            this.imageUnbreakable = new Image("file:src/main/resources/Bricks/Incassable.png"); // Chemin vers l'image de la brique incassable
+
+        } catch (Exception e) {
+            System.out.print("cela ne marche pas");
+        }
         
 
     }

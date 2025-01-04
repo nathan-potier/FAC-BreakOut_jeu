@@ -41,7 +41,12 @@ public class BrickRouge extends Brick{
         super(isNotBreak, brickWidth, brickHeight, powerup);
         this.score = 50;
         setHavePower(true);
-        this.imageRouge = new Image("file:src/main/resources/Bricks/Rouge.png");
+        try {
+            this.imageRouge = new Image("file:src/main/resources/Bricks/Rouge.png");
+
+        } catch (Exception e) {
+            System.out.print("cela ne marche pas");
+        }
 
     }
     

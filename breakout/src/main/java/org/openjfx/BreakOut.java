@@ -11,8 +11,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-
-
 public class BreakOut extends Application {
 
 
@@ -21,9 +19,6 @@ public class BreakOut extends Application {
 
 
     private boolean ouvert = false;
-
-
-
 
     public static int getWidth(){ return GameSpec.width; }
     public static int getHeight(){ return GameSpec.height; }
@@ -36,7 +31,6 @@ public class BreakOut extends Application {
 
         Canvas canvas = new Canvas(GameSpec.width, GameSpec.height);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        
         //Initialiser les boutons de niveaux
         
  
@@ -69,28 +63,17 @@ public class BreakOut extends Application {
         stage.setTitle("Breakout");
         stage.setScene(new Scene(new StackPane(canvas)));
         stage.setResizable(false);
-
-            
-
-        // Charger le meilleur score au début
-        bestScore = Score.getBestScore(Pseudo.getPseudo());
-
-       
-
+        bestScore = Score.getBestScore(Pseudo.getPseudo()); // Charger le meilleur score au début
         stage.show();
         tl.play();
     }
-    
 
-    
     private void run(GraphicsContext gc) {
-
         //Si en mode Pause,le jeu s'arrete mais pas revenir le page de menu principal
         if (GameState.isPaused) {
             Affichage.afficherBoutonPause(gc,BoutonListe.bPause);  // S'arrete le jeu
             return;  
         }        
-
         Affichage.setGC(gc);
 
         
@@ -151,13 +134,8 @@ public class BreakOut extends Application {
 
                 Affichage.afficherBoutonMute(gc, BoutonListe.bMute); // afficher le bouton
                 Affichage.afficherBoutonPause(gc, BoutonListe.bPause);
-
                 Affichage.afficheBalles(gc, NiveauActuel.balles);
-    
-
-                // Dessiner les briques
-                NiveauActuel.niv.afficheNiveau(gc);
-            
+                NiveauActuel.niv.afficheNiveau(gc);// Dessiner les briques
                 // Détection de collision avec les briques et incrémente le score
                 NiveauActuel.score += Collision.checkCollision(NiveauActuel.balles, NiveauActuel.niv);
 
@@ -183,8 +161,6 @@ public class BreakOut extends Application {
                             if(NiveauActuel.tabBrick[i][j].getPowerUp().getPuy() > Racket.getYPos() +10){
                                 NiveauActuel.tabBrick[i][j].getPowerUp().setTombe(false);
                             }
-                        
-    
                         }
                     }
                     
@@ -200,9 +176,7 @@ public class BreakOut extends Application {
                     Racket.resetSize();
                     TimerListe.timePU2 = 0;
                 }
-
             }
-
             //verif Malus RacketSize actif si oui augmente le temps passé
             if (Racket.getWidth() < 100){
                 TimerListe.timeMU1++;
@@ -210,23 +184,36 @@ public class BreakOut extends Application {
                     Racket.resetSize();
                     TimerListe.timeMU1 = 0;
                 }
-
             }
             //verif Malus BALLSPEED actif si oui augmente le temps passé
             for (int i = 0; i < NiveauActuel.balles.size(); i++) {
-            if (NiveauActuel.balles.get(i).getXSpeed() > 3){
-                TimerListe.timeMU2++;
-                if (TimerListe.timeMU2 >= 700){
-                    Balle.resetSpeed();
-                    TimerListe.timeMU2 = 0;
+                if (NiveauActuel.balles.get(i).getXSpeed() > 3){
+                    TimerListe.timeMU2++;
+                    if (TimerListe.timeMU2 >= 700){
+                        Balle.resetSpeed();
+                        TimerListe.timeMU2 = 0;
+                    }
                 }
             }
-        }
-
-
+            if (GameState.wallOpen){
+                TimerListe.timePU4++;
             for (int i = 0; i < NiveauActuel.balles.size(); i++) {
-                
-            
+
+                if (balles.get(i).getXPos() <= 0 || balles.get(i).getXPos() >= width - Balle.getSize()) {
+                    if(balles.get(i).getXPos() <= 0){
+                        balles.get(i).setXpos(width - 20);
+                    }
+                    else{
+                        balles.get(i).setXpos(5);
+                    }
+                }
+            }
+            if (TimerList.timePU4>=700){
+                TimerList.timePU4 =0;
+                GameState.wallOpen = false;
+            }
+            }
+            for (int i = 0; i < balles.size(); i++) {
                 // Collision avec les murs
                 if (NiveauActuel.balles.get(i).getXPos() <= 0 || NiveauActuel.balles.get(i).getXPos() >= GameSpec.width - Balle.getSize()) {
                     NiveauActuel.balles.get(i).rebondHorizontal();
@@ -235,8 +222,6 @@ public class BreakOut extends Application {
                 if (NiveauActuel.balles.get(i).getYPos() <= 0) {
                     NiveauActuel.balles.get(i).rebondVertical();
                 }
-    
-    
                 // Collision avec la raquette
                 if (NiveauActuel.balles.get(i).getYPos() + Balle.getSize() >= Racket.getYPos() - Racket.getHeight() /2 &&
                     NiveauActuel.balles.get(i).getXPos() + Balle.getSize() >= Racket.getXPos() - Racket.getWidth() / 2 &&
@@ -248,7 +233,6 @@ public class BreakOut extends Application {
                     Son.stopSonRebond();
                     Son.jouerSonRebond();
                 }
-    
                 }
 
                 for (int i = 0; i < NiveauActuel.balles.size(); i++) {
@@ -265,14 +249,11 @@ public class BreakOut extends Application {
                     GameState.isGameStarted = false; // Fin de la partie
                     Score.saveScoreToFile(Pseudo.getPseudo(), NiveauActuel.score);
                     bestScore = Score.getBestScore(Pseudo.getPseudo()); // Mettre à jour le meilleur score
-    
-
                 }
                 gc.setFill(Color.YELLOW);
                 gc.fillRect(Racket.getXPos() - Racket.getWidth() / 2,
                 Racket.getYPos() - Racket.getHeight() / 2,
                 Racket.getWidth(), Racket.getHeight());
-
             }else {
 
                 Affichage.afficherMenuPrincipal(gc, BoutonListe.bJouer, BoutonListe.bSetting, GameState.isSettingOpen);
@@ -290,9 +271,6 @@ public class BreakOut extends Application {
             
         }        
     }
-
-    
-
     public static void main(String[] args) {
         launch(args);
     }

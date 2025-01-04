@@ -156,6 +156,9 @@ public class Brick {
                     bricks[k][j].isNotBreak = true; 
                     bricks[k][j].setHavePower(false);// Toutes les briques sont présentes au début
                     bricks[k][j].getPowerUp().reset(j * 85,k * 25 );
+                    if(bricks[k][j] instanceof BrickDouble){
+                        bricks[k][j].setNbrVie(1);
+                    }
                 }
             }
         }
