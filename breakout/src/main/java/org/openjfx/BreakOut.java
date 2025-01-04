@@ -109,7 +109,7 @@ public class BreakOut extends Application {
             }else 
             if (GameState.isSelectingMode){
 
-                Affichage.affichageMenuSelection(gc, BoutonListe.bClassique, BoutonListe.bExperimental, BoutonListe.bPerso, BoutonListe.bCréation, BoutonListe.bMultijoueur, BoutonListe.bRetourSelec);
+                Affichage.affichageMenuSelection(gc, BoutonListe.bClassique, BoutonListe.bExperimental, BoutonListe.bPerso, BoutonListe.bCréation, BoutonListe.bRetourSelec);
                 if (NiveauPossible.n.getPath() != null && NiveauPossible.n.getOuvert()){
                     NiveauActuel.tabBrick = NiveauActuel.niv.makeNiveau();
                     if (NiveauActuel.tabBrick == null){
@@ -199,21 +199,21 @@ public class BreakOut extends Application {
                 TimerListe.timePU4++;
             for (int i = 0; i < NiveauActuel.balles.size(); i++) {
 
-                if (balles.get(i).getXPos() <= 0 || balles.get(i).getXPos() >= width - Balle.getSize()) {
-                    if(balles.get(i).getXPos() <= 0){
-                        balles.get(i).setXpos(width - 20);
+                if (NiveauActuel.balles.get(i).getXPos() <= 0 || NiveauActuel.balles.get(i).getXPos() >= GameSpec.width - Balle.getSize()) {
+                    if(NiveauActuel.balles.get(i).getXPos() <= 0){
+                        NiveauActuel.balles.get(i).setXpos(GameSpec.width - 20);
                     }
                     else{
-                        balles.get(i).setXpos(5);
+                        NiveauActuel.balles.get(i).setXpos(5);
                     }
                 }
             }
-            if (TimerList.timePU4>=700){
-                TimerList.timePU4 =0;
+            if (TimerListe.timePU4>=700){
+                TimerListe.timePU4 =0;
                 GameState.wallOpen = false;
             }
             }
-            for (int i = 0; i < balles.size(); i++) {
+            for (int i = 0; i < NiveauActuel.balles.size(); i++) {
                 // Collision avec les murs
                 if (NiveauActuel.balles.get(i).getXPos() <= 0 || NiveauActuel.balles.get(i).getXPos() >= GameSpec.width - Balle.getSize()) {
                     NiveauActuel.balles.get(i).rebondHorizontal();

@@ -88,13 +88,6 @@ class EventMouseClick implements EventTrigger{
                     //Son.toggleMute(); // Changer l'état muet
                 }
             }
-            
-            //confirme un input sur le bouton "Mode multijoueur"
-            if (!GameState.isCreatingNiv && !GameState.isGameStarted && GameState.isSelectingMode && BoutonListe.bMultijoueur.estClique(clickX, clickY)){
-                GameState.isSelectingMode = false;
-                GameState.isPlayingMulti = true;
-                GameState.isSelectingNiv = true;
-            }
 
             if(GameState.isGameOver){
                 BoutonListe.bSetting.enable();
@@ -107,8 +100,7 @@ class EventMouseClick implements EventTrigger{
                     BoutonListe.bSetting.disable();
                 }else if(BoutonListe.bChangerModeJeu.estClique(clickX, clickY)){
                     NiveauActuel.resetGame(gc);
-                    GameState.modeSelection = true; //retourner sur la selection de mode
-                    GameState.isSelectingMode = false; //retourner sur la selection de mode
+                    GameState.isSelectingMode = true; //retourner sur la selection de mode
                 }else if(BoutonListe.bRetour.estClique(clickX, clickY)){
                     NiveauActuel.resetGame(gc); //Réinitialise le jeu -> retour au menu
                     Son.jouerMusique(); // Rejoue de la music
