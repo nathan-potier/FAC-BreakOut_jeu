@@ -15,11 +15,20 @@ class EventMouseClick implements EventTrigger{
                 if (BoutonListe.bMouse.estClique(clickX, clickY)) {
                     // Basculer l'état du mode souris
                     GameState.isMouseMode = !GameState.isMouseMode;// Inverser l'état du mode souris
+                    // Si les deux modes sont off, réactiver le mode clavier
+                    if (!GameState.isMouseMode && !GameState.isKeyboardMode) {
+                        GameState.isKeyboardMode = true;
+                        BoutonListe.bKeyboard.setText("Clavier: on");
+                    }
                     BoutonListe.bMouse.setText(GameState.isMouseMode ? "Souris: on" : "Souris: off");// Définir le texte en fonction de l'état
                 }
                 if (BoutonListe.bKeyboard.estClique(clickX, clickY)) {
                     // Basculer l'état du mode clavier
                     GameState.isKeyboardMode=!GameState.isKeyboardMode;// Inverser l'état du mode clavier
+                    if (!GameState.isMouseMode && !GameState.isKeyboardMode) {
+                        GameState.isMouseMode = true;
+                        BoutonListe.bMouse.setText("Souris: on");
+                    }
                     BoutonListe.bKeyboard.setText(GameState.isKeyboardMode ? "Clavier: on" : "Clavier: off");// Définir le texte en fonction de l'état
                 }                
 
@@ -88,15 +97,18 @@ class EventMouseClick implements EventTrigger{
             }
 
             if(GameState.isGameOver){
+                BoutonListe.bSetting.enable();
                 if(BoutonListe.bRejouer.estClique(clickX, clickY)){
                     NiveauActuel.resetGame(gc);
                     GameState.isGameStarted = true; //Rejouer le jeu
                     GameState.isGameOver = false;   //sans retourner au menu principal
                     Son.jouerMusique();
                     GameState.isSettingOpen = false;
+                    BoutonListe.bSetting.disable();
                 }else if(BoutonListe.bChangerModeJeu.estClique(clickX, clickY)){
                     NiveauActuel.resetGame(gc);
-                    GameState.isSelectingMode = true; //retourner sur la selection de mode
+                    GameState.modeSelection = true; //retourner sur la selection de mode
+                    GameState.isSelectingMode = false; //retourner sur la selection de mode
                 }else if(BoutonListe.bRetour.estClique(clickX, clickY)){
                     NiveauActuel.resetGame(gc); //Réinitialise le jeu -> retour au menu
                     Son.jouerMusique(); // Rejoue de la music
@@ -112,7 +124,7 @@ class EventMouseClick implements EventTrigger{
                 Affichage.enregistrerPseudo();  // Stocker le pseudo avant de commencer
                 GameState.isSettingOpen = false; 
                 BoutonListe.bJouer.disable();
-
+                BoutonListe.bSetting.disable();
 
             //confirme un input sur le bouton "Mode classique" ou "Mode expérimental"
             }else if(!GameState.isCreatingNiv && !GameState.isGameStarted && !GameState.isGameOver && GameState.isSelectingMode && BoutonListe.bClassique.estClique(clickX, clickY)){
@@ -168,6 +180,7 @@ class EventMouseClick implements EventTrigger{
                 GameState.isSelectingMode = false;
                 GameState.isGameOver = false;
                 BoutonListe.bJouer.enable();
+                BoutonListe.bSetting.enable();
             }else if(!GameState.isCreatingNiv && !GameState.isGameStarted && !NiveauActuel.type && BoutonListe.bRecommencer.estClique(clickX, clickY)){
                 NiveauActuel.resetGame(gc);
                 GameState.isGameStarted = true;
@@ -180,11 +193,13 @@ class EventMouseClick implements EventTrigger{
 
                     FenetrePossible.f2.setVisible(true);
                     BoutonListe.bJouer.enable();
+                    BoutonListe.bSetting.enable();
                     
                 } 
                 else if (BoutonListe.bRetourSelec.estClique(clickX, clickY)){
                     GameState.isCreatingNiv = false;
                     BoutonListe.bJouer.enable();
+                    BoutonListe.bSetting.enable();
 
                 }
                 else{

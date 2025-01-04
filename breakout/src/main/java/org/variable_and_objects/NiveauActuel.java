@@ -21,6 +21,7 @@ public class NiveauActuel {
     //Réinitialise l'état du jeu pour recommencer une nouvelle partie
     static void resetGame(GraphicsContext gc){
 
+        GameState.wallOpen = false;
         GameState.isGameOver = false;
         GameState.isGameStarted = false;
         score = 0;
