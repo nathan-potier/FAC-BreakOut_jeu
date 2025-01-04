@@ -89,7 +89,7 @@ public class BreakOut extends Application {
                 }
             }
             else
-            if (!GameState.isGameStarted && GameState.isGameOver){
+            if (GameState.isGameWin){
                 if (NiveauActuel.type){
                     Affichage.affichageMenuProchainNiveau(gc, BoutonListe.bProchainNiveau, BoutonListe.bRetourSelec);
                 }
@@ -100,7 +100,7 @@ public class BreakOut extends Application {
             else
             if (GameState.isGameStarted && NiveauActuel.niv.finDeJeu()){
                 GameState.isGameStarted = false;
-                GameState.isGameOver = NiveauActuel.niv.finDeJeu();
+                GameState.isGameWin = NiveauActuel.niv.finDeJeu();
             }
             else
             if(GameState.isGameOver){

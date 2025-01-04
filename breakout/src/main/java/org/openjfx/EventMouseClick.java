@@ -89,6 +89,42 @@ class EventMouseClick implements EventTrigger{
                 }
             }
 
+            if (GameState.isGameWin){
+                BoutonListe.bSetting.enable();
+                if (BoutonListe.bRetourSelec.estClique(clickX, clickY)){
+                    GameState.isGameWin = false;
+                    GameState.isSelectingMode = true;
+                }
+                if(NiveauActuel.type && BoutonListe.bProchainNiveau.estClique(clickX, clickY)){
+                    if(NiveauActuel.modeActif.equals("classique")){
+                        NiveauActuel.niv = new Niveau(NiveauActuel.diff + 1); //Charger le niveau sélectionné
+                        NiveauActuel.tabBrick = NiveauActuel.niv.makeNiveau();
+                    }else if(NiveauActuel.modeActif.equals("experimental")){ 
+                        int prev = NiveauActuel.diff;
+                        if (prev<10){
+                            NiveauActuel.niv = new Niveau();
+                            NiveauActuel.diff = prev + 1;
+                            NiveauActuel.tabBrick = NiveauActuel.niv.makeNiveauExperimental("Niveau" + (prev + 1) + ".txt"); //Crée les briques en fonction du niveau sélectionné à partir d'un fichier existant
+                        }else {
+                            NiveauActuel.resetGame(gc);
+                        }
+                    }
+                    Balle.resetBalles(NiveauActuel.balle1);
+                    NiveauActuel.brickRows = NiveauActuel.niv.getBrickRows();
+                    GameState.isGameStarted = true;
+                    GameState.isSelectingNiv = false; 
+                    GameState.isGameWin = false;
+                }
+                if (!NiveauActuel.type && BoutonListe.bRecommencer.estClique(clickX, clickY)){
+                    NiveauActuel.resetGame(gc);
+                    GameState.isGameStarted = true;
+                    NiveauActuel.niv.resetBrick();
+                    GameState.isGameWin = false;
+                }
+                BoutonListe.bSetting.disable();
+
+            }
+
             if(GameState.isGameOver){
                 BoutonListe.bSetting.enable();
                 if(BoutonListe.bRejouer.estClique(clickX, clickY)){
@@ -142,6 +178,7 @@ class EventMouseClick implements EventTrigger{
                             NiveauActuel.tabBrick = NiveauActuel.niv.makeNiveau();
                         }else if(NiveauActuel.modeActif.equals("experimental")){ 
                             NiveauActuel.niv = new Niveau();
+                            NiveauActuel.diff = i+1;
                             NiveauActuel.tabBrick = NiveauActuel.niv.makeNiveauExperimental("Niveau" + (i+1) + ".txt"); //Crée les briques en fonction du niveau sélectionné à partir d'un fichier existant
                         }
                         NiveauActuel.brickRows = NiveauActuel.niv.getBrickRows();

@@ -15,4 +15,5 @@ public class GameState {
     static boolean isGameOver = false;
     static boolean isSettingOpen = false;
     static boolean wallOpen = false;
+    static boolean isGameWin = false;
 }
