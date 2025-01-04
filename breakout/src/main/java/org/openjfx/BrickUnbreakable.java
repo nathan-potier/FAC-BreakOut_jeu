@@ -1,5 +1,6 @@
 package org.openjfx;
 
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 /**
@@ -24,6 +25,7 @@ import javafx.scene.paint.Color;
 public class BrickUnbreakable extends Brick{
 
     private final int score;
+    public Image imageUnbreakable;
 
     /**
      * Constructeur d'une BrickUnbreakable définie par plusieurs paramètres.
@@ -37,6 +39,12 @@ public class BrickUnbreakable extends Brick{
         super(isNotBreak, brickWidth, brickHeight, powerup);
         this.score = 10;
         setHavePower(false);
+        try {
+            this.imageUnbreakable = new Image("file:src/main/resources/Bricks/Incassable.png"); // Chemin vers l'image de la brique incassable
+
+        } catch (Exception e) {
+            System.out.print("cela ne marche pas");
+        }
         
 
     }

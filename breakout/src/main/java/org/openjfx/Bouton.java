@@ -1,5 +1,8 @@
 package org.openjfx;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
@@ -20,14 +23,18 @@ import javafx.scene.text.TextAlignment;
  * <li>Afficher le bouton sur l'écran avec {@link #afficher(GraphicsContext)}.</li>
  * <li>Vérifier si le bouton est cliqué avec {@link #estClique(double, double)}.</li>
  * <li>Définir l'état de survol du bouton avec {@link #setHover(boolean)}.</li>
+ * <li>Vérifier si la souris est au-dessus du bouton avec {@link #isHover(double, double)}.</li>
+ * <li>Modifier le texte affiché sur le bouton avec {@link #setText(String)}.</li>
+ * <li>Accéder à la liste globale de tous les boutons créés avec {@link #getAllButtons()}.</li>
  * </ul>
  * 
  * <p>
- * Les boutons sont en jaune et affichent leur texte centré.
+ * Les boutons sont en jaune et affichent leur texte centré. Si la souris passe
+ * au-dessus, le contour devient rouge.
  * </p>
  * 
  * @author Jonas RAMANATHAN
- * @version 1.1
+ * @version 1.2
  */
 public class Bouton {
 
@@ -36,12 +43,16 @@ public class Bouton {
     private Color defaultColor = Color.YELLOW;
     private Color hoverColor = Color.RED;
     private boolean isHover = false;
+    private boolean isEnabled = true;
+
+    // Liste statique pour stocker toutes les instances de Bouton
+    private static final List<Bouton> allButtons = new ArrayList<>();
 
     /**
      * Constructeur de la classe Bouton.
      * 
-     * @param x      la coordonnée X du coin supérieur gauche du bouton
-     * @param y      la coordonnée Y du coin supérieur gauche du bouton
+     * @param x      la coordonnée X du coin en haut à gauche du bouton
+     * @param y      la coordonnée Y du coin en haut à gauche du bouton
      * @param width  la largeur du bouton
      * @param height la hauteur du bouton
      * @param text   le texte à afficher sur le bouton
@@ -52,6 +63,41 @@ public class Bouton {
         this.width = width;
         this.height = height;
         this.text = text;
+
+        // Ajout automatique du bouton à la liste globale
+        allButtons.add(this);
+    }
+
+    /**
+     * Désactive le bouton, empêchant les interactions avec lui.
+     */
+    public void disable() {
+        isEnabled = false;
+    }
+
+    /**
+     * Réactive le bouton, permettant les interactions à nouveau.
+     */
+    public void enable() {
+        isEnabled = true;
+    }
+
+    /**
+     * Vérifie si le bouton est activé.
+     * 
+     * @return {@code true} si le bouton est activé, sinon {@code false}
+     */
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    /**
+     * Retourne la liste de toutes les instances de Bouton créées.
+     * 
+     * @return une liste contenant tous les boutons créés
+     */
+    public static List<Bouton> getAllButtons() {
+        return allButtons;
     }
 
     /**
@@ -59,59 +105,81 @@ public class Bouton {
      * 
      * @return la coordonnée X
      */
-    public double getX() { return x; }
+    public double getX() {
+        return x;
+    }
 
     /**
      * Retourne la coordonnée Y du coin supérieur gauche du bouton.
      * 
      * @return la coordonnée Y
      */
-    public double getY() { return y; }
+    public double getY() {
+        return y;
+    }
 
     /**
      * Retourne la largeur du bouton.
      * 
      * @return la largeur du bouton
      */
-    public double getWidth() { return width; }
+    public double getWidth() {
+        return width;
+    }
 
     /**
      * Retourne la hauteur du bouton.
      * 
      * @return la hauteur du bouton
      */
-    public double getHeight() { return height; }
+    public double getHeight() {
+        return height;
+    }
 
-    public void setText(String newText) { this.text=newText; }
+    /**
+     * Définit le texte affiché sur le bouton.
+     * 
+     * @param newText le nouveau texte à afficher
+     */
+    public void setText(String newText) {
+        this.text = newText;
+    }
 
     /**
      * Retourne le texte affiché sur le bouton.
      * 
      * @return le texte du bouton
      */
-    public String getText() { return text; }
+    public String getText() {
+        return text;
+    }
 
     /**
      * Retourne la couleur par défaut du bouton.
      * 
      * @return la couleur par défaut
      */
-    public Color getDefaultColor() { return defaultColor; }
+    public Color getDefaultColor() {
+        return defaultColor;
+    }
 
     /**
      * Retourne la couleur de survol du bouton.
      * 
      * @return la couleur de survol
      */
-    public Color getHoverColor() { return hoverColor; }
-
+    public Color getHoverColor() {
+        return hoverColor;
+    }
 
     /**
      * Définit l'état de survol du bouton.
      * 
      * @param hover vrai si le bouton est survolé sinon faux
      */
-    public void setHover(boolean hover){ this.isHover = hover; }
+    public void setHover(boolean hover) {
+        this.isHover = hover;
+    }
 
     /**
      * Affiche le bouton sur l'écran.
@@ -124,12 +192,12 @@ public class Bouton {
      * @param gc le contexte graphique dans lequel le bouton est dessiné
      */
     public void afficher(GraphicsContext gc) {
-        if(isHover){
+        if (isHover) {
             gc.setStroke(hoverColor);
-        }else{
+        } else {
             gc.setStroke(defaultColor);
         }
-        
+
         gc.strokeRect(x, y, width, height);
         gc.setTextAlign(TextAlignment.CENTER);
         gc.strokeText(text, x + width / 2, y + height / 2 + 5);
@@ -143,12 +211,17 @@ public class Bouton {
      * @return {@code true} si le clic est à l'intérieur du bouton, sinon {@code false}
      */
     public boolean estClique(double mouseX, double mouseY) {
-        return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
+        return isEnabled && mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
 
-    // Vérifier si la souris est au-dessus du bouton
-    public boolean isHover(double mouseX, double mouseY){
-        return estClique(mouseX, mouseY);
+    /**
+     * Vérifie si la souris est au-dessus du bouton.
+     * 
+     * @param mouseX la coordonnée X de la souris
+     * @param mouseY la coordonnée Y de la souris
+     * @return {@code true} si la souris est au-dessus du bouton, sinon {@code false}
+     */
+    public boolean isHover(double mouseX, double mouseY) {
+        return isEnabled && estClique(mouseX, mouseY);
     }
-    
 }

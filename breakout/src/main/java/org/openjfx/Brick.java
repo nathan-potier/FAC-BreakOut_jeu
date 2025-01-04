@@ -148,4 +148,19 @@ public class Brick {
     public PowerUp getPowerUp(){
         return this.powerup;
     }
+
+    public static void resetBrickTab(Brick[][] bricks, int brickRows, int brickCols){
+        for (int k = 0; k < brickRows; k++) {
+            for (int j = 0; j < brickCols; j++) {
+                if (bricks[k][j].getNbrVie() != -1){
+                    bricks[k][j].isNotBreak = true; 
+                    bricks[k][j].setHavePower(false);// Toutes les briques sont présentes au début
+                    bricks[k][j].getPowerUp().reset(j * 85,k * 25 );
+                    if(bricks[k][j] instanceof BrickDouble){
+                        bricks[k][j].setNbrVie(1);
+                    }
+                }
+            }
+        }
+    }
 }

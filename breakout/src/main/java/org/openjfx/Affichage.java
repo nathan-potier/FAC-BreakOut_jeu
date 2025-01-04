@@ -1,13 +1,16 @@
 package org.openjfx;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
-import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 
 /**
  * La classe Affichage est responsable de la gestion de l'affichage du jeu BreakOut.
@@ -184,11 +187,46 @@ public class Affichage {
         gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 10));
         gc.setTextAlign(TextAlignment.CENTER);
         
-        // Afficher le bouton "Settings"
+        // Afficher le bouton "ToggleBounceSound"
         boutonToggleBounceSound.afficher(gc);
     }
 
+     /**
+     * Affiche le bouton pour activer/désactiver la souris.
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param boutonMouse Le bouton pour activer/désactiver la souris.
+     */
+    public static void afficherBoutonMouse(GraphicsContext gc, Bouton boutonMouse) {
+        // Configurer les styles du bouton
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 10));
+        gc.setTextAlign(TextAlignment.CENTER);
+        
+        // Afficher le bouton "Mouse"
+        boutonMouse.afficher(gc);
+    }
 
+    /**
+     * Affiche le bouton pour activer/désactiver le clavier.
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param boutonKeyboard Le bouton pour activer/désactiver le clavier.
+     */
+    public static void afficherBoutonKeyboard(GraphicsContext gc, Bouton boutonKeyboard) {
+        // Configurer les styles du bouton
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 10));
+        gc.setTextAlign(TextAlignment.CENTER);
+        
+        // Afficher le bouton "Keyboard"
+        boutonKeyboard.afficher(gc);
+    }
+
+    /**
+     * Affiche le bouton pour accéder aux paramètres.
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param boutonSettings Le bouton pour accéder aux paramètres.
+     */
     private static void afficherBoutonSettings(GraphicsContext gc, Bouton boutonSettings) {
         // Configurer les styles du bouton
         gc.setStroke(Color.YELLOW);
@@ -247,26 +285,26 @@ public class Affichage {
         boutonJouer.afficher(gc);
     }
 
- //Méthode pour afficher le boutonMute
- public static void afficherBoutonMute(GraphicsContext gc, Bouton boutonMute) {
-    if (!isPaused) {  // En cours de jeu
-        gc.setFill(Color.YELLOW);
-        gc.setFont(Font.font(20));
-        gc.setTextAlign(TextAlignment.CENTER);
+    //Méthode pour afficher le boutonMute
+    public static void afficherBoutonMute(GraphicsContext gc, Bouton boutonMute) {
+        if (!isPaused) {  // En cours de jeu
+            gc.setFill(Color.YELLOW);
+            gc.setFont(Font.font(20));
+            gc.setTextAlign(TextAlignment.CENTER);
+        }
+        // Afficher le bouton "Muet"
+        boutonMute.afficher(gc);
     }
-    // Afficher le bouton "Muet"
-    boutonMute.afficher(gc);
-}
 
-// Méthode pour afficher le boutonPause
-public static void afficherBoutonPause(GraphicsContext gc, Bouton boutonPause) {
-    if (!isPaused) {  // En cours de jeu
-        gc.setStroke(Color.YELLOW);
-        gc.setFont(Font.font(20));
-        gc.setTextAlign(TextAlignment.CENTER);
+    // Méthode pour afficher le boutonPause
+    public static void afficherBoutonPause(GraphicsContext gc, Bouton boutonPause) {
+        if (!isPaused) {  // En cours de jeu
+            gc.setStroke(Color.YELLOW);
+            gc.setFont(Font.font(20));
+            gc.setTextAlign(TextAlignment.CENTER);
+        }
+        boutonPause.afficher(gc);
     }
-    boutonPause.afficher(gc);
-}
 
 
 
@@ -331,6 +369,7 @@ public static void afficherBoutonPause(GraphicsContext gc, Bouton boutonPause) {
      */
     // Méthode pour gérer l'entrée utilisateur depuis le clavier
     public static void handleKeyPress(KeyEvent e) {
+        
         if (isEnteringPseudo) {  // Vérifie si l'on est toujours en mode saisie du pseudo
             if (e.getCode() == KeyCode.BACK_SPACE && pseudoInput.length() > 0) {
                 pseudoInput = pseudoInput.substring(0, pseudoInput.length() - 1);
@@ -375,7 +414,7 @@ public static void afficherBoutonPause(GraphicsContext gc, Bouton boutonPause) {
     public static void afficherFinDeJeu(GraphicsContext gc, int score, Bouton boutonRejouer, Bouton boutonChangeMode, Bouton boutonRetour, Bouton boutonSettings, boolean drawSettingsRectangle) {
     
         //Afficher un message à la fin de jeu
-        Message.afficherMessageFinDeJeu(gc, score);  
+        Message.afficherMessageFinDeJeu(gc, score, Score.getOldBestScoreForMessage(Pseudo.getPseudo(), score));  
 
         //Afficher le score actuel
         afficherScoreActuel(gc,score);
@@ -442,9 +481,9 @@ public static void afficherBoutonPause(GraphicsContext gc, Bouton boutonPause) {
     }
 
     //menu selection mode classique ou personnalisé
-    public static void affichageMenuSelection(GraphicsContext gc, Bouton classique, Bouton perso, Bouton création, Bouton retour){
-        
+    public static void affichageMenuSelection(GraphicsContext gc, Bouton classique, Bouton experimental, Bouton perso, Bouton création, Bouton retour){ 
         afficherBoutonJouer(gc, classique);
+        afficherBoutonJouer(gc, experimental);
         afficherBoutonJouer(gc, perso);
         afficherBoutonJouer(gc, création);
         retour.afficher(gc);    
@@ -461,6 +500,70 @@ public static void afficherBoutonPause(GraphicsContext gc, Bouton boutonPause) {
         
         afficherBoutonJouer(gc, prochainNiveau);
         retour.afficher(gc);    
+    }
+
+    /**
+     * Affiche le texte "Choisir un niveau" au-dessus des boutons.
+     *
+     * @param gc Le contexte graphique utilisé pour dessiner le texte.
+     */
+    //Méthode pour afficher le texte au dessus des boutons niveaux
+    private static void afficherTexteChoisirNiveau(GraphicsContext gc) {
+        gc.setStroke(Color.YELLOW);
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 35));
+        gc.setTextAlign(TextAlignment.CENTER);
+
+        double texteX = BreakOut.getWidth()/2; //milieu de la fenêtre
+        double texteY = BreakOut.getHeight()/2-50;  //au-dessus des boutons
+
+        gc.strokeText("Choisir un niveau", texteX, texteY);
+    }
+
+    //Méthode pour afficher le bouton "Retour" retournant au menu sélection de mode
+    private static void afficherBoutonRetourAuMode(GraphicsContext gc, Bouton boutonRetourAuMode){
+        gc.setStroke(Color.YELLOW);
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 25));
+        gc.setTextAlign(TextAlignment.CENTER);
+        boutonRetourAuMode.afficher(gc);
+    }
+
+    //Méthode pour afficher les boutons des niveaux
+    public static void afficherBoutonNiveaux(GraphicsContext gc, List<Bouton> boutonsNiveaux){
+        gc.setStroke(Color.YELLOW);
+        gc.setFont(Font.font("Courier New", FontWeight.NORMAL, 25));
+        gc.setTextAlign(TextAlignment.CENTER);
+        for (Bouton bouton : boutonsNiveaux) {
+            bouton.afficher(gc);
+        }
+    }
+
+    /**
+     * Affiche le menu de niveau de 1 à 10
+     * 
+     * @param gc Le contexte graphique pour dessiner l'interface.
+     * @param boutonsNiveaux Les boutons niveaux permettant de sélection un niveau de 1 à 10
+     * @param boutonRetourAuMode Le bouton permettant de retourner au mode de sélection
+     */
+    //Méthode pour le menu de sélection des niveaux
+    public static void affichageSelectionNiveaux(GraphicsContext gc, List<Bouton> boutonsNiveaux, Bouton boutonRetourAuMode){
+        afficherTexteChoisirNiveau(gc);
+        afficherBoutonNiveaux(gc, boutonsNiveaux);
+        afficherBoutonRetourAuMode(gc, boutonRetourAuMode);
+    }
+
+    public static void afficherDefFont(GraphicsContext gc){
+        gc.setFont(Font.font("Arial", FontWeight.NORMAL, 25));
+        gc.setFill(Color.YELLOW);
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.fillText("Score: " + 0, 1016 / 2, 700 / 2); //score remise à 0
+    }
+
+    public static void afficheBalles(GraphicsContext gc, ArrayList<Balle> balles){
+        for(int i = 0; i<balles.size(); i++){
+            balles.get(i).MAJPosHorizontal();
+            balles.get(i).MAJPosVertical();
+            gc.fillOval(balles.get(i).getXPos(), balles.get(i).getYPos(), Balle.getSize(), Balle.getSize());
+        }
     }
 
 }

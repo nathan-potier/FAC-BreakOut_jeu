@@ -125,6 +125,15 @@ public class TestScore {
     }
 
     @Test
+    public void testGetOldBestScoreForMessage(){
+        Score.saveScoreToFile("Anne", 100);
+        Score.saveScoreToFile("Anne", 150); //ancien meilleur score
+
+        int oldBestScore = Score.getOldBestScoreForMessage("Anne", 200);
+        assertEquals(150, oldBestScore);
+    }
+
+    @Test
     public void testGetLastFiveScores() {
         Score.saveScoreToFile("Grace", 10);
         Score.saveScoreToFile("Grace", 20);

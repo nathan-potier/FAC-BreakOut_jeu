@@ -31,8 +31,8 @@ public class MoreBall extends PowerUp{
      * @param PUx un double représentant la position X initiale du PowerUp
      * @param PUy un double représentant la position Y initiale du PowerUp
     */
-    public MoreBall(double PUx, double PUy) {
-        super(PUx, PUy);
+    public MoreBall(double PUx, double PUy, boolean malus) {
+        super(PUx, PUy, malus);
     }
 
     /**
@@ -45,12 +45,12 @@ public class MoreBall extends PowerUp{
         this.balle1 = new Balle(BreakOut.getWidth() / 2,BreakOut.getHeight() / 2);
         this.balle2 = new Balle(BreakOut.getWidth() / 2 +10,BreakOut.getHeight() / 2);
         this.balle3 = new Balle(BreakOut.getWidth() / 2 +20,BreakOut.getHeight() / 2);
-        balle1.rebondHorizontal(); // les 3 balles prendront une direction différente
-        balle2.rebondVertical();
-        BreakOut.balles.add(balle1);
-        BreakOut.balles.add(balle2);
-        BreakOut.balles.add(balle3);
-        BreakOut.nbBalle = BreakOut.nbBalle + 3;
+        balle1.rebondVertical(); // les 3 balles prendront une direction différente
+        balle2.rebondHorizontal();
+        NiveauActuel.balles.add(balle1);
+        NiveauActuel.balles.add(balle2);
+        NiveauActuel.balles.add(balle3);
+        NiveauActuel.nbBalle = NiveauActuel.nbBalle + 3;
     }
 
     

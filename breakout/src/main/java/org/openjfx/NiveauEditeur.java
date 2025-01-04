@@ -26,12 +26,12 @@ public class NiveauEditeur extends NiveauInput{
     NiveauEditeur(){
         super();
         defBrick();
-        for(int i = 0; i < 14; i++){
+        for(int i = 0; i < 12; i++){
             for(int j = 0; j < 12; j++){
-                setBrick(i, j, new BrickBleue(true, 80, 20, new PowerUp(j * 85, i * 25)));
+                setBrick(i, j, new BrickBleue(true, 80, 20, new PowerUp(j * 85, i * 25, false)));
             }
         }
-        setBrickRows(14);
+        setBrickRows(12);
     }
 
     public int xCoord(double clickX){
@@ -46,7 +46,7 @@ public class NiveauEditeur extends NiveauInput{
 
     public int yCoord(double clickY){
 
-        for(int i = 0; i < 14; i++){
+        for(int i = 0; i < 12; i++){
             if (clickY >= (i * (20 + 5) + 20) && clickY <= (i * (20 + 5)) + 40){
                 return i;
             }

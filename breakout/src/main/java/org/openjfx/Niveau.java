@@ -2,7 +2,15 @@ package org.openjfx;
 
 
 import javafx.scene.canvas.GraphicsContext;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 
 
@@ -25,6 +33,7 @@ import java.util.Random;
  * <li> Fixe le nombre total de brique cassable du niveau {@link #setInitNbBrick()}.</li>
  * <li> Réinitialise l'état des briques {@link #resetBrick()}.</li>
  * <li> Crée un tableau à deux dimensions de briques selon la difficulté {@link #makeNiveau()}.</li>
+ * <li> Crée un niveau à partir du fichier stocké dans filePath {@link #makeNiveauExperimental(String)}</li>
  * </ul>
  * 
  * @author Le-Augustin NGUYEN
@@ -50,8 +59,8 @@ public class Niveau {
      * @param diff un entier représentant la difficulté
     */
     Niveau(int diff){
-        this.diff = (diff < 1)? 1 : Math.min(diff, 10);
-        brickRows = Math.min(5 + this.diff - 1, 14);
+        this.diff = (diff < 1)? 1 : Math.min(diff, 8);
+        brickRows = Math.min(5 + this.diff - 1, 12);
 
     }
 
@@ -181,12 +190,37 @@ public class Niveau {
                 if (tabBrick[i][j].isNotBreak) {
                     double brickX = j * (tabBrick[i][j].getWidth() + 5);
                     double brickY = i * (tabBrick[i][j].getHeight() + 5);
-                    gc.setFill(tabBrick[i][j].couleur());
-                    gc.fillRect(brickX, brickY + 20, tabBrick[i][j].getWidth(), tabBrick[i][j].getHeight());
+                    double imageWidth = tabBrick[i][j].getWidth();
+                    double imageHeight = tabBrick[i][j].getHeight();
+                    
+                    if (tabBrick[i][j] instanceof BrickBleue) {
+                        BrickBleue brickBleue = (BrickBleue) tabBrick[i][j];
+                        gc.drawImage(brickBleue.imageBleue, brickX, brickY + 20, imageWidth, imageHeight);
+                    }else if (tabBrick[i][j] instanceof BrickDouble) {
+                        BrickDouble brickDouble = (BrickDouble) tabBrick[i][j];
+                        gc.drawImage(brickDouble.imageAct, brickX, brickY + 20, imageWidth, imageHeight);
+                    }else if (tabBrick[i][j] instanceof BrickRouge) {
+                        BrickRouge brickRouge = (BrickRouge) tabBrick[i][j];
+                        gc.drawImage(brickRouge.imageRouge, brickX, brickY + 20, imageWidth, imageHeight);
+                    }else if (tabBrick[i][j] instanceof BrickUnbreakable) {
+                        BrickUnbreakable brickUnbreakable = (BrickUnbreakable) tabBrick[i][j];
+                        gc.drawImage(brickUnbreakable.imageUnbreakable, brickX, brickY + 20, imageWidth, imageHeight);
+                    } else {
+                        // Affichage de la couleur de la brique normale
+                        gc.setFill(tabBrick[i][j].couleur());
+                        gc.fillRect(brickX, brickY + 20, tabBrick[i][j].getWidth(), tabBrick[i][j].getHeight());
+                    }
                 }
             }
         }
     }
+
+
+
+
+
+
+
 
 
 
@@ -232,4 +266,68 @@ public class Niveau {
         setTabBrick(tab);
         return tab;
     }
+
+     /**
+     * Crée un niveau à partir du fichier stocké dans filePath
+     * 
+     * @param filePath Le chemin d'accès au fichier contenant la configuration du niveau où chaque ligne correspond à une ligne de briques et chaque valeur à un type de brique.
+     * 
+     * @return tableau à deux dimensions de Brick représentant le niveau, interprété à partir du contenu du fichier filePath, renvoie null si invalide.
+     * 
+     */
+    public Brick[][] makeNiveauExperimental(String filePath){
+        ArrayList<String[]> niveauValues = new ArrayList<String[]>();
+        int nbLine = 0;
+        String[] courant;
+
+        try(Scanner scanner = new Scanner(new File(filePath))){
+            if (!scanner.hasNextLine()) return null;
+            while(scanner.hasNextLine() && nbLine < 12){
+                courant = scanner.nextLine().split(",");
+                if (courant.length != 12) return null;        
+                niveauValues.add(courant);    
+                nbLine++;
+            }        
+            if (scanner.hasNextLine()) return null;        
+            setBrickRows(nbLine);
+            
+            //Création du niveau        
+            Brick[][] niv = new Brick[nbLine][12];        
+            String[] ligneCourante;
+            int intCourant;
+            for(int i=0; i < nbLine; i++){
+                ligneCourante = niveauValues.get(i);        
+                for(int j=0; j < 12; j++){
+                    try{
+                        intCourant = Integer.parseInt(ligneCourante[j]);
+                        switch(intCourant){        
+                            case 1: niv[i][j] = new BrickBleue(true, 80, 20,PowerUp.randomPU(j * 85, i * 25)); 
+                                    diff++; break;
+                            case 2: niv[i][j] = new BrickDouble(true, 80, 20,PowerUp.randomPU(j * 85, i * 25)); 
+                                    diff++; break;
+                            case 3: niv[i][j] = new BrickRouge(true, 80, 20, PowerUp.randomPU(j * 85, i * 25)); 
+                                    diff++; break;
+                            case 4: niv[i][j] = new BrickUnbreakable(true, 80, 20, PowerUp.randomPU(j * 85, i * 25)); brickDetruite(); 
+                                    break;
+                            case 5: niv[i][j] = new BrickVide(false, 80, 20, PowerUp.randomPU(j * 85, i * 25)); brickDetruite(); 
+                                    break;
+                            default : return null;
+                        }
+                        brickAdd();
+                    }        
+                    catch (NumberFormatException a){
+                        return null;
+                    }
+                }
+            }        
+            setInitNbBrick();
+            setTabBrick(niv);
+            return niv;  
+
+        }catch(FileNotFoundException e){
+            return null;
+        }
+    }
+
+
 }
